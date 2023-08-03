@@ -6,8 +6,7 @@ import RestaurantLogin from './Components/RestaurantLogin'
 export const App = () => {
   return (
     <>
-      <CustomerLogin/>
-      <RestaurantLogin/>
+      <button> Login </button>
     </>
   )
 }
