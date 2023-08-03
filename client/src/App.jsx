@@ -1,14 +1,20 @@
-import React from 'react'
+import React from 'react';
+import { Container } from 'react-bootstrap'
 
-import CustomerLogin from './Components/CustomerLogin'
-import RestaurantLogin from './Components/RestaurantLogin'
+import CustomerSignUp from './components/CustomerSignUp'
+import { AuthProvider } from './contexts/AuthContext';
 
 export const App = () => {
   return (
-    <>
-      <CustomerLogin/>
-      <RestaurantLogin/>
-    </>
+    <AuthProvider>
+      <Container className="d-flex align-items-center justify-content-center"
+        style={{ minHeight: "100vh" }}>
+        <div className="w-100" style={{ maxWidth: "400px" }}>
+          <CustomerSignUp />
+        </div>
+        {/* <RestaurantLogin/> */}
+      </Container>
+    </AuthProvider>
   )
 }
 
