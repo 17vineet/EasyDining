@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from "react" ;
-import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 
-import app from '../firebase.js' ;
+import {appCustomer} from '../firebaseCustomer.js' ;
+import {appRestaurant} from '../firebaseRestaurant.js' ;
 
 const AuthContext = React.createContext() ; 
 
@@ -9,14 +10,29 @@ export const useAuth = ()=>{
     return useContext(AuthContext) ;
 }
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = () => {
     const [currentUser, setCurrentUser] = useState(null) ;
     const [loading, setLoading] = useState(true) ;
 
-    const auth = getAuth(app) ;
-    const signup = (email, password)=>{
-        return createUserWithEmailAndPassword(auth ,email, password) ;
+    const authCustomer = getAuth(appCustomer) ;
+    const signupCustomer = (email, password)=>{
+        return createUserWithEmailAndPassword(authCustomer ,email, password) ;
     }
+
+    const signInCustomer = (email, passowrd)=>{
+        return signInWithEmailAndPassword(authCustomer, email, passowrd) ;
+    }
+
+    const authRestaurant = getAuth(appRestaurant) ;
+    const signupRestaurant = (email, password)=>{
+        return createUserWithEmailAndPassword(authRestaurant ,email, password) ;
+    }
+
+    const signInRestaurant = (email, passowrd)=>{
+        return signInWithEmailAndPassword(authRestaurant, email, passowrd) ;
+    }
+
+
 
     useEffect(()=>{
         const unsubscribe = onAuthStateChanged(auth, user=>{
@@ -27,7 +43,7 @@ export const AuthProvider = ({ children }) => {
         return unsubscribe ;
     },[])
 
-    const value = { currentUser, signup }
+    const value = { currentUser, signup, signIn }
 
     return (
         <AuthContext.Provider value={value}>
