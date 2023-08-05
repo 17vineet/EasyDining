@@ -1,17 +1,18 @@
 import React, { useRef, useState } from 'react';
-import { Form, Card, Button, Alert } from 'react-bootstrap';
+import { Form, Card, Button, Alert ,Container} from 'react-bootstrap';
 
 import { useAuth } from '../contexts/AuthContext';
 
-const CustomerLogin = () => {
+const SignUp = () => {
 
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const { currentUser, signup } = useAuth();
+  const { currentUser, signup ,registerUser} = useAuth();
+
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const [typeOfUser,setTypeOfUser]=useState("Customer");
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -22,7 +23,9 @@ const CustomerLogin = () => {
     try {
       setError(null);
       setLoading(true)
-      await signup(emailRef.current.value, passwordRef.current.value);
+      const response=await signup(emailRef.current.value, passwordRef.current.value);
+      const resp2=await registerUser(response.user.email,typeOfUser);
+      console.log(resp2);
 
     } catch (error) {
       console.log(error);
@@ -41,12 +44,18 @@ const CustomerLogin = () => {
               <h2 className='text-center mb-4'>Sign Up</h2>
               {error && <Alert variant='danger'>{error}</Alert>}
               <Form onSubmit={handleSubmit}>
-                <button type='radio' value='customer' name='userType'>
-                  Customer
-                </button>
-                <button type='radio' value='restaurant' name='userType'>
-                  Restaurant
-                </button>
+            <div className='row'>
+           <div className='col'>
+           <input type='radio' defaultChecked id="customer" value='customer' name='userType' onClick={()=>{setTypeOfUser("Customer")}}/>
+                  <label htmlFor="customer">Customer</label>
+           </div>
+                <div className='col'>
+                <input type='radio' value='restaurant' id="restaurant" name='userType' onClick={()=>{setTypeOfUser("Restaurant")}}/>
+                <label htmlFor="restaurant">Restaurant</label>
+                </div>
+            </div>
+                 
+                
                 <Form.Group id='email'>
                   <Form.Label>Email</Form.Label>
                   <Form.Control type='email' ref={emailRef} required></Form.Control>
@@ -75,4 +84,4 @@ const CustomerLogin = () => {
   )
 }
 
-export default CustomerLogin
+export default SignUp

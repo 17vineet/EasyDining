@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Form, Card, Button, Alert } from 'react-bootstrap';
+import { Form, Card, Button, Alert,Container } from 'react-bootstrap';
 
 import { useAuth } from '../contexts/AuthContext';
 
@@ -21,14 +21,23 @@ const CustomerSignIn = () => {
     try {
       setError(null);
       setLoading(true)
-      await signIn(emailRef.current.value, passwordRef.current.value);
+      const response=await signIn(emailRef.current.value, passwordRef.current.value);
+      console.log(response);
 
     } catch (error) {
-      console.log(error);
-      setError("Failed to create an account")
+      console.log(error.message);
+      var msg=error.message
+      if(msg.indexOf("user-not-found")>-1){
+        setError("User account not found");
+      }
+      else{
+      setError("Wrong credentials")
+
+      }
+      // alert("Wrong credentials")
     }
 
-    console.log(currentUser);
+    // console.log(currentUser);
     setLoading(false);
   }
 

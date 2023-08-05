@@ -1,49 +1,55 @@
-import React, { useContext, useState, useEffect } from "react" ;
+import React, { useContext, useState, useEffect } from "react";
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import app from "../firebase";
+const AuthContext = React.createContext();
 
-import {appCustomer} from '../firebaseCustomer.js' ;
-import {appRestaurant} from '../firebaseRestaurant.js' ;
-
-const AuthContext = React.createContext() ; 
-
-export const useAuth = ()=>{
-    return useContext(AuthContext) ;
+export const useAuth = () => {
+    return useContext(AuthContext);
 }
 
-export const AuthProvider = () => {
-    const [currentUser, setCurrentUser] = useState(null) ;
-    const [loading, setLoading] = useState(true) ;
+export const AuthProvider = ({ children }) => {
+    const [currentUser, setCurrentUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const authCustomer = getAuth(appCustomer) ;
-    const signupCustomer = (email, password)=>{
-        return createUserWithEmailAndPassword(authCustomer ,email, password) ;
+    const auth = getAuth(app);
+    const signup = (email, password) => {
+        return createUserWithEmailAndPassword(auth, email, password);
     }
 
-    const signInCustomer = (email, passowrd)=>{
-        return signInWithEmailAndPassword(authCustomer, email, passowrd) ;
+    const signIn = (email, passowrd) => {
+        return signInWithEmailAndPassword(auth, email, passowrd);
     }
 
-    const authRestaurant = getAuth(appRestaurant) ;
-    const signupRestaurant = (email, password)=>{
-        return createUserWithEmailAndPassword(authRestaurant ,email, password) ;
+    const registerUser = async (email, typOfUser) => {
+
+        const apiUrl = `https://easy-dining-4c644-default-rtdb.firebaseio.com/${typOfUser}.json`; // Replace with your API endpoint
+        const data = {
+            email
+        }
+        return await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        }) 
+
     }
 
-    const signInRestaurant = (email, passowrd)=>{
-        return signInWithEmailAndPassword(authRestaurant, email, passowrd) ;
-    }
 
 
 
-    useEffect(()=>{
-        const unsubscribe = onAuthStateChanged(auth, user=>{
-            setCurrentUser(user) ;
-            setLoading(false) ;
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, user => {
+            setCurrentUser(user);
+            setLoading(false);
         })
 
-        return unsubscribe ;
-    },[])
+        return unsubscribe;
+    }, [])
 
-    const value = { currentUser, signup, signIn }
+    const value = { currentUser, signup, signIn ,registerUser }
 
     return (
         <AuthContext.Provider value={value}>
