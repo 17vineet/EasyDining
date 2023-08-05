@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Form, Card, Button, Alert ,Container} from 'react-bootstrap';
+import { Link } from 'react-router-dom'
 
 import { useAuth } from '../contexts/AuthContext';
 
@@ -8,11 +9,11 @@ const SignUp = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const { currentUser, signup ,registerUser} = useAuth();
-
+  const { signup ,registerUser} = useAuth();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [typeOfUser,setTypeOfUser]=useState("Customer");
+  const [typeOfUser, setTypeOfUser] = useState("Customer");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -23,9 +24,9 @@ const SignUp = () => {
     try {
       setError(null);
       setLoading(true)
-      const response=await signup(emailRef.current.value, passwordRef.current.value);
-      const resp2=await registerUser(response.user.email,typeOfUser);
-      console.log(resp2);
+      const response = await signup(emailRef.current.value, passwordRef.current.value);
+      const response2 = await registerUser(response.user.email,typeOfUser);
+      console.log(response2);
 
     } catch (error) {
       console.log(error);
@@ -33,6 +34,8 @@ const SignUp = () => {
     }
     setLoading(false);
   }
+
+  console.log(typeOfUser);
 
   return (
     <>
@@ -44,18 +47,18 @@ const SignUp = () => {
               <h2 className='text-center mb-4'>Sign Up</h2>
               {error && <Alert variant='danger'>{error}</Alert>}
               <Form onSubmit={handleSubmit}>
-            <div className='row'>
-           <div className='col'>
-           <input type='radio' defaultChecked id="customer" value='customer' name='userType' onClick={()=>{setTypeOfUser("Customer")}}/>
-                  <label htmlFor="customer">Customer</label>
-           </div>
-                <div className='col'>
-                <input type='radio' value='restaurant' id="restaurant" name='userType' onClick={()=>{setTypeOfUser("Restaurant")}}/>
-                <label htmlFor="restaurant">Restaurant</label>
-                </div>
-            </div>
-                 
-                
+                {/* <div className='row'>
+                    <div className='col'>
+                           <input type='radio' defaultChecked id="customer" value='customer' name='userType' onClick={()=>{setTypeOfUser("Customer")}}/>
+                           <label htmlFor="customer">Customer</label>
+                    </div>
+                    <div className='col'>
+                      <input type='radio' value='restaurant' id="restaurant" name='userType' onClick={()=>{setTypeOfUser("Restaurant")}}/>
+                      <label htmlFor="restaurant">Restaurant</label>
+                    </div>
+                </div> */}
+                <Form.Switch label='Restaurant' value='Restaurant' onClick={(e)=> setTypeOfUser(prev => prev == 'Customer' ? 'Restaurant' : 'Customer') }/>
+                <br/>
                 <Form.Group id='email'>
                   <Form.Label>Email</Form.Label>
                   <Form.Control type='email' ref={emailRef} required></Form.Control>
@@ -74,12 +77,14 @@ const SignUp = () => {
               </Form>
             </Card.Body>
           </Card>
+            <div className='w-100 text-center mt-2'>
+              Already have an account? 
+              <Link to='/signin' style={{textDecoration:'none', color:'black', paddingLeft:'5px'}}>
+                Sign In
+              </Link>
+            </div>
         </div>
       </Container>
-
-      <div className='w-100 text-center mt-2'>
-        Already have an account? Sign In
-      </div>
     </>
   )
 }

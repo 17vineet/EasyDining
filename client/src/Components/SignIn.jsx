@@ -1,12 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { Form, Card, Button, Alert,Container } from 'react-bootstrap';
+import { Form, Card, Button, Alert, Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
 
 const CustomerSignIn = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const passwordConfirmRef = useRef();
   const { currentUser, signIn } = useAuth();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -14,30 +14,22 @@ const CustomerSignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if(passwordRef.current.value !== passwordConfirmRef.current.value){
-    //   return setError('Passowords do not match') ;
-    // }
-
     try {
       setError(null);
       setLoading(true)
-      const response=await signIn(emailRef.current.value, passwordRef.current.value);
+      const response = await signIn(emailRef.current.value, passwordRef.current.value);
       console.log(response);
 
     } catch (error) {
       console.log(error.message);
-      var msg=error.message
-      if(msg.indexOf("user-not-found")>-1){
+      var msg = error.message
+      if (msg.indexOf("user-not-found") > -1) {
         setError("User account not found");
       }
-      else{
-      setError("Wrong credentials")
-
+      else {
+        setError("Wrong credentials")
       }
-      // alert("Wrong credentials")
     }
-
-    // console.log(currentUser);
     setLoading(false);
   }
 
@@ -67,7 +59,10 @@ const CustomerSignIn = () => {
             </Card.Body>
           </Card>
           <div className='w-100 text-center mt-2'>
-            Already have an account? Sign In
+            Don't have an account?
+            <Link to='/' style={{ textDecoration: 'none', color: 'black', paddingLeft: '5px' }}>
+              Sign Up
+            </Link>
           </div>
         </div>
       </Container>

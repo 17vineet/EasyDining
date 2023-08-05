@@ -11,7 +11,7 @@ export const App = () => {
       <AuthProvider>
       <Routes>
         <Route path='/' element={<SignUp />}></Route>
-        <Route path='/login' element={<CustomerSignIn />}></Route>
+        <Route path='/signin' element={<CustomerSignIn />}></Route>
       </Routes>
       </AuthProvider>
     </BrowserRouter>
