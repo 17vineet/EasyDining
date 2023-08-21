@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { Form, Card, Button, Alert ,Container} from 'react-bootstrap';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../contexts/AuthContext';
+import RestaurantDetails from './RestaurantDetails';
 
 const SignUp = () => {
 
@@ -13,6 +14,7 @@ const SignUp = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [typeOfUser, setTypeOfUser] = useState("Customer");
+  const navigate = useNavigate() ;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,6 +29,7 @@ const SignUp = () => {
       const response = await signup(emailRef.current.value, passwordRef.current.value);
       const response2 = await registerUser(response.user.email,typeOfUser);
       console.log(response2);
+      // navigate('/restaurantDetails') ;
 
     } catch (error) {
       console.log(error);
@@ -71,6 +74,7 @@ const SignUp = () => {
                   <Form.Label>Password Confirmation</Form.Label>
                   <Form.Control type='password' ref={passwordConfirmRef} required></Form.Control>
                 </Form.Group><br />
+                { typeOfUser === 'Restaurant' && <RestaurantDetails /> }
                 <Button disabled={loading} className="w-100" type="submit">
                   Sign Up
                 </Button>

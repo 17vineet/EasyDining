@@ -24,8 +24,10 @@ export const AuthProvider = ({ children }) => {
         return signInWithEmailAndPassword(auth, email, passowrd);
     }
 
-    const registerUser = (email, typOfUser) => {
-        const apiUrl = `https://easy-dining-4c644-default-rtdb.firebaseio.com/${typOfUser}.json`;
+    
+
+    const registerUser = (email, typeOfUser) => {
+        const apiUrl = `https://easy-dining-4c644-default-rtdb.firebaseio.com/${typeOfUser}.json`;
         return axios.post(apiUrl, { email }) ;
     }
 
