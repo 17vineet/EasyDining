@@ -16,6 +16,9 @@ const CustomerSignIn = () => {
     if(currentUser){
       navigate('/home') ;
     }
+    else{
+      setUserType('Customer') ;
+    }
   },[])
 
   const handleSubmit = async (e) => {
@@ -25,8 +28,30 @@ const CustomerSignIn = () => {
       setError(null) ;
       setLoading(true) ;
 
-      const response = await signIn(formData);
-      console.log(response);
+      const data = await axios.get(`https://easy-dining-4c644-default-rtdb.firebaseio.com/${userType}.json`) ;
+
+      var found = false ; 
+  
+      for (var i=0 ; i<Object.keys(data['data']).length ; i++){
+        if(data.data[Object.keys(data['data'])[i]].email === formData.email){
+          found = true ;
+          break ;
+        }
+      }
+  
+      if(found){
+        if(userType === 'Customer'){
+          navigate('/home') ;
+        }
+        else{
+          navigate('/business/home') ;
+        }
+        const response = await signIn(formData);
+        console.log(response);
+      }
+      else{
+        setError("User account not found");
+      }
 
     } catch (error) {
       console.log(error.message);
@@ -37,29 +62,6 @@ const CustomerSignIn = () => {
       else {
         setError("Wrong credentials")
       }
-    }
-
-    const data = await axios.get(`https://easy-dining-4c644-default-rtdb.firebaseio.com/${userType}.json`) ;
-
-    var found = false ; 
-
-    for (var i=0 ; i<Object.keys(data['data']).length ; i++){
-      if(data.data[Object.keys(data['data'])[i]].email === formData.email){
-        found = true ;
-        break ;
-      }
-    }
-
-    if(found){
-      if(userType === 'Customer'){
-        navigate('/home') ;
-      }
-      else{
-        navigate('/business/home') ;
-      }
-    }
-    else{
-      setError("User account not found");
     }
     setLoading(false);
   }

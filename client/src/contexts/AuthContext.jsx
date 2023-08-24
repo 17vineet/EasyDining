@@ -13,7 +13,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [userType, setUserType] = useState('Customer') ;
+    const [userType, setUserType] = useState(null) ;
     const [authenticated, setAuthenticated] = useState(false) ;
 
     const auth = getAuth(app);
@@ -62,6 +62,8 @@ export const AuthProvider = ({ children }) => {
         setAuthenticated,
         setCurrentUser
     }
+
+    console.log(userType);
 
     return (
         <AuthContext.Provider value={value}>
