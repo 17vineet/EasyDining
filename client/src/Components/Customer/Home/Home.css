@@ -1,0 +1,64 @@
+.main {
+    background-color: antiquewhite;
+    height: 100hv;
+    min-height: 100vh;
+    padding: 20px;
+    display: grid;
+}
+
+.background {
+    background-color: aquamarine;
+    min-height: inherit;
+    border-radius: 5px;
+    padding: 10px 10px 10px 10px;
+    display: inline-block;
+    height: 100%;
+}
+.navbar{
+    padding: 10px;
+    border-radius: 5px 5px 0px 0px;
+    height: 10%;
+}
+.content{
+    background-color: blueviolet;
+    height: 90%;
+    border-radius: 0px 0px 5px 5px;
+    padding: 15px 20px 20px 15px;
+}
+
+.outside{
+    background-color: brown;
+    display: grid;
+}
+.mycard{
+    width: 25%;
+    display: inline;
+}
+.row{
+    /* border: 1px solid black; */
+    padding: 5px;
+}
+/* .col-4{
+    border: 1px solid blue;
+} */
+.rest_content{
+    background-color: aquamarine;
+    height: 300px;
+    /* margin: 5px; */
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+.rest_image{
+    height: 90%;
+    background-color: burlywood;
+    width: 100%;
+    border-radius: 5px 5px 0px 0px;
+}
+.rest_name{
+    height: 10%;
+    width: 100%;
+    background-color: antiquewhite;
+    border-radius: 0px 0px 5px 5px;
+}
