@@ -1,0 +1,8 @@
+/* .rest_image{
+    width: 100px;
+    height: 150px;
+} */
+.rest_image img{
+   width: 100%;
+   height: 100%;
+}

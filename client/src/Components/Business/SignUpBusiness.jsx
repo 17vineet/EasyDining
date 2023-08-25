@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Container, Typography, Grid } from '@mui/material';
+import { TextField, Button, Container, Typography, Input, Grid, Hidden } from '@mui/material';
 import { Textarea } from '@mui/joy';
-import { Link, useNavigate} from 'react-router-dom' ;
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -13,12 +13,19 @@ const SignUp = () => {
         googleMapUrl: '',
         capacity: '',
         range: '',
-        menu: '',
+        thumbnail_url: '',
         numberOfTables: '',
     });
-    const [loading, setLoading] = useState(false) ;
-    const { signUp ,registerUser, currentUser} = useAuth();
-    const navigate = useNavigate() ;
+    const [loading, setLoading] = useState(false);
+    const { signUp, registerUser, currentUser } = useAuth();
+    const navigate = useNavigate();
+    const [selectedFile, setSelectedFile] = useState(null);
+
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        setSelectedFile(file);
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -27,28 +34,52 @@ const SignUp = () => {
             [name]: value,
         }));
     };
+    const uploadThumbnail = async (e) => {
+        e.preventDefault();
+        if (selectedFile) {
+            const formData = new FormData();
+            formData.append('images', selectedFile);
+
+           
+            const result = await fetch("http://localhost:4000/uploadRestaurantThumbnail", {
+                method: "POST",
+                body: formData
+            })
+            const resp = await result.json();
+            console.log(resp.img_urls[0]);
+            setFormData((prev)=>({
+                ...prev,
+                thumbnail_url:resp.img_urls[0]
+            }))
+           
+
+        }
+    };
+
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            setLoading(true) ;
+            setLoading(true);
 
-            const response = await signUp(formData) ;
-            const response2 = await registerUser(formData,'Business') ;
+            const response = await signUp(formData);
+            const response2 = await registerUser(formData, 'Business');
 
             console.log(response, response2);
 
         } catch (error) {
             console.log(error);
         }
-        navigate('/business/home') ;
-        setLoading(false) ;
+        navigate('/business/home');
+        setLoading(false);
     };
 
-    useEffect(()=>{
-        if(currentUser){
-          navigate('/business/home') ;
+    useEffect(() => {
+        if (currentUser) {
+            navigate('/business/home');
         }
     }, [])
 
@@ -151,18 +182,36 @@ const SignUp = () => {
                             onChange={handleInputChange}
                         />
                     </Grid>
+                    <Grid item xs={12}>
+                        Thumbnail &nbsp;
+                        <form method='post' id="upload-thumbnail-form" >
+                            <Button
+                                variant="contained"
+                                component="label"
+                            >
+                                Select File
+                                <input
+                                    type="file"
+                                    name="images"
+                                    onChange={handleFileChange}
+                                />
+                            </Button>
+                            <Button onClick={uploadThumbnail}>Upload</Button>
+                        </form>
+                    </Grid>
                 </Grid> <br />
                 <Button type="submit" variant="contained" color="primary" disabled={loading} fullWidth>
                     Submit
                 </Button>
                 <div className='w-100 text-center mt-2'>
-                    Already have a business account? 
-                    <Link to='/' style={{textDecoration:'none', color:'black', paddingLeft:'5px'}}>
-                      Sign In
+                    Already have a business account?
+                    <Link to='/' style={{ textDecoration: 'none', color: 'black', paddingLeft: '5px' }}>
+                        Sign In
                     </Link>
                 </div>
             </form>
-        </Container>
+
+        </Container >
     );
 };
 
