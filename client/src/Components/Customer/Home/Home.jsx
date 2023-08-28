@@ -97,9 +97,11 @@ return (
       <div className="content">
         Contents
        
-        {restaurants.map((elem, index) => (
+       <div className="restaurant_display">
+       {restaurants.map((elem, index) => (
          <RestaurantInfo name={elem.name} thumbnail_url={elem.thumbnail_url} />
       ))}
+       </div>
 
 
       </div>

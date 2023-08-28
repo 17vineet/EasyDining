@@ -42,23 +42,30 @@
     border: 1px solid blue;
 } */
 .rest_content{
-    background-color: aquamarine;
+    background-color: white;
     height: 300px;
-    /* margin: 5px; */
+    width: 300px;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: 5px;
 }
 .rest_image{
     height: 90%;
-    background-color: burlywood;
+    /* background-color: burlywood; */
     width: 100%;
+    overflow: hidden;
     border-radius: 5px 5px 0px 0px;
 }
 .rest_name{
     height: 10%;
     width: 100%;
-    background-color: antiquewhite;
+    /* background-color: antiquewhite; */
     border-radius: 0px 0px 5px 5px;
+}
+.restaurant_display{
+    display: flex;
+    align-items: center;
+    gap:1rem;
+    /* justify-content: center; */
 }
