@@ -2,19 +2,18 @@ const express = require('express');
 const app = express();
 const multer = require('multer');
 const { cloudinary, storage, parser } = require('./Cloudinary/cloudinary');
+const config=require("./Database/config")
 // const upload = multer({ storage: storage })
 
 const upload = multer({ dest: 'uploads/' })
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-
+config.connectToDb();
+config.onBoardRestaurantSchema();
+config.createCustomerSchema();
 app.post('/uploadRestaurantImages', parser, async (req, res) => {
 
 
-    // console.log(req.body, req.file.path);
-    // res.send({
-    //     "url":req.file.path
-    // })
     const uploadedFiles = req.files;
 
     // Handle each uploaded file
@@ -37,11 +36,6 @@ app.post('/uploadRestaurantImages', parser, async (req, res) => {
 });
 app.post('/uploadRestaurantThumbnail', parser, async (req, res) => {
 
-
-    // console.log(req.body, req.file.path);
-    // res.send({
-    //     "url":req.file.path
-    // })
     const uploadedFiles = req.files;
 
     // Handle each uploaded file
@@ -63,6 +57,24 @@ app.post('/uploadRestaurantThumbnail', parser, async (req, res) => {
 
 });
 
+app.post("/register",async (req,res)=>{
+    const { username, password } = req.body;
+    const resp=await config.insert(username,password);
+    res.send(resp);
+})
+
+
+app.post("/onBoardRestaurant",async(req,res)=>{
+    const {email,password,name,location_url,sitting_capacity,range,thumbnail_url}=req.body;
+    const resp=await config.insertRestaurant(email,password,name,location_url,sitting_capacity,range,thumbnail_url);
+    res.send(resp);
+})
+
+app.post("/registerCustomer",async(req,res)=>{
+    const {email,password,visited}=req.body;
+    const resp=await config.insertCustomer(email,password,visited);
+    res.send(resp);
+})
 
 
 app.get("/", (req, res) => {

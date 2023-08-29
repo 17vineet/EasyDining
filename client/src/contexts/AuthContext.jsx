@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
 
     const auth = getAuth(app);
 
-    // FIREBASE AUTH
     
     const signUp = ({email, password}) => {
         console.log(email, password);
