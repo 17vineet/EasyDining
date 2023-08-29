@@ -201,8 +201,7 @@ const SignUp = () => {
                     </Link>
                 </div>
             </form>
-
-        </Container >
+        </Container>
     );
 };
 
