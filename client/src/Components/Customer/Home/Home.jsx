@@ -25,7 +25,7 @@ const Home = () => {
    
       const getAllRestaurants = async () => {
         try {
-          const response = await axios.get("/Business.json");
+          const response = await axios.get("getAllRestaurant");
           const data = response.data;
       
           const newRestaurants = Object.keys(data).map(key => {

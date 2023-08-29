@@ -116,3 +116,38 @@ module.exports.insertCustomer = async (email,password,visited_restaurant) => {
     })
     return result = JSON.stringify(await data.save());
 };
+
+module.exports.insertRestaurant = async (email,password,name,location_url,sitting_capacity,range,thumbnail_url) => {
+    let data = new Restaurant({
+       email,
+       password,
+       name,
+       location_url,
+       sitting_capacity,
+       range,
+       thumbnail_url
+    })
+    return result = JSON.stringify(await data.save());
+};
+
+module.exports.getAllRestaurants=async()=>{
+    let data=await Restaurant.find();
+    let result =await JSON.stringify(data);
+    return result;
+}
+
+module.exports.signInRestaurant=async(email,password)=>{
+    let data=await Restaurant.findOne({email:email});
+    let pass=data.password;
+    console.log(data.password);
+    if(pass===password){
+        return {
+            authenticated:true
+        }
+    }
+    else{
+        return {
+            authenticated:false
+        }
+    }
+}

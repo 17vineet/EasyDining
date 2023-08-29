@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Card, Button, Alert, Container } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios' ;
-
+import API from '../axios'
 import { useAuth } from '../contexts/AuthContext';
 
 const CustomerSignIn = () => {
@@ -24,46 +24,47 @@ const CustomerSignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
+    // try {
       setError(null) ;
       setLoading(true) ;
 
-      const data = await axios.get(`https://easy-dining-4c644-default-rtdb.firebaseio.com/${userType}.json`) ;
+      // const data = await axios.get(`https://easy-dining-4c644-default-rtdb.firebaseio.com/${userType}.json`) ;
 
-      var found = false ; 
+      // var found = false ; 
   
-      for (var i=0 ; i<Object.keys(data['data']).length ; i++){
-        if(data.data[Object.keys(data['data'])[i]].email === formData.email){
-          found = true ;
-          break ;
-        }
-      }
-  
-      if(found){
-        if(userType === 'Customer'){
-          navigate('/home') ;
-        }
-        else{
-          navigate('/business/home') ;
-        }
-        const response = await signIn(formData);
-        console.log(response);
-      }
-      else{
-        setError("User account not found");
-      }
+      // for (var i=0 ; i<Object.keys(data['data']).length ; i++){
+      //   if(data.data[Object.keys(data['data'])[i]].email === formData.email){
+      //     found = true ;
+      //     break ;
+      //   }
+      // }
+      const resp=await API.post("signInRestaurant",formData);
+      console.log(resp);
+    //   if(found){
+    //     if(userType === 'Customer'){
+    //       navigate('/home') ;
+    //     }
+    //     else{
+    //       navigate('/business/home') ;
+    //     }
+    //     const response = await signIn(formData);
+    //     console.log(response);
+    //   }
+    //   else{
+    //     setError("User account not found");
+    //   }
 
-    } catch (error) {
-      console.log(error.message);
-      var msg = error.message
-      if (msg.indexOf("user-not-found") > -1) {
-        setError("User account not found");
-      }
-      else {
-        setError("Wrong credentials")
-      }
-    }
-    setLoading(false);
+    // } catch (error) {
+    //   console.log(error.message);
+    //   var msg = error.message
+    //   if (msg.indexOf("user-not-found") > -1) {
+    //     setError("User account not found");
+    //   }
+    //   else {
+    //     setError("Wrong credentials")
+    //   }
+    // }
+    // setLoading(false);
   }
 
   const handleChange = (e)=>{

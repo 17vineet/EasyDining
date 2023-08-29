@@ -4,7 +4,7 @@ import { Textarea } from '@mui/joy';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../contexts/AuthContext';
-
+import API from "../../axios";
 const SignUp = () => {
     const [formData, setFormData] = useState({
         email: '',
@@ -41,15 +41,15 @@ const SignUp = () => {
             formData.append('images', selectedFile);
 
            
-            const result = await fetch("http://localhost:4000/uploadRestaurantThumbnail", {
-                method: "POST",
-                body: formData
-            })
-            const resp = await result.json();
-            console.log(resp.img_urls[0]);
+            // const result = await fetch("http://localhost:4000/uploadRestaurantThumbnail", {
+            //     method: "POST",
+            //     body: formData
+            // })
+            const result=await API.post("uploadRestaurantThumbnail",formData)
+            console.log(result.data.img_urls[0]);
             setFormData((prev)=>({
                 ...prev,
-                thumbnail_url:resp.img_urls[0]
+                thumbnail_url:result.data.img_urls[0]
             }))
            
 
@@ -62,17 +62,8 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            setLoading(true);
-
-            const response = await signUp(formData);
-            const response2 = await registerUser(formData, 'Business');
-
-            console.log(response, response2);
-
-        } catch (error) {
-            console.log(error);
-        }
+        const resp=await API.post("onBoardRestaurant",formData)
+        console.log(resp);
         navigate('/business/home');
         setLoading(false);
     };
@@ -158,7 +149,7 @@ const SignUp = () => {
                             onChange={handleInputChange}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                         <TextField
                             label="Number of Tables"
                             variant="outlined"
@@ -168,8 +159,8 @@ const SignUp = () => {
                             value={formData.numberOfTables}
                             onChange={handleInputChange}
                         />
-                    </Grid>
-                    <Grid item xs={12}>
+                    </Grid> */}
+                    {/* <Grid item xs={12}>
                         <label htmlFor=""> Menu  </label>
                         <Textarea
                             minRows={2}
@@ -181,7 +172,7 @@ const SignUp = () => {
                             value={formData.menu}
                             onChange={handleInputChange}
                         />
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12}>
                         Thumbnail &nbsp;
                         <form method='post' id="upload-thumbnail-form" >

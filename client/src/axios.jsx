@@ -1,6 +1,6 @@
 import axios from "axios";
 
 const API=axios.create({
-    baseURL:"https://easy-dining-4c644-default-rtdb.firebaseio.com/"
+    baseURL:"http://localhost:4000/"
 })
 export default API;

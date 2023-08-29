@@ -3,7 +3,7 @@ import { Form, Card, Button, Alert ,Container} from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../../contexts/AuthContext';
-
+import API from "../../axios";
 const CustomerSignUp = () => {
 
   const [formData, setFormData] = useState({
@@ -35,10 +35,8 @@ const CustomerSignUp = () => {
       setError(null);
       setLoading(true);
 
-      const response = await signUp(formData);
-      const response2 = await registerUser(formData, 'Customer');
-
-      console.log(response, response2);
+      const resp=await API.post("registerCustomer",formData)
+      console.log(resp);
 
     } catch (error) {
       console.log(error);
