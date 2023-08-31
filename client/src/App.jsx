@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
 
 import CustomerHome from './Components/Customer/Home/Home';
 import CustomerSignUp from './Components/Customer/SignUpCustomer';
@@ -14,7 +13,6 @@ import Navbar from './Components/Navbar' ;
 export const App = () => {
   return (
     <BrowserRouter>
-      <AuthProvider>
       <Navbar />
       <Routes>
         <Route path='/' element={<SignIn />}></Route>
@@ -23,7 +21,6 @@ export const App = () => {
         <Route path='/business/signup' element={<BusinessSignUp />}></Route>
         <Route path='/business/home' element={<BusinessHome />}></Route>
       </Routes>
-      </AuthProvider>
     </BrowserRouter>
   )
 }

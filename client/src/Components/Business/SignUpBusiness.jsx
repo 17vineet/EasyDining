@@ -17,7 +17,7 @@ const SignUp = () => {
         numberOfTables: '',
     });
     const [loading, setLoading] = useState(false);
-    const { signUp, registerUser, currentUser } = useAuth();
+    const { currentUser } = useAuth();
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
 

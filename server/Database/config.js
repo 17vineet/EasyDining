@@ -139,17 +139,17 @@ module.exports.getAllRestaurants=async()=>{
 module.exports.signInRestaurant=async(email,password)=>{
     let data=await Restaurant.findOne({email:email});
     let pass=data.password;
-    console.log(data.password);
-    
     if(pass===password){
-        const {email,name,range,thumbnail_url}=data;
+        const {email,name,range,thumbnail_url, sitting_capacity, location_url}=data;
          const newData={
-            email:email,name:name,range:range,thumbnail_url:thumbnail_url,authenticated:true
+            email:email,
+            name:name,range:range,
+            thumbnail_url:thumbnail_url, 
+            sitting_capacity: sitting_capacity,
+            location_url: location_url,
+            authenticated:true
          }
-        console.log(newData)
-        return newData
-      
-
+        return newData ;
     }
     else{
         return {

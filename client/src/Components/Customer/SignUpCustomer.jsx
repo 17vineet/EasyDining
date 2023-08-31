@@ -11,7 +11,7 @@ const CustomerSignUp = () => {
     password : '' ,
     cpassword : ''
   }) ;
-  const { signUp ,registerUser, currentUser} = useAuth();
+  const {currentUser} = useAuth();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate() ;

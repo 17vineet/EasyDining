@@ -7,21 +7,11 @@ import { useAuth } from '../../../contexts/AuthContext'
 
 const Home = () => {
 
-  const { userType, logout } = useAuth();
+  const { userType, currentUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const authenticate = async () => {
-      if (userType == null) {
-        try {
-          await logout();
-          navigate('/');
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-    authenticate();
+    if(currentUser == null)  navigate('/') ;
   }, [])
 
   return (
@@ -71,14 +61,14 @@ const Home = () => {
           <div className="content1">
             <div className="content1_left">
               <div className="thumbnail_pic">
-                <img src="Thumbnail.jpg" className="thumbnail_img" />
+                <img src={`${currentUser.thumbnail_url}`} className="thumbnail_img" />
                 <div className="thumbnail_img">Black</div>
               </div>
             </div>
             <div className="content1_right">
-              <h2>Name of restautant</h2>
-              <h6>Sitting Capacity</h6>
-              <h6>Google Map URL</h6>
+              <h2>{currentUser.name}</h2>
+              <h6>{currentUser.sitting_capacity}</h6>
+              <h6>{currentUser.location_url}</h6>
               <h6>Extra details</h6>
               <h6>Extra details</h6>
               <h6>Extra details</h6>
@@ -97,7 +87,6 @@ const Home = () => {
             <br />
             <br />
             <WaitingList key={"1"}/>
-            
           </div>
           
         </div>

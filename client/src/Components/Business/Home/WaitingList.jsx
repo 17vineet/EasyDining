@@ -32,9 +32,9 @@ function WaitingList() {
             <>
               <div className='element' key={index}>
                 <div className="Customer_name">{ele}</div>
-                < button className='btn btn-primary delete_btn'  onClick={() => {
+                <button className='btn btn-primary delete_btn'  onClick={() => {
                   handleDelete(index)
-                }} > Delete This Element</button >
+                }} > Delete This Element</button>
               </div>
             </>)
         })}</>)
