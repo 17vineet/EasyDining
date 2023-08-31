@@ -23,8 +23,17 @@ app.use((req, res, next) => {
 app.post("/signInRestaurant",async (req,res)=>{
     const {email,password}=req.body;
     const resp=await config.signInRestaurant(email,password);
-    console.log(resp);
+    // console.log(resp);
+    res.send(resp);
 }) 
+
+app.post("/signInCustomer",async (req,res)=>{
+    const {email,password}=req.body;
+    const resp=await config.signInCustomer(email,password);
+    // console.log(resp);
+    res.send(resp);
+}) 
+
 app.post('/uploadRestaurantImages', parser, async (req, res) => {
 
 

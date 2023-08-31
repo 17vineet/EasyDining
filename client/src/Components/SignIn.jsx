@@ -27,24 +27,30 @@ const CustomerSignIn = () => {
     // try {
       setError(null) ;
       setLoading(true) ;
-
-      // const data = await axios.get(`https://easy-dining-4c644-default-rtdb.firebaseio.com/${userType}.json`) ;
-
-      // var found = false ; 
-  
-      // for (var i=0 ; i<Object.keys(data['data']).length ; i++){
-      //   if(data.data[Object.keys(data['data'])[i]].email === formData.email){
-      //     found = true ;
-      //     break ;
-      //   }
-      // }
-      const resp=await API.post("signInRestaurant",formData);
-      console.log(resp);
-      if(resp.authenticated==true)
-      {
-        console.log("Navigated")
-        navigate('/business/home')
+      if(userType=='Business'){
+        const resp=await API.post("signInRestaurant",formData);
+        const authenticated=resp.data.authenticated
+        console.log(authenticated);
+        if(authenticated==true)
+        {
+          console.log("Navigated")
+          navigate('/business/home')
+        }
       }
+      else if(userType=='Customer'){
+        const resp=await API.post("signInCustomer",formData);
+        const authenticated=resp.data.authenticated
+        console.log(authenticated);
+        if(authenticated==true)
+        {
+          console.log("Navigated")
+          navigate('/home')
+        }
+      }
+      else{
+        setError("User account not found");
+      }
+     
     //   if(found){
     //     if(userType === 'Customer'){
     //       navigate('/home') ;
@@ -80,7 +86,7 @@ const CustomerSignIn = () => {
     })) ;
   } ;
 
-  console.log(userType);
+  // console.log(userType);
 
   return (
     <>

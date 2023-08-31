@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import './WaitingListElement.css';
+import './WaitingList.css';
 import 'bootstrap/dist/css/bootstrap.css'
-
-function App() {
+import uuid from 'node-uuid'
+function WaitingList() {
   const [name, setName] = useState('')
   const [loe, setLoe] = useState(['Hetvik', 'Shah', 'Nainesh'])
   function handleClick() {
@@ -21,21 +21,22 @@ function App() {
   }
 
   return (
-    <>
-      <h1>Hello World</h1>
-      <input type='text' placeholder='Enter your name to reserve table' onChange={handleChange}></input>
-      <button onClick={handleClick}>Add Element</button>
+    < >
+     <div   >
+     <input type='text' placeholder='Enter your name to reserve table' onChange={handleChange}></input>
+      <button onClick={handleClick} className='btn btn-primary add_btn'>Add Element</button>
+     </div><br></br>
       {
         loe.map((ele, index) => {
           return (
             <>
               <div className='element' key={index}>
-                <div className="name">{ele}</div>
-                < button className='btn btn-primary' onClick={() => {
+                <div className="Customer_name">{ele}</div>
+                < button className='btn btn-primary delete_btn'  onClick={() => {
                   handleDelete(index)
                 }} > Delete This Element</button >
               </div>
             </>)
         })}</>)
 }
-export default App;
+export default WaitingList;

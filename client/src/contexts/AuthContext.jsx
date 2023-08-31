@@ -62,7 +62,6 @@ export const AuthProvider = ({ children }) => {
         setCurrentUser
     }
 
-    console.log(userType);
 
     return (
         <AuthContext.Provider value={value}>

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css'
 import './List.css'
-
+import WaitingList from './WaitingList';
 import { useAuth } from '../../../contexts/AuthContext'
 
 const Home = () => {
@@ -96,8 +96,10 @@ const Home = () => {
             </div>
             <br />
             <br />
+            <WaitingList key={"1"}/>
             
           </div>
+          
         </div>
       </div>
     </>

@@ -1,0 +1,15 @@
+.Customer_name{
+    background-color: white;
+    width: 80%;
+    padding: 5px;
+    margin: 5px;
+}
+.element{
+    display: flex;
+    gap: 0.5rem;
+    /* justify-content: center;
+    align-items: center; */
+}
+.delete_btn,.add_btn{
+    margin: 5px;
+}
