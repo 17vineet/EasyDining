@@ -25,12 +25,6 @@ module.exports.createSchema = async () => {
 
 
 module.exports.onBoardRestaurantSchema=async () => {
-    await mongoose.connect(db, {
-    }).then(() => {
-        console.log("connection successful");
-    }).catch((err) => {
-        console.log("Failed", err);
-    });
     const schema = new mongoose.Schema({
         email:{
             type:String
@@ -61,12 +55,6 @@ module.exports.onBoardRestaurantSchema=async () => {
 }
 
 module.exports.createCustomerSchema=async () => {
-    await mongoose.connect(db, {
-    }).then(() => {
-        console.log("connection successful");
-    }).catch((err) => {
-        console.log("Failed", err);
-    });
     const schema = new mongoose.Schema({
         email:{
             type:String
@@ -96,6 +84,7 @@ module.exports.insert = async (name, pass) => {
 };
 
 module.exports.insertRestaurant = async (email,password,name,location_url,sitting_capacity,range,thumbnail_url) => {
+
     let data = new Restaurant({
        email,
        password,
@@ -105,7 +94,14 @@ module.exports.insertRestaurant = async (email,password,name,location_url,sittin
        range,
        thumbnail_url
     })
-    return result = JSON.stringify(await data.save());
+    const result = await data.save();
+
+    const data1 = new WaitingList({restaurant: result._id}) ;
+
+    await data1.save() ;
+
+    return JSON.stringify(result) ;
+
 };
 
 module.exports.insertCustomer = async (email,password,visited_restaurant) => {
@@ -113,19 +109,6 @@ module.exports.insertCustomer = async (email,password,visited_restaurant) => {
        email,
        password,
        visited_restaurant
-    })
-    return result = JSON.stringify(await data.save());
-};
-
-module.exports.insertRestaurant = async (email,password,name,location_url,sitting_capacity,range,thumbnail_url) => {
-    let data = new Restaurant({
-       email,
-       password,
-       name,
-       location_url,
-       sitting_capacity,
-       range,
-       thumbnail_url
     })
     return result = JSON.stringify(await data.save());
 };
@@ -159,13 +142,15 @@ module.exports.signInRestaurant=async(email,password)=>{
 }
 module.exports.signInCustomer=async(email,password)=>{
     let data=await Customer.findOne({email:email});
-  
     let pass=data.password;
     console.log(data.password);
     if(pass===password){
-        return {
+        const {email}=data;
+         const newData={
+            email:email,
             authenticated:true
-        }
+         }
+        return newData ;
     }
     else{
         return {
@@ -173,3 +158,55 @@ module.exports.signInCustomer=async(email,password)=>{
         }
     }
 }
+
+module.exports.waitingListSchema=async () => {
+    const schema = new mongoose.Schema({
+        restaurant:{
+            type:String
+        },
+        customers:{
+            type:Array
+        }
+    });
+    WaitingList = mongoose.model('waiting', schema);
+}
+
+module.exports.insertWaitingList = async (rid, cname)=>{
+
+    console.log(cname);
+
+    const customersList = await WaitingList.findOne({restaurant:rid}) ;
+
+    console.log(customersList);
+
+    const resp = await WaitingList.updateOne(
+        {_id:customersList._id}, 
+        { $push : {customers:{cname}} }
+    ) ;
+
+    // console.log(resp);
+
+    // const arr = customersList.customers ;
+
+    // console.log(arr);
+
+    // let data = new WaitingList({
+    //    restaurant : rid,
+    //    customers : [...arr, cname] 
+    //  })
+    //  return result = JSON.stringify(await data.save());
+}
+
+// module.exports.diningListSchema=async () => {
+//     const schema = new mongoose.Schema({
+//         restaurant:{
+//             type:String
+//         },
+//         customers:{
+//             type:Array
+//         }
+//     });
+//     WaitingList = mongoose.model('waiting', schema);
+// }
+
+

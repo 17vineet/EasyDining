@@ -56,12 +56,8 @@ const SignUp = () => {
         }
     };
 
-
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const resp=await API.post("onBoardRestaurant",formData)
         console.log(resp);
         navigate('/business/home');

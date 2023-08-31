@@ -27,11 +27,12 @@ const Home = () => {
         try {
           const response = await axios.get("getAllRestaurant");
           const data = response.data;
-      
+          console.log(data);
           const newRestaurants = Object.keys(data).map(key => {
             return {
               name: data[key].name,
-              thumbnail_url: data[key].thumbnail_url
+              thumbnail_url: data[key].thumbnail_url,
+              id : data[key]._id
             };
           });
           console.log(newRestaurants+" hii")
@@ -99,7 +100,7 @@ return (
        
        <div className="restaurant_display">
        {restaurants.map((elem, index) => (
-         <RestaurantInfo name={elem.name} thumbnail_url={elem.thumbnail_url} />
+         <RestaurantInfo name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} />
       ))}
        </div>
 

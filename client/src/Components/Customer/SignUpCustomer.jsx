@@ -11,7 +11,7 @@ const CustomerSignUp = () => {
     password : '' ,
     cpassword : ''
   }) ;
-  const {currentUser} = useAuth();
+  const {currentUser, setCurrentUser} = useAuth();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate() ;
@@ -36,7 +36,7 @@ const CustomerSignUp = () => {
       setLoading(true);
 
       const resp=await API.post("registerCustomer",formData)
-      console.log(resp);
+      setCurrentUser(resp.data) ;
 
     } catch (error) {
       console.log(error);

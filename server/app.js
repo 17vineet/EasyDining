@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 config.connectToDb();
 config.onBoardRestaurantSchema();
 config.createCustomerSchema();
+config.waitingListSchema() ;
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', "*"); // Replace with the origin of your client application
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
@@ -90,6 +91,7 @@ app.post("/register",async (req,res)=>{
 app.post("/onBoardRestaurant",async(req,res)=>{
     const {email,password,name,location_url,sitting_capacity,range,thumbnail_url}=req.body;
     const resp=await config.insertRestaurant(email,password,name,location_url,sitting_capacity,range,thumbnail_url);
+
     res.send(resp);
 })
 
@@ -97,6 +99,13 @@ app.post("/registerCustomer",async(req,res)=>{
     const {email,password,visited}=req.body;
     const resp=await config.insertCustomer(email,password,visited);
     res.send(resp);
+})
+
+app.post("/insertWaitingList", async(req, res)=>{
+    const rid = req.body.rid ;
+    const name = req.body.name ;
+    const resp = await config.insertWaitingList(rid, name) ;
+    res.send(resp) ;
 })
 
 app.get("/getAllRestaurant",async(req,res)=>{
