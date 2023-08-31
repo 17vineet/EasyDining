@@ -40,6 +40,11 @@ const CustomerSignIn = () => {
       // }
       const resp=await API.post("signInRestaurant",formData);
       console.log(resp);
+      if(resp.authenticated==true)
+      {
+        console.log("Navigated")
+        navigate('/business/home')
+      }
     //   if(found){
     //     if(userType === 'Customer'){
     //       navigate('/home') ;

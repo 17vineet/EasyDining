@@ -96,23 +96,7 @@ const Home = () => {
             </div>
             <br />
             <br />
-            <div className="resrved_tables">
-              <div id="myDIV" className="header">
-                <h2>List of Waiting Customers</h2>
-                <input type="text" id="myInput" placeholder="Title..." />
-                <span onclick="newElement()" className="addBtn">
-                  Add
-                </span>
-              </div>
-              <ul id="myUL">
-                <li>Hit the gym</li>
-                <li className="checked">Pay bills</li>
-                <li>Meet George</li>
-                <li>Buy eggs</li>
-                <li>Read a book</li>
-                <li>Organize office</li>
-              </ul>
-            </div>
+            
           </div>
         </div>
       </div>
