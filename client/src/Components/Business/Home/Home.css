@@ -59,3 +59,13 @@
     background-color: blueviolet;
     padding: 20px 10px;
 }
+
+.content3{
+    display: flex;
+}
+.contentLeft{
+    width: 50%;
+}
+.contentRight{
+    width:50%
+}

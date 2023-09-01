@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css'
 import './List.css'
 import WaitingList from './WaitingList';
+import DiningList from './DiningList';
 import { useAuth } from '../../../contexts/AuthContext'
 
 const Home = () => {
@@ -11,7 +12,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(currentUser == null)  navigate('/') ;
+    if (currentUser == null) navigate('/');
   }, [])
 
   return (
@@ -86,9 +87,18 @@ const Home = () => {
             </div>
             <br />
             <br />
-            <WaitingList key={"1"}/>
+            <div className='content3'>
+              <div className='contentLeft'>
+                <h3>Waiting List</h3>
+                <WaitingList key={"1"} />
+              </div>
+              <div className='contentLeft'>
+                <h3>Dining List</h3>
+                <DiningList key={"1"} />
+              </div>
+            </div>
           </div>
-          
+
         </div>
       </div>
     </>

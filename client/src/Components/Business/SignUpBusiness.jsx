@@ -10,14 +10,14 @@ const SignUp = () => {
         email: '',
         password: '',
         name: '',
-        googleMapUrl: '',
-        capacity: '',
+        location_url: '',
+        sitting_capacity: '',
         range: '',
         thumbnail_url: '',
         numberOfTables: '',
     });
     const [loading, setLoading] = useState(false);
-    const { currentUser } = useAuth();
+    const { currentUser, setCurrentUser } = useAuth();
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -58,8 +58,10 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         const resp=await API.post("onBoardRestaurant",formData)
         console.log(resp);
+        setCurrentUser(resp.data) ;
         navigate('/business/home');
         setLoading(false);
     };
@@ -118,8 +120,8 @@ const SignUp = () => {
                             variant="outlined"
                             fullWidth
                             margin="normal"
-                            name="googleMapUrl"
-                            value={formData.googleMapUrl}
+                            name="location_url"
+                            value={formData.location_url}
                             onChange={handleInputChange}
                         />
                     </Grid>
@@ -129,8 +131,8 @@ const SignUp = () => {
                             variant="outlined"
                             fullWidth
                             margin="normal"
-                            name="capacity"
-                            value={formData.capacity}
+                            name="sitting_capacity"
+                            value={formData.sitting_capacity}
                             onChange={handleInputChange}
                         />
                     </Grid>

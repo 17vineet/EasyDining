@@ -12,6 +12,7 @@ config.connectToDb();
 config.onBoardRestaurantSchema();
 config.createCustomerSchema();
 config.waitingListSchema() ;
+config.diningListSchema();
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', "*"); // Replace with the origin of your client application
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
@@ -108,11 +109,46 @@ app.post("/insertWaitingList", async(req, res)=>{
     res.send(resp) ;
 })
 
+app.post("/insertDiningList", async(req, res)=>{
+    const rid = req.body.rid ;
+    const name = req.body.name ;
+    const resp = await config.insertDiningList(rid, name) ;
+    res.send(resp) ;
+})
+
 app.get("/getAllRestaurant",async(req,res)=>{
     const resp=await config.getAllRestaurants();
     res.send(resp);
 })
 
+app.post("/getWaitingList", async (req, res)=>{
+    const {rid} = req.body ; 
+    const resp = await config.getWaitingList(rid) ;
+    res.send(resp) ;
+})
+
+app.post("/getDiningList", async (req, res)=>{
+    const {rid} = req.body ; 
+    const resp = await config.getDiningList(rid) ;
+    res.send(resp) ;
+})
+app.post('/removeWaitingCustomer', async(req, res)=>{
+    const {rid, index} = req.body ;
+    const resp = await config.removeWaitingCustomer(rid, index) ;
+    console.log(resp);
+    res.send(resp) ;
+}) ;
+app.post('/removeDiningCustomer', async(req, res)=>{
+    const {rid, index} = req.body ;
+    const resp = await config.removeDiningCustomer(rid, index) ;
+    console.log(resp);
+    res.send(resp) ;
+}) ;
+app.post("/addToDineIn",async(req,res)=>{
+    const {rid, cname} = req.body ;
+    const resp=await config.addToDineIn(rid,cname);
+    return resp;
+})
 app.get("/", (req, res) => {
     res.send("Hello World");
 })

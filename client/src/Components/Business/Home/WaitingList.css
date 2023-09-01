@@ -1,6 +1,6 @@
 .Customer_name{
     background-color: white;
-    width: 80%;
+    width: 70%;
     padding: 5px;
     margin: 5px;
 }
@@ -10,6 +10,7 @@
     /* justify-content: center;
     align-items: center; */
 }
-.delete_btn,.add_btn{
+.delete_btn,.add_btn,.dine_btn{
     margin: 5px;
+    width: 15%;
 }

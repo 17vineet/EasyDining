@@ -12,9 +12,7 @@ const RestaurantInfo = (prop) => {
     const thumbnail_url=prop.thumbnail_url;
 
     const handleClick = async ()=>{
-        console.log(currentUser);
         const resp = await API.post('/insertWaitingList', { rid: prop.id, name : currentUser.email })
-        console.log(resp);
     }
     
     return (   
