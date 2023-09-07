@@ -35,7 +35,7 @@ const CustomerSignUp = () => {
       setError(null);
       setLoading(true);
 
-      const resp=await API.post("registerCustomer",formData)
+      const resp=await API.post("/customer/signup",formData)
       setCurrentUser(resp.data) ;
 
     } catch (error) {

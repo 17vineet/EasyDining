@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext'
 import './Home.css'
 import RestaurantInfo from './RestaurantInfo';
-import axios from '../../../axios';
+import API from '../../../axios';
 const Home = () => {
 
   const [restaurants, setRestaurants] = useState([]);
@@ -25,7 +25,7 @@ const Home = () => {
    
       const getAllRestaurants = async () => {
         try {
-          const response = await axios.get("getAllRestaurant");
+          const response = await API.get("/customer/allRestaurants");
           const data = response.data;
           console.log(data);
           const newRestaurants = Object.keys(data).map(key => {

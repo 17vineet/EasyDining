@@ -24,7 +24,7 @@ const CustomerSignIn = () => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const resp = await API.post(`signIn${userType}`, formData);
+    const resp = await API.post(`${userType}/signin`, formData);
     const authenticated = resp.data.authenticated ;
     if (authenticated == true) {
       setCurrentUser(resp.data) ;

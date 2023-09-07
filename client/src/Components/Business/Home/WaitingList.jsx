@@ -13,7 +13,7 @@ function WaitingList() {
   const {currentUser} = useAuth() ;
 
  async function handleClick() {
-    await API.post('/insertWaitingList', { rid: currentUser._id, name : name })
+    await API.post('/restaurant/insertWaitingList', { rid: currentUser._id, name : name })
     setLoe((prev)=>[...prev, name]);
     setName("");
   }
@@ -21,19 +21,19 @@ function WaitingList() {
     setName(event.target.value)
   }
   async function handleDelete(index) {
-    const resp=await API.post('/removeWaitingCustomer', {rid : currentUser._id, index}) ;
+    const resp=await API.post('/restaurant/removeWaitingCustomer', {rid : currentUser._id, index}) ;
     const updatedList = loe.filter((_,ind) => index != ind)
     setLoe(updatedList)
   }
   async function handleDine(index){
     handleDelete(index);
-    const resp=await API.post('/addToDineIn',{rid:currentUser._id, cname:loe[index]});
+    const resp=await API.post('/restaurant/addToDineIn',{rid:currentUser._id, cname:loe[index]});
     console.log(resp.data);
   }
 
   useEffect(()=>{
     const fetchWaitingList = async ()=>{
-      const resp = await API.post('/getWaitingList',{rid : currentUser._id}) ; 
+      const resp = await API.post('/restaurant/getWaitingList',{rid : currentUser._id}) ; 
       const arr=resp.data.customers.map((elem)=>elem.cname);
       setLoe(arr);
     }

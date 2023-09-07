@@ -12,7 +12,7 @@ function DiningList() {
   const {currentUser} = useAuth() ;
 
  async function handleClick() {
-    await API.post('/insertDinigList', { rid: currentUser._id, name : name })
+    await API.post('/restaurant/insertDiningList', { rid: currentUser._id, name : name })
     setDine((prev)=>[...prev, name]);
     setName("");
   }
@@ -20,7 +20,7 @@ function DiningList() {
     setName(event.target.value)
   }
   async function handleDelete(index) {
-    const resp=await API.post('/removeDiningCustomer', {rid : currentUser._id, index}) ;
+    const resp=await API.post('/restaurant/removeDiningCustomer', {rid : currentUser._id, index}) ;
     const updatedList = dine.filter((_,ind) => index != ind)
     setDine(updatedList)
   }
@@ -28,7 +28,7 @@ function DiningList() {
 
   useEffect(()=>{
     const fetchDiningList = async ()=>{
-      const resp = await API.post('/getDiningList',{rid : currentUser._id}) ; 
+      const resp = await API.post('/restaurant/getDiningList',{rid : currentUser._id}) ; 
       const arr=resp.data.customers.map((elem)=>elem.cname);
       setDine(arr);
     }

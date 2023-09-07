@@ -40,12 +40,7 @@ const SignUp = () => {
             const formData = new FormData();
             formData.append('images', selectedFile);
 
-           
-            // const result = await fetch("http://localhost:4000/uploadRestaurantThumbnail", {
-            //     method: "POST",
-            //     body: formData
-            // })
-            const result=await API.post("uploadRestaurantThumbnail",formData)
+            const result=await API.post("/cloudinary/thumbnail",formData)
             console.log(result.data.img_urls[0]);
             setFormData((prev)=>({
                 ...prev,
@@ -59,7 +54,7 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        const resp=await API.post("onBoardRestaurant",formData)
+        const resp=await API.post("/restaurant/signup",formData)
         console.log(resp);
         setCurrentUser(resp.data) ;
         navigate('/business/home');

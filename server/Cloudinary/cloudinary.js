@@ -1,6 +1,6 @@
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
 cloudinary.config({
     cloud_name: 'dedenmpd7',
@@ -21,7 +21,7 @@ const storage = new CloudinaryStorage({
 
 // Change parser.single('file') to parser.array('files', count)
 const parser = multer({ storage: storage }).array('images', 5); // Upload up to 5 files
-module.exports = { cloudinary, storage, parser };
+export { cloudinary, storage, parser } ;
 
 // const parser = multer({ storage: storage });
 // module.exports = { cloudinary, storage, parser };
