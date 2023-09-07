@@ -9,6 +9,7 @@ import BusinessSignUp from './Components/Business/SignUpBusiness';
 
 import SignIn from './Components/SignIn' ;
 import Navbar from './Components/Navbar' ;
+import Menu from './Components/Business/Menu/Menu';
 
 export const App = () => {
   return (
@@ -20,6 +21,7 @@ export const App = () => {
         <Route path='/home' element={<CustomerHome />}></Route>
         <Route path='/business/signup' element={<BusinessSignUp />}></Route>
         <Route path='/business/home' element={<BusinessHome />}></Route>
+        <Route path='/business/menu' element={<Menu />}></Route>
       </Routes>
     </BrowserRouter>
   )

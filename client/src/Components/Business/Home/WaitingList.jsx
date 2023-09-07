@@ -4,31 +4,47 @@ import 'bootstrap/dist/css/bootstrap.css'
 import API from '../../../axios' ;
 import Delete from '@mui/icons-material/Delete' ;
 import AddIcon from '@mui/icons-material/Add';
-
+import Loading from '../../Loading';
 import {useAuth} from '../../../contexts/AuthContext' ;
 
 function WaitingList() {
   const [name, setName] = useState('')
   const [loe, setLoe] = useState([]) ;
   const {currentUser} = useAuth() ;
+  const [isLoading,setIsLoading]=useState(false)
 
  async function handleClick() {
-    await API.post('/restaurant/insertWaitingList', { rid: currentUser._id, name : name })
-    setLoe((prev)=>[...prev, name]);
-    setName("");
+    if(name.trim().length!=0){
+    setIsLoading(true);
+      await API.post('/restaurant/insertWaitingList', { rid: currentUser._id, name : name })
+      setLoe((prev)=>[...prev, name]);
+      setName("");
+    setIsLoading(false);
+
+    }
+    else{
+      alert("Enter a proper name")
+    }
+   
   }
   function handleChange(event) {
     setName(event.target.value)
   }
   async function handleDelete(index) {
+    setIsLoading(true);
     const resp=await API.post('/restaurant/removeWaitingCustomer', {rid : currentUser._id, index}) ;
     const updatedList = loe.filter((_,ind) => index != ind)
     setLoe(updatedList)
+    setIsLoading(false);
+
   }
   async function handleDine(index){
+    setIsLoading(true);
     handleDelete(index);
     const resp=await API.post('/restaurant/addToDineIn',{rid:currentUser._id, cname:loe[index]});
     console.log(resp.data);
+    setIsLoading(false);
+
   }
 
   useEffect(()=>{
@@ -38,10 +54,11 @@ function WaitingList() {
       setLoe(arr);
     }
     fetchWaitingList() ;
-  }, [loe]) ;
+  }, []) ;
 
   return (
     < >
+    {isLoading && <Loading/>}
      <div   >
      <input type='text' placeholder='Enter your name to reserve table' onChange={handleChange} value={name}></input>
       <button onClick={handleClick} className='btn btn-primary add_btn'><AddIcon/></button>

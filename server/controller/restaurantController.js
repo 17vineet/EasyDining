@@ -75,8 +75,9 @@ export const removeWaitingCustomer = async (req, res)=>{
         if (doc) {
             if (index >= 0 && index < doc.customers.length) {
                 doc.customers.splice(index, 1);
-                await doc.save();
+                let resp=await doc.save();
                 console.log('Element deleted successfully.');
+                res.send(JSON.stringify(resp))
             } else {
                 console.error('Index out of bounds.');
             }
@@ -119,8 +120,9 @@ export const removeDiningCustomer = async (req, res)=>{
         if (doc) {
             if (index >= 0 && index < doc.customers.length) {
                 doc.customers.splice(index, 1);
-                await doc.save();
+                let resp=await doc.save();
                 console.log('Element deleted successfully.');
+                res.send(JSON.stringify(resp))
             } else {
                 console.error('Index out of bounds.');
             }

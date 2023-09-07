@@ -83,7 +83,9 @@ const Home = () => {
             <br />
             <br />
             <div>
-              <button>Update Menu</button>
+              <button onClick={()=>{
+                navigate("/business/menu")
+              }}>Update Menu</button>
             </div>
             <br />
             <br />
