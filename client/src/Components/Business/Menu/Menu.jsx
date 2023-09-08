@@ -1,83 +1,56 @@
-import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.css'
-import './Menu.css'
-
-function Menu() {
-  const [loe, setLoe] = useState([]);
-  const [addNewCuisine, setaddNewCuisine] = useState(false)
-  const [addNewItem, setAddNewItem] = useState(false)
-  const [cuisine, setCuisine] = useState("")
-  // const handleChange = () => {
-  // }
-  // const handleClick = () => {
-  //   setAddNewItem(true)
-
-  // }
-  // const handleAddNewCuisine = () => {
-  //   setaddNewCuisine(true)
-  // }
-  // const handleAddItem = () => {
-  //   setaddNewCuisine(true)
-  // }
-  function handleChange(event) {
-    setCuisine(event.target.value)
+import React, { useState } from 'react'
+import "./Menu.css"
+import CuisineModel from './CuisineModel'
+const Menu = () => {
+  // const [cuisines,setCuisines]=useState([{"name":'Italian'},{'name':'Chineese'}])
+  const [cuisines, setCuisines] = useState(['Italian', 'Mexican'])
+  const [items,setItems]=useState(["abc","def"]);
+  const [newCuisine, setNewCuisine] = useState("")
+  const [cuisineModel, setCuisineModel] = useState(null)
+  
+  const openCuisineModel = (elem,index) => {
+    // setItem(cuisines[index])
+    setItems([{"Name":"Tandori paneer","Price":100,"Description":"ahsn"},{"Name":"mexican paneer","Price":1000,"Description":"absjdkchsn"}])
+    setCuisineModel(elem)
   }
-  function handleClick() {
-    console.log("Clicked");
-    // setLoe((prev) => [...prev, cuisine]);
-    setLoe((prev) => [...prev, { 'name': cuisine, 'items': [] }]);
-    console.log(loe);
+  const updateCuisineModel = (newstate) => {
+    setCuisineModel(newstate);
   }
-  function handleAddItem(index) {
-    console.log("Add item request");
-    console.log(loe);
-    setLoe((prev) => {
-      prev[index].items = [...prev[index].items, 'abcde']
-      // prev[index].items = newlist
-      return [...prev]
-    })
-    console.log(loe);
+  const handleChange = (e) => {
+    setNewCuisine(e.target.value)
   }
-  // [{name:value,items:[val1,val2]},{}]
+  const handleAddCuisine = () => {
+    console.log(newCuisine)
+    setCuisines((prev) => [...prev, newCuisine])
+    setNewCuisine("")
+  }
   return (
     <>
-      <h1>Add Menu</h1>
-
-      <div>
-        <input type='text' placeholder='Enter your name to reserve table' onChange={handleChange} value={cuisine}></input>
-        <button onClick={handleClick} className='btn btn-primary add_btn'>Add Element</button>
+      <div className="container">
+        <h1> Menu </h1>
+        <div className="container">
+          <input type="text" name="" className='addCuisine' value={newCuisine} onChange={handleChange} placeholder='Enter Cuisine' />
+          <button className='btn btn-primary'  onClick={handleAddCuisine}>Add Cuisine</button>
+        </div>
+        <div className="container">
+          {
+            cuisineModel!=null && <CuisineModel name={cuisineModel} items={items} updateCuisineModel={updateCuisineModel} />
+          }
+          {
+            cuisines.map((elem, ind) => {
+              return (
+                <div className='cuisineHolder' onClick={() => {
+                  openCuisineModel(elem,ind)
+                }}>
+                  {elem}
+                </div>
+              )
+            })
+          }
+        </div>
       </div>
-      <br></br>
-      {
-        loe.map((ele, index) => {
-          return (
-            <>
-              <div className='cuisine' key={index}>
-                <h1>{ele.name}</h1>
-                <input type="text" placeholder={'Enter the item of ' + ele.name + ' to add'} />
-                <button onClick={() => {
-                  handleAddItem(index)
-                }}> Add Item</button>
-                <br /><br />
-                {
-                  ele.items.map((e, index) => {
-                    return (
-                      <>
-                        <div>
-                          {
-                            console.log(e,index)
-                          }
-                          <h3>{e}</h3>
-                        </div>
-                      </>
-                    )
-                  })
-                }
-              </div>
-            </>)
-        })}
     </>
-  );
+  )
 }
 
-export default Menu;
+export default Menu
