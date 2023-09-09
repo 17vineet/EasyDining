@@ -20,7 +20,6 @@ const Menu = () => {
     setNewCuisine(e.target.value)
   }
   const handleAddCuisine = () => {
-    console.log(newCuisine)
     setCuisines((prev) => [...prev, newCuisine])
     setNewCuisine("")
   }
@@ -39,9 +38,7 @@ const Menu = () => {
           {
             cuisines.map((elem, ind) => {
               return (
-                <div className='cuisineHolder' onClick={() => {
-                  openCuisineModel(elem,ind)
-                }}>
+                <div className='cuisineHolder' onClick={()=>{openCuisineModel(elem,ind)}}>
                   {elem}
                 </div>
               )

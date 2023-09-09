@@ -1,64 +1,23 @@
 import React, { useState, useEffect } from 'react'
 
 const CuisineModel = (prop) => {
-    let name = prop.name
-    let menu_items = prop.items
-    const [items, setItems] = useState(menu_items)
-    console.log(items);
+    const [items, setItems] = useState(prop.items)
     const [showAddForm, setShowAddForm] = useState(false);
     const [disable, setDisable] = useState(false);
     const [editable, setEditable] = useState(false);
     const [formData, setFormData] = useState({ Name: '', Price: '', Description: '' });
-    const handleCuisineModel = () => {
-        prop.updateCuisineModel(null);
-    };
 
     useEffect(() => {
-        fetchData();
+        setItems((prev) => prev.map((ele, ind)=>({...ele, id: ind, editable: false} ))) ;
     }, [])
-    async function fetchData() {
-        const data = menu_items.map((element, index) => {
-            return {
-                id: index,
-                Name: element.Name,
-                Price: element.Price,
-                Description: element.Description,
-                editable: false
-            }
-        })
-        setItems(data)
-    }
-    const handleEdit = (id) => {
 
-        console.log(id)
-        const updatedList = items.map((element) => {
-            if (id == element.id) {
-                const item_data = {
-                    Name: element.Name,
-                    Price: element.Price,
-                    Description: element.Description
-                }
-                setFormData(item_data)
-                return { ...element, editable: true }
-            }
-            return { ...element, editable: false }
-        })
-        setItems(updatedList)
-    };
+    const handleEdit = (id) => {
+        setFormData(items[id]) ;
+        setItems((prev) => prev.map((ele, ind)=>(id == ind ? {...ele, editable: true} : ele ))) ;
+    } ;
 
     const handleSave = (id) => {
-        console.log(id)
-
-        const updatedList = items.map((element) => {
-            if (id == element.id) {
-                console.log("formdata", formData)
-                return { Name: formData.Name, Price: formData.Price, Description: formData.Description, editable: false, id: element.id }
-            }
-            return { ...element, editable: false, id: element.id }
-        })
-        setItems(updatedList)
-
-        console.log("items")
+        setItems((prev) => prev.map((ele, ind)=> id == ind ? {...formData, editable: false, id: id} : ele ))
     };
 
     const handleDiscard = () => {
@@ -113,9 +72,8 @@ const CuisineModel = (prop) => {
                 <div className="row1">
                     <div>Management Type</div>
                     <div onClick={handleAddManagementType} className='add'>+Add
-                        <span className="close" onClick={handleCuisineModel}>
+                        <span className="close" onClick={()=>{prop.updateCuisineModel(null)}}>
                             <img src="/images/close.svg" className="close" />
-
                         </span></div>
                 </div>
 
