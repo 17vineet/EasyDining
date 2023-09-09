@@ -1,15 +1,24 @@
-import React, { useState } from 'react'
-import "./Menu.css"
+import React, { useEffect, useState } from 'react'
+import API from '../../../axios'
 import CuisineModel from './CuisineModel'
+import { useAuth } from '../../../contexts/AuthContext'
+import "./Menu.css"
 const Menu = () => {
-  // const [cuisines,setCuisines]=useState([{"name":'Italian'},{'name':'Chineese'}])
+  
   const [cuisines, setCuisines] = useState(['Italian', 'Mexican'])
   const [items,setItems]=useState(["abc","def"]);
   const [newCuisine, setNewCuisine] = useState("")
   const [cuisineModel, setCuisineModel] = useState(null)
-  
+  const {currentUser} = useAuth() ;
+
+  useEffect(()=>{
+    fetchData();
+  },[])
+  const fetchData=async()=>{
+      const resp=await API.post("restaurant/getRestaurantMenu",{rid: currentUser._id}) ;
+      console.log(resp.data);
+  }
   const openCuisineModel = (elem,index) => {
-    // setItem(cuisines[index])
     setItems([{"Name":"Tandori paneer","Price":100,"Description":"ahsn"},{"Name":"mexican paneer","Price":1000,"Description":"absjdkchsn"}])
     setCuisineModel(elem)
   }
@@ -19,7 +28,9 @@ const Menu = () => {
   const handleChange = (e) => {
     setNewCuisine(e.target.value)
   }
-  const handleAddCuisine = () => {
+  const handleAddCuisine =async () => {
+    const resp=await API.post("/restaurant/addNewCuisine",{rid: currentUser._id,cuisine:newCuisine});
+    console.log(resp.data);
     setCuisines((prev) => [...prev, newCuisine])
     setNewCuisine("")
   }

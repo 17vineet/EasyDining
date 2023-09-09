@@ -54,6 +54,15 @@ const diningListSchema = new Schema({
     }
 }) ;
 
+const menuSchema = new Schema({
+    restaurant:{
+        type:String
+    },
+    menu:{
+        type:Array
+    }
+}) ;
+
 export const Restaurant = model('restaurant', restaurantSchema) ;
 
 export const Customer = model('customer', customerSchema);
@@ -62,4 +71,4 @@ export const WaitingList = model('waiting', waitingListSchema);
 
 export const DiningList = model('dining', diningListSchema);
 
-
+export const Menu = model('menu',menuSchema)

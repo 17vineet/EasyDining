@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 const CuisineModel = (prop) => {
+    const cuisine_name=prop.name;
     const [items, setItems] = useState(prop.items)
     const [showAddForm, setShowAddForm] = useState(false);
     const [disable, setDisable] = useState(false);
@@ -21,31 +22,23 @@ const CuisineModel = (prop) => {
     };
 
     const handleDiscard = () => {
-
-        const updatedList = items.map((element) => {
-
-            return { ...element, editable: false }
-        })
-        setItems(updatedList)
-
+        setItems((prev)=> prev.map((ele)=>({...ele, editable: false}))) ;
     }
 
     const handleChange = (id, newName) => {
 
     };
 
-    const handlAddNewManagementType = (event) => {
-        if (event.keyCode === 13) {
-
-        }
-    }
-
-    const handleAddManagementType = () => {
-
-        setDisable(true);
+    const handleAddNewCuisine = (event) => {
         setShowAddForm(true);
-
     }
+
+   const handleNewCuisineSave=()=>{
+         let _items=items;
+         _items.push(formData)
+        setItems(_items) ;
+        setShowAddForm(false);
+   }
 
     const handleAddSave = async () => {
 
@@ -70,31 +63,43 @@ const CuisineModel = (prop) => {
         <div className="modal">
             <div className="modal-content" key={"modal"}>
                 <div className="row1">
-                    <div>Management Type</div>
-                    <div onClick={handleAddManagementType} className='add'>+Add
+                    <div>{cuisine_name}</div>
+                    <div onClick={handleAddNewCuisine} className='add'>+Add
                         <span className="close" onClick={()=>{prop.updateCuisineModel(null)}}>
                             <img src="/images/close.svg" className="close" />
                         </span></div>
                 </div>
 
                 {showAddForm && (
-                    <div className='managementType_row' key={"1"} >
-                        <div className="managementType" >
-                            <input
-                                autoFocus
-                                type="text"
-                                value={newManagementType}
-                                className='input'
-                                onChange={(e) => setNewManagementType(e.target.value)}
-                                onKeyDown={(e) => { handlAddNewManagementType(e) }}
-                            />
+                    <>
+                    <div>
+                       <div>
+                       <label htmlFor="Item_name">Name
+                        <input type="text" placeholder='Enter Item Name' id="Item_name" value={formData.Name} onChange={(event)=>{
+                            setFormData((ele)=>{return {...ele,Name:event.target.value}})
+                        }}/>
+                        </label>
+                       </div>
+                        <div>
+                        <label htmlFor="Item_price">Price</label>
+                        <input type="text" placeholder='Enter Item Price' id="Item_price" value={formData.Price} onChange={(event)=>{
+                            setFormData((ele)=>{return {...ele,Price:event.target.value}})
+                        }} />
                         </div>
-                        <>
-
-                            <img src=".././images/save.svg" onClick={() => handleAddSave()} />
-                            <img src=".././images/discard.svg" onClick={() => handleAddDiscard()} />
-                        </>
+                        <div>
+                        <label htmlFor="Item_description">Description</label>
+                        <input type="text" placeholder='Enter Item Description' id="Item_description" value={formData.Description} onChange={(event)=>{
+                            setFormData((ele)=>{return {...ele,Description:event.target.value}})
+                        }}/>
+                        </div>
                     </div>
+                    <div>
+                        <button className='btn btn-primary' onClick={handleNewCuisineSave}>Save</button>
+                        <button className='btn btn-primary' onClick={()=>{
+                            setShowAddForm(false)
+                        }}>Discard</button>
+                    </div>
+                    </>
                 )}
 
                 {
@@ -152,7 +157,10 @@ const CuisineModel = (prop) => {
                     })
                 }
 
-
+                <div>
+                   <button className='btn btn-primary'>Save All Changes</button>&nbsp;
+                   <button className='btn btn-primary'>Discard All Changes</button>
+                </div>
             </div>
         </div>
 

@@ -1,7 +1,7 @@
-import { Restaurant, WaitingList, DiningList } from "../Database/models.js";
+import { Restaurant, WaitingList, DiningList, Menu } from "../Database/models.js";
 
-export const signInRestaurant = async (req, res)=>{
-    const {email, password} = req.body ;
+export const signInRestaurant = async (req, res) => {
+    const { email, password } = req.body;
     let data = await Restaurant.findOne({ email: email });
     let pass = data.password;
     if (pass === password) {
@@ -15,21 +15,21 @@ export const signInRestaurant = async (req, res)=>{
             location_url: location_url,
             authenticated: true
         }
-        res.send(newData) ;
+        res.send(newData);
     }
     else {
-        res.send({authenticated: false})
+        res.send({ authenticated: false })
     }
 }
 
-export const signUpRestaurant = async (req, res)=>{
-    const {email,password,name,location_url,sitting_capacity,range,thumbnail_url}=req.body;
+export const signUpRestaurant = async (req, res) => {
+    const { email, password, name, location_url, sitting_capacity, range, thumbnail_url } = req.body;
     let data = new Restaurant({
         email,
         password,
         name,
         location_url,
-        sitting_capacity : Number(sitting_capacity),
+        sitting_capacity: Number(sitting_capacity),
         range,
         thumbnail_url
     })
@@ -37,23 +37,26 @@ export const signUpRestaurant = async (req, res)=>{
 
     const data1 = new WaitingList({ restaurant: result._id });
 
-    const data2=new DiningList({restaurant:result._id});
+    const data2 = new DiningList({ restaurant: result._id });
+
+    const data3=new Menu({ restaurant: result._id })
 
     await data1.save();
     await data2.save();
+    await data3.save();
 
-    res.send(JSON.stringify(result)) ;
+    res.send(JSON.stringify(result));
 }
 
-export const getWaitingList = async (req, res)=>{
-    const {rid} = req.body ; 
+export const getWaitingList = async (req, res) => {
+    const { rid } = req.body;
     const resp = await WaitingList.findOne({ restaurant: rid });
-    res.send(JSON.stringify(resp)) ;
+    res.send(JSON.stringify(resp));
 }
 
-export const insertWaitingList = async (req, res)=>{
-    const { rid, name } = req.body ;
-    
+export const insertWaitingList = async (req, res) => {
+    const { rid, name } = req.body;
+
     console.log(name);
 
     const customersList = await WaitingList.findOne({ restaurant: rid });
@@ -65,17 +68,17 @@ export const insertWaitingList = async (req, res)=>{
         { $push: { customers: { cname: name } } }
     );
 
-    res.send(resp) ;
+    res.send(resp);
 }
 
-export const removeWaitingCustomer = async (req, res)=>{
-    const {rid, index} = req.body ;
+export const removeWaitingCustomer = async (req, res) => {
+    const { rid, index } = req.body;
     try {
         const doc = await WaitingList.findOne({ restaurant: rid });
         if (doc) {
             if (index >= 0 && index < doc.customers.length) {
                 doc.customers.splice(index, 1);
-                let resp=await doc.save();
+                let resp = await doc.save();
                 console.log('Element deleted successfully.');
                 res.send(JSON.stringify(resp))
             } else {
@@ -89,15 +92,15 @@ export const removeWaitingCustomer = async (req, res)=>{
     }
 }
 
-export const getDiningList = async (req, res)=>{
-    const {rid} = req.body ; 
+export const getDiningList = async (req, res) => {
+    const { rid } = req.body;
     const resp = await DiningList.findOne({ restaurant: rid });
-    res.send(JSON.stringify(resp)) ;
+    res.send(JSON.stringify(resp));
 }
 
-export const insertDiningList = async (req, res)=>{
+export const insertDiningList = async (req, res) => {
 
-    const {rid, name} = req.body ;
+    const { rid, name } = req.body;
 
     console.log(name);
 
@@ -110,17 +113,17 @@ export const insertDiningList = async (req, res)=>{
         { $push: { customers: { cname: name } } }
     );
 
-    res.send(resp) ;
+    res.send(resp);
 }
 
-export const removeDiningCustomer = async (req, res)=>{
-    const {rid, index} = req.body ;
+export const removeDiningCustomer = async (req, res) => {
+    const { rid, index } = req.body;
     try {
         const doc = await DiningList.findOne({ restaurant: rid });
         if (doc) {
             if (index >= 0 && index < doc.customers.length) {
                 doc.customers.splice(index, 1);
-                let resp=await doc.save();
+                let resp = await doc.save();
                 console.log('Element deleted successfully.');
                 res.send(JSON.stringify(resp))
             } else {
@@ -134,8 +137,8 @@ export const removeDiningCustomer = async (req, res)=>{
     }
 }
 
-export const addToDineIn = async (req, res)=>{
-    const {rid, cname} = req.body ;
+export const addToDineIn = async (req, res) => {
+    const { rid, cname } = req.body;
 
     const diningList = await DiningList.findOne({ restaurant: rid });
 
@@ -146,5 +149,37 @@ export const addToDineIn = async (req, res)=>{
         { $push: { customers: { cname } } }
     );
 
-    res.send(JSON.stringify(resp)) ;
+    res.send(JSON.stringify(resp));
+}
+
+export const getMenu = async (req, res) => {
+    const { rid } = req.body;
+
+    const menulist = await Menu.findOne({ restaurant: rid });
+
+    console.log(menulist);
+
+    res.send(JSON.stringify(menulist));
+}
+
+export const updateMenu = async (req, res) => {
+    const newMenuItems = req.body.items;
+    const rid = req.body.rid
+    const cuisine_name = req.body.cuisine_name;
+    const response = await Menu.updateOne(
+        { "restaurant": rid, "menu.name": cuisine_name },
+        { $set: { "menu.$.items": newMenuItems } })
+    console.log(response)
+    // res.send(JSON.stringify(response))
+}
+
+export const addCuisine = async (req, res) => {
+    const {rid,cuisine}=req.body;
+
+    const response = await Menu.updateOne(
+        { "restaurant": rid},
+        { $push: { menu: {'name':cuisine,'items':[]} } })
+    console.log(response)
+    
+    res.send(JSON.stringify(response))
 }
