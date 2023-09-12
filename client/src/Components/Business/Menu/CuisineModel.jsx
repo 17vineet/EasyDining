@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react' ;
+
+import { useAuth } from '../../../contexts/AuthContext';
+import API from '../../../axios';
 
 const CuisineModel = (prop) => {
     const cuisine_name=prop.name;
@@ -7,6 +10,9 @@ const CuisineModel = (prop) => {
     const [disable, setDisable] = useState(false);
     const [editable, setEditable] = useState(false);
     const [formData, setFormData] = useState({ Name: '', Price: '', Description: '' });
+    const { currentUser } = useAuth() ;
+
+    console.log(prop.items);
 
     useEffect(() => {
         setItems((prev) => prev.map((ele, ind)=>({...ele, id: ind, editable: false} ))) ;
@@ -40,6 +46,9 @@ const CuisineModel = (prop) => {
    }
 
     const handleAddSave = async () => {
+        console.log(items);
+        const resp = await API.post('restaurant/updateRestaurantMenu', {rid : currentUser._id, items, cuisine_name}) ;
+        console.log(resp);
         setDisable(false);
         setShowAddForm(false);
     };
@@ -151,7 +160,7 @@ const CuisineModel = (prop) => {
                 }
 
                 <div>
-                   <button className='btn btn-primary'>Save All Changes</button>&nbsp;
+                   <button className='btn btn-primary' onClick={handleAddSave}>Save All Changes</button>&nbsp;
                    <button className='btn btn-primary'>Discard All Changes</button>
                 </div>
             </div>

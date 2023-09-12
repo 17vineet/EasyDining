@@ -4,23 +4,30 @@ import CuisineModel from './CuisineModel'
 import { useAuth } from '../../../contexts/AuthContext'
 import "./Menu.css"
 const Menu = () => {
-  
+
   const [cuisines, setCuisines] = useState(['Italian', 'Mexican'])
-  const [items,setItems]=useState(["abc","def"]);
+  const [items, setItems] = useState(["abc", "def"]);
   const [newCuisine, setNewCuisine] = useState("")
   const [cuisineModel, setCuisineModel] = useState(null)
-  const {currentUser} = useAuth() ;
+  const { currentUser } = useAuth();
+  const [menu,setMenu] = useState([])
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchData();
-  },[])
-  const fetchData=async()=>{
-      const resp=await API.post("restaurant/getRestaurantMenu",{rid: currentUser._id}) ;
-      console.log(resp.data.menu);
+  }, [items])
+  const fetchData = async () => {
+    const resp = await API.post("restaurant/getRestaurantMenu", { rid: currentUser._id });
+    setMenu(resp.data.menu) ;
+    setCuisines(resp.data.menu.map((ele)=>ele.name)) ;
   }
-  const openCuisineModel = (elem,index) => {
-    setItems([{"Name":"Tandori paneer","Price":100,"Description":"ahsn"},{"Name":"mexican paneer","Price":1000,"Description":"absjdkchsn"}])
+  const openCuisineModel = (elem, index) => {
     setCuisineModel(elem)
+    setItems([])
+    menu.map((ele)=>{
+      if(ele.name==elem){
+        setItems(ele.items)
+      }
+    })
   }
   const updateCuisineModel = (newstate) => {
     setCuisineModel(newstate);
@@ -28,8 +35,8 @@ const Menu = () => {
   const handleChange = (e) => {
     setNewCuisine(e.target.value)
   }
-  const handleAddCuisine =async () => {
-    const resp=await API.post("/restaurant/addNewCuisine",{rid: currentUser._id,cuisine:newCuisine});
+  const handleAddCuisine = async () => {
+    const resp = await API.post("/restaurant/addNewCuisine", { rid: currentUser._id, cuisine: newCuisine });
     console.log(resp.data);
     setCuisines((prev) => [...prev, newCuisine])
     setNewCuisine("")
@@ -40,11 +47,11 @@ const Menu = () => {
         <h1> Menu </h1>
         <div className="container">
           <input type="text" name="" className='addCuisine' value={newCuisine} onChange={handleChange} placeholder='Enter Cuisine' />
-          <button className='btn btn-primary'  onClick={handleAddCuisine}>Add Cuisine</button>
+          <button className='btn btn-primary' onClick={handleAddCuisine}>Add Cuisine</button>
         </div>
         <div className="container">
           {
-            cuisineModel!=null && <CuisineModel name={cuisineModel} items={items} updateCuisineModel={updateCuisineModel} />
+            cuisineModel != null && <CuisineModel name={cuisineModel} items={items} updateCuisineModel={updateCuisineModel} />
           }
           {
             cuisines.map((elem, ind) => {

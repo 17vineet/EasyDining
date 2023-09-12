@@ -157,8 +157,6 @@ export const getMenu = async (req, res) => {
 
     const menulist = await Menu.findOne({ restaurant: rid });
 
-    console.log(menulist);
-
     res.send(JSON.stringify(menulist));
 }
 
@@ -170,7 +168,7 @@ export const updateMenu = async (req, res) => {
         { "restaurant": rid, "menu.name": cuisine_name },
         { $set: { "menu.$.items": newMenuItems } })
     console.log(response)
-    // res.send(JSON.stringify(response))
+    res.send(JSON.stringify(response))
 }
 
 export const addCuisine = async (req, res) => {
