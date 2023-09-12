@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Loading from '../../Loading';
 import { useAuth } from '../../../contexts/AuthContext';
 
-function WaitingList() {
+function WaitingList({handleUpdate}) {
   const [name, setName] = useState('')
   const [loe, setLoe] = useState([]);
   const { currentUser } = useAuth();
@@ -20,16 +20,17 @@ function WaitingList() {
       setLoe((prev) => [...prev, name]);
       setName("");
       setIsLoading(false);
-
     }
     else {
       alert("Enter a proper name")
     }
 
   }
+
   function handleChange(event) {
     setName(event.target.value)
   }
+
   async function handleDelete(index) {
     setIsLoading(true);
     const resp = await API.post('/restaurant/removeWaitingCustomer', { rid: currentUser._id, index });
@@ -42,7 +43,7 @@ function WaitingList() {
     setIsLoading(true);
     handleDelete(index);
     const resp = await API.post('/restaurant/addToDineIn', { rid: currentUser._id, cname: loe[index] });
-    console.log(resp.data);
+    handleUpdate() ;
     setIsLoading(false);
 
   }
@@ -54,7 +55,7 @@ function WaitingList() {
       setLoe(arr);
     }
     fetchWaitingList();
-  }, []);
+  },[]);
 
   return (
     < >

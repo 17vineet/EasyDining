@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css'
 import './List.css'
@@ -8,12 +8,17 @@ import { useAuth } from '../../../contexts/AuthContext'
 
 const Home = () => {
 
+  const [updated, setUpdated] = useState(0) ;
   const { userType, currentUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (currentUser == null) navigate('/');
-  }, [])
+  }, []) ;
+
+  const handleUpdate = ()=>{
+    setUpdated(prev => prev+1) ;
+  }
 
   return (
     <>
@@ -83,7 +88,7 @@ const Home = () => {
             <br />
             <br />
             <div>
-              <button onClick={()=>{
+              <button onClick={() => {
                 navigate("/business/menu")
               }}>Update Menu</button>
             </div>
@@ -92,11 +97,11 @@ const Home = () => {
             <div className='content3'>
               <div className='contentLeft'>
                 <h3>Waiting List</h3>
-                <WaitingList key={"1"} />
+                <WaitingList key={"1"} handleUpdate={handleUpdate} />
               </div>
               <div className='contentLeft'>
                 <h3>Dining List</h3>
-                <DiningList key={"1"} />
+                <DiningList key={"1"} updated={updated} />
               </div>
             </div>
           </div>

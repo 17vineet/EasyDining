@@ -16,7 +16,7 @@ const Menu = () => {
   },[])
   const fetchData=async()=>{
       const resp=await API.post("restaurant/getRestaurantMenu",{rid: currentUser._id}) ;
-      console.log(resp.data);
+      console.log(resp.data.menu);
   }
   const openCuisineModel = (elem,index) => {
     setItems([{"Name":"Tandori paneer","Price":100,"Description":"ahsn"},{"Name":"mexican paneer","Price":1000,"Description":"absjdkchsn"}])

@@ -26,7 +26,6 @@ const CuisineModel = (prop) => {
     }
 
     const handleChange = (id, newName) => {
-
     };
 
     const handleAddNewCuisine = (event) => {
@@ -41,21 +40,15 @@ const CuisineModel = (prop) => {
    }
 
     const handleAddSave = async () => {
-
         setDisable(false);
-
         setShowAddForm(false);
-
     };
     const handleAddDiscard = () => {
-
         setDisable(false);
         setShowAddForm(false);
     };
 
     const handleKeyPress = (event, id) => {
-
-
     }
 
 
