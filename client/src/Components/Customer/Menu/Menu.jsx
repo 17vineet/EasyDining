@@ -10,13 +10,19 @@ const Menu = ({ menu, updateMenuModel }) => {
                 <button onClick={() => { updateMenuModel(false) }}>Close</button>
                 {menu.menu.map((ele, ind) => {
                     return (
-                        <div>
+                        <div className='cuisine_container'>
                             <h2>{ele.name}</h2>
+                            <div className='item_container_title'>
+                                <div><b>Item Name</b></div>
+                                <div><b>Price</b></div>
+                                <div><b>Description</b></div>
+                            </div>
                             {ele.items.map((elem, index) => {
                                 return (
-                                    <div>
-                                        <pre>{elem.Name}        {elem.Price}          {elem.Description}
-                                        </pre>
+                                    <div className='item_container'>
+                                        <div>{elem.Name} </div>
+                                        <div>{elem.Price}</div>
+                                        <div>{elem.Description}</div>
                                     </div>
                                 )
                             })}

@@ -55,10 +55,10 @@ const RestaurantPage = () => {
                             <div>
                                 <button onClick={async () => {
                                     await API.post('/customer/insertWaitingList', { rid, name: currentUser.email })
-                                }}>Reserve Table</button>
+                                }} className='btn btn-primary m-2'>Reserve Table</button>
                             </div>
                             <div>
-                                <button onClick={HandleViewMenu}>View Menu</button>
+                                <button onClick={HandleViewMenu} className='btn btn-primary m-2'>View Menu</button>
                             </div>
                         </div>
                     </div>
