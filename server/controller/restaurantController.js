@@ -39,13 +39,31 @@ export const signUpRestaurant = async (req, res) => {
 
     const data2 = new DiningList({ restaurant: result._id });
 
-    const data3=new Menu({ restaurant: result._id })
+    const data3 = new Menu({ restaurant: result._id })
 
     await data1.save();
     await data2.save();
     await data3.save();
 
     res.send(JSON.stringify(result));
+}
+
+export const getRestaurantInfo = async (req, res) => {
+    const { rid } = req.body;
+    const response = await Restaurant.findOne({ "_id": rid })
+    const { _id, email, name, range, thumbnail_url, sitting_capacity, location_url } = response;
+    const newData = {
+        _id,
+        email,
+        name, 
+        range,
+        thumbnail_url,
+        sitting_capacity,
+        location_url,
+    }
+    console.log(newData)
+
+    res.send(JSON.stringify(newData))
 }
 
 export const getWaitingList = async (req, res) => {
@@ -172,12 +190,12 @@ export const updateMenu = async (req, res) => {
 }
 
 export const addCuisine = async (req, res) => {
-    const {rid,cuisine}=req.body;
+    const { rid, cuisine } = req.body;
 
     const response = await Menu.updateOne(
-        { "restaurant": rid},
-        { $push: { menu: {'name':cuisine,'items':[]} } })
+        { "restaurant": rid },
+        { $push: { menu: { 'name': cuisine, 'items': [] } } })
     console.log(response)
-    
+
     res.send(JSON.stringify(response))
 }

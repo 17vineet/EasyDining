@@ -5,7 +5,7 @@ import API from '../axios'
 import { useAuth } from '../contexts/AuthContext';
 
 const CustomerSignIn = () => {
-  const [formData, setFormData] = useState({ email: 'priyanshshah2442@gmail.com', password: '123456' })
+  const [formData, setFormData] = useState({ email: 'hetvik@gmail.com', password: '123456' })
   const {setUserType, userType, currentUser, setCurrentUser} = useAuth();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
