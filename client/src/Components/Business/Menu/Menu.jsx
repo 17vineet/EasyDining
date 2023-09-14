@@ -57,7 +57,7 @@ const Menu = () => {
             cuisines.map((elem, ind) => {
               return (
                 <div className='cuisineHolder' onClick={()=>{openCuisineModel(elem,ind)}}>
-                  {elem}
+                  <h2>{elem}</h2>
                 </div>
               )
             })
