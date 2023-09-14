@@ -20,13 +20,13 @@
     overflow: auto;
 }
 
-.cuisine_container {
+.Cuisine_container {
     border: 2px solid black;
     margin: 5px;
     border-radius: 10px;
 }
 
-.cuisine_container h2 {
+.Cuisine_container h2 {
     background-color: rgb(121, 173, 193);
     border-radius: 8px 8px 0px 0px;
 }
@@ -49,4 +49,15 @@
 
 .item_container_title div {
     width: 33%;
+}
+
+.close-btn{
+    background-color: rgb(213, 202, 202);
+    position: absolute;
+    right: 0;
+    top: 0;   
+}
+.close-btn:hover{
+    background-color: rgb(157, 136, 136);
+    cursor: pointer;
 }

@@ -5,69 +5,48 @@ import './List.css'
 import WaitingList from './WaitingList';
 import DiningList from './DiningList';
 import { useAuth } from '../../../contexts/AuthContext'
+import API from '../../../axios';
 
 const Home = () => {
 
-  const [updated, setUpdated] = useState(0) ;
+  const [updated, setUpdated] = useState(0);
   const { userType, currentUser } = useAuth();
   const navigate = useNavigate();
+  const [thumbnail,setThumbnail] = useState(currentUser.thumbnail_url)
 
   useEffect(() => {
     if (currentUser == null) navigate('/');
-  }, []) ;
+  }, []);
 
-  const handleUpdate = ()=>{
-    setUpdated(prev => prev+1) ;
+  const handleUpdate = () => {
+    setUpdated(prev => prev + 1);
   }
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('images', file);
+
+    const result = await API.post("/cloudinary/thumbnail", formData)
+    console.log(result.data.img_urls[0]);
+    const res = await API.post("/restaurant/updateThumbnail",{rid:currentUser._id,"thumbnail_url":result.data.img_urls[0]})
+    setThumbnail(result.data.img_urls[0])
+    console.log(res.data)
+  };
 
   return (
     <>
       <div className="main">
         <div className="background">
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <a className="navbar-brand" href="#">
-              Navbar
-            </a>
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-toggle="collapse"
-              data-target="#navbarNav"
-              aria-controls="navbarNav"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span className="navbar-toggler-icon" />
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNav">
-              <ul className="navbar-nav">
-                <li className="nav-item active">
-                  <a className="nav-link" href="#">
-                    Home <span className="sr-only">(current)</span>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Features
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Pricing
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link disabled" href="#">
-                    Disabled
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </nav>
           <div className="content1">
             <div className="content1_left">
               <div className="thumbnail_pic">
-                <img src={`${currentUser.thumbnail_url}`} className="thumbnail_img" />
+                <input className="inputThumbnail"
+                  type="file"
+                  name="images"
+                  onChange={handleFileChange}
+                />
+                <img src={thumbnail} className="thumbnail_img" style={{'zIndex':2}} />
                 <div className="thumbnail_img">Black</div>
               </div>
             </div>

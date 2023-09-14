@@ -47,13 +47,14 @@ const Menu = () => {
         <h1> Menu </h1>
         <div className="container">
           <input type="text" name="" className='addCuisine' value={newCuisine} onChange={handleChange} placeholder='Enter Cuisine' />
-          <button className='btn btn-primary' onClick={handleAddCuisine}>Add Cuisine</button>
-        </div>
+          <button className='btn btn-primary m-2' onClick={handleAddCuisine}>Add Cuisine</button>
+        </div><br/>
         <div className="container">
           {
             cuisineModel != null && <CuisineModel name={cuisineModel} items={items} updateCuisineModel={updateCuisineModel} />
           }
-          {
+         <div className='cuisine_container'>
+         {
             cuisines.map((elem, ind) => {
               return (
                 <div className='cuisineHolder' onClick={()=>{openCuisineModel(elem,ind)}}>
@@ -62,6 +63,7 @@ const Menu = () => {
               )
             })
           }
+         </div>
         </div>
       </div>
     </>

@@ -32,7 +32,7 @@ const CustomerSignIn = () => {
       else  navigate('/home') ;
     }
     else {
-      setError("User account not found");
+      setError(resp.data.message);
     }
     setLoading(false);
   }

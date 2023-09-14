@@ -3,22 +3,27 @@ import { Restaurant, WaitingList, DiningList, Menu } from "../Database/models.js
 export const signInRestaurant = async (req, res) => {
     const { email, password } = req.body;
     let data = await Restaurant.findOne({ email: email });
-    let pass = data.password;
-    if (pass === password) {
-        const { _id, email, name, range, thumbnail_url, sitting_capacity, location_url } = data;
-        const newData = {
-            _id: _id,
-            email: email,
-            name: name, range: range,
-            thumbnail_url: thumbnail_url,
-            sitting_capacity: sitting_capacity,
-            location_url: location_url,
-            authenticated: true
+    if (data) {
+        let pass = data.password;
+        if (pass === password) {
+            const { _id, email, name, range, thumbnail_url, sitting_capacity, location_url } = data;
+            const newData = {
+                _id: _id,
+                email: email,
+                name: name, range: range,
+                thumbnail_url: thumbnail_url,
+                sitting_capacity: sitting_capacity,
+                location_url: location_url,
+                authenticated: true
+            }
+            res.send(newData);
         }
-        res.send(newData);
+        else {
+            res.send({ authenticated: false, message:"Invalid Credentials" })
+        }
     }
-    else {
-        res.send({ authenticated: false })
+    else{
+        res.send({authenticated:false,message:"User account not found"})
     }
 }
 
@@ -55,7 +60,7 @@ export const getRestaurantInfo = async (req, res) => {
     const newData = {
         _id,
         email,
-        name, 
+        name,
         range,
         thumbnail_url,
         sitting_capacity,
@@ -195,6 +200,17 @@ export const addCuisine = async (req, res) => {
     const response = await Menu.updateOne(
         { "restaurant": rid },
         { $push: { menu: { 'name': cuisine, 'items': [] } } })
+    console.log(response)
+
+    res.send(JSON.stringify(response))
+}
+
+export const updateThumbnail = async (req, res) => {
+    const { rid,thumbnail_url } = req.body;
+
+    const response = await Restaurant.updateOne(
+        { "_id": rid },
+        { $set: { thumbnail_url:thumbnail_url }})
     console.log(response)
 
     res.send(JSON.stringify(response))

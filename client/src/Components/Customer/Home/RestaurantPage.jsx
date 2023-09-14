@@ -54,8 +54,15 @@ const RestaurantPage = () => {
                         <div className="content2">
                             <div>
                                 <button onClick={async () => {
-                                    await API.post('/customer/insertWaitingList', { rid, name: currentUser.email })
+                                    const resp = await API.post('/customer/insertWaitingList', { rid, name: currentUser.email })
+                                    alert(resp.data.message)
                                 }} className='btn btn-primary m-2'>Reserve Table</button>
+                            </div>
+                            <div>
+                                <button onClick={async () => {
+                                    const resp = await API.post('/customer/cancelReservation', { rid, name: currentUser.email })
+                                    alert(resp.data.message)
+                                }} className='btn btn-primary m-2'>Cancel Reservation</button>
                             </div>
                             <div>
                                 <button onClick={HandleViewMenu} className='btn btn-primary m-2'>View Menu</button>

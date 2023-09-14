@@ -7,10 +7,11 @@ const Menu = ({ menu, updateMenuModel }) => {
     return (
         <div className="modal">
             <div className="modal-content" key={"modal"}>
-                <button onClick={() => { updateMenuModel(false) }}>Close</button>
+                {/* <button className='btn btn-primary close-btn' onClick={() => { updateMenuModel(false) }}><b>Close</b></button> */}
+                <img width="35" height="35" src="https://img.icons8.com/fluency/48/delete-sign.png" alt="delete-sign" onClick={() => { updateMenuModel(false) } } className='close-btn'/><br/>
                 {menu.menu.map((ele, ind) => {
                     return (
-                        <div className='cuisine_container'>
+                        <div className='Cuisine_container'>
                             <h2>{ele.name}</h2>
                             <div className='item_container_title'>
                                 <div><b>Item Name</b></div>
