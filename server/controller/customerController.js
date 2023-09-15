@@ -26,7 +26,7 @@ export const signInCustomer = async (req, res) => {
 export const signUpCustomer = async (req, res) => {
     const { email, password, visited } = req.body;
     const data = new Customer({ email, password, visited_restaurant: visited });
-    result = JSON.stringify(await data.save());
+    const result = JSON.stringify(await data.save());
     res.send(result);
 }
 

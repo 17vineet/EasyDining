@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose' ;
+import { Schema, model } from 'mongoose';
 
 const restaurantSchema = new Schema({
     email: {
@@ -21,6 +21,9 @@ const restaurantSchema = new Schema({
     },
     thumbnail_url: {
         type: String
+    },
+    images_urls: {
+        type: Array
     }
 });
 
@@ -46,24 +49,24 @@ const waitingListSchema = new Schema({
 })
 
 const diningListSchema = new Schema({
-    restaurant:{
-        type:String
+    restaurant: {
+        type: String
     },
-    customers:{
-        type:Array
+    customers: {
+        type: Array
     }
-}) ;
+});
 
 const menuSchema = new Schema({
-    restaurant:{
-        type:String
+    restaurant: {
+        type: String
     },
-    menu:{
-        type:Array
+    menu: {
+        type: Array
     }
-}) ;
+});
 
-export const Restaurant = model('restaurant', restaurantSchema) ;
+export const Restaurant = model('restaurant', restaurantSchema);
 
 export const Customer = model('customer', customerSchema);
 
@@ -71,4 +74,4 @@ export const WaitingList = model('waiting', waitingListSchema);
 
 export const DiningList = model('dining', diningListSchema);
 
-export const Menu = model('menu',menuSchema)
+export const Menu = model('menu', menuSchema)

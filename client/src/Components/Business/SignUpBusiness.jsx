@@ -26,6 +26,11 @@ const SignUp = () => {
         const file = event.target.files[0];
         setSelectedFile(file);
     };
+    const handleFileChangeforMultipleUpload = (event) => {
+        const file = event.target.files;
+        console.log(file)
+        setSelectedFile(file);
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -39,12 +44,30 @@ const SignUp = () => {
         if (selectedFile) {
             const formData = new FormData();
             formData.append('images', selectedFile);
-
+            console.log(selectedFile)
             const result=await API.post("/cloudinary/thumbnail",formData)
             console.log(result.data.img_urls[0]);
             setFormData((prev)=>({
                 ...prev,
                 thumbnail_url:result.data.img_urls[0]
+            }))
+           
+
+        }
+    };
+
+    const uploadImages = async (e) => {
+        e.preventDefault();
+        if (selectedFile) {
+            const formData = new FormData();
+            for (let i = 0; i < selectedFile.length; i++) {
+                formData.append('images', selectedFile[i]);
+              }
+            const result=await API.post("/cloudinary/images",formData)
+            console.log(result.data.img_urls);
+            setFormData((prev)=>({
+                ...prev,
+                images_urls:result.data.img_urls
             }))
            
 
@@ -183,6 +206,25 @@ const SignUp = () => {
                             <Button onClick={uploadThumbnail}>Upload</Button>
                         </form>
                     </Grid>
+                    <Grid item xs={12}>
+                        Images &nbsp;
+                        <form method='post' id="upload-image-form" >
+                            <Button
+                                variant="contained"
+                                component="label"
+                            >
+                                Select File
+                                <input
+                                    type="file"
+                                    name="images"
+                                    onChange={handleFileChangeforMultipleUpload}
+                                    multiple
+                                />
+                            </Button>
+                            <Button onClick={uploadImages}>Upload</Button>
+                        </form>
+                    </Grid>
+
                 </Grid> <br />
                 <Button type="submit" variant="contained" color="primary" disabled={loading} fullWidth>
                     Submit

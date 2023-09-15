@@ -7,10 +7,11 @@ import { useAuth } from '../../../contexts/AuthContext'
 
 const RestaurantPage = () => {
     const { rid } = useParams();
-    const {currentUser} = useAuth() ;
+    const { currentUser } = useAuth();
     const [restdetails, setDetails] = useState({})
     const [restmenu, setMenu] = useState({})
-    const [menuModel,setMenuModel]=useState(false);
+    const [menuModel, setMenuModel] = useState(false);
+    const [img_urls, setImg_urls] = useState([])
     
     useEffect(() => {
         fetchData();
@@ -21,19 +22,20 @@ const RestaurantPage = () => {
         const resp = await API.post('/restaurant/getRestaurantMenu', { rid })
 
         setDetails(details.data)
+        setImg_urls(details.data.images_urls)
         setMenu(resp.data)
     }
 
     const HandleViewMenu = () => {
         setMenuModel(true);
     }
-    const updateMenuModel=(newstate)=>{
+    const updateMenuModel = (newstate) => {
         setMenuModel(newstate)
     }
     return (
         <>
             <h1>Restaurant Page</h1>
-            {menuModel && <Menu updateMenuModel={updateMenuModel} menu={restmenu}/>}
+            {menuModel && <Menu updateMenuModel={updateMenuModel} menu={restmenu} />}
             <div>
                 <div className="main">
                     <div className="background">
@@ -51,6 +53,15 @@ const RestaurantPage = () => {
                                 <h6>{restdetails.range}</h6>
                             </div>
                         </div>
+                        <div>
+                                {
+                                    img_urls.map((ele) => {
+                                        return (
+                                            <img src={ele} height={200} width={200} style={{'margin':'10px','borderRadius':'10px'}}/>
+                                        )
+                                    })
+                                }
+                            </div>
                         <div className="content2">
                             <div>
                                 <button onClick={async () => {
@@ -67,6 +78,7 @@ const RestaurantPage = () => {
                             <div>
                                 <button onClick={HandleViewMenu} className='btn btn-primary m-2'>View Menu</button>
                             </div>
+                           
                         </div>
                     </div>
                 </div>

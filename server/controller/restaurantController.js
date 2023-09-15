@@ -6,7 +6,7 @@ export const signInRestaurant = async (req, res) => {
     if (data) {
         let pass = data.password;
         if (pass === password) {
-            const { _id, email, name, range, thumbnail_url, sitting_capacity, location_url } = data;
+            const { _id, email, name, range, thumbnail_url, sitting_capacity, location_url, images_urls } = data;
             const newData = {
                 _id: _id,
                 email: email,
@@ -14,21 +14,22 @@ export const signInRestaurant = async (req, res) => {
                 thumbnail_url: thumbnail_url,
                 sitting_capacity: sitting_capacity,
                 location_url: location_url,
+                images_urls: images_urls,
                 authenticated: true
             }
             res.send(newData);
         }
         else {
-            res.send({ authenticated: false, message:"Invalid Credentials" })
+            res.send({ authenticated: false, message: "Invalid Credentials" })
         }
     }
-    else{
-        res.send({authenticated:false,message:"User account not found"})
+    else {
+        res.send({ authenticated: false, message: "User account not found" })
     }
 }
 
 export const signUpRestaurant = async (req, res) => {
-    const { email, password, name, location_url, sitting_capacity, range, thumbnail_url } = req.body;
+    const { email, password, name, location_url, sitting_capacity, range, thumbnail_url, images_urls } = req.body;
     let data = new Restaurant({
         email,
         password,
@@ -36,7 +37,8 @@ export const signUpRestaurant = async (req, res) => {
         location_url,
         sitting_capacity: Number(sitting_capacity),
         range,
-        thumbnail_url
+        thumbnail_url,
+        images_urls
     })
     const result = await data.save();
 
@@ -56,7 +58,7 @@ export const signUpRestaurant = async (req, res) => {
 export const getRestaurantInfo = async (req, res) => {
     const { rid } = req.body;
     const response = await Restaurant.findOne({ "_id": rid })
-    const { _id, email, name, range, thumbnail_url, sitting_capacity, location_url } = response;
+    const { _id, email, name, range, thumbnail_url, sitting_capacity, location_url,images_urls } = response;
     const newData = {
         _id,
         email,
@@ -65,6 +67,7 @@ export const getRestaurantInfo = async (req, res) => {
         thumbnail_url,
         sitting_capacity,
         location_url,
+        images_urls,
     }
     console.log(newData)
 
@@ -206,11 +209,11 @@ export const addCuisine = async (req, res) => {
 }
 
 export const updateThumbnail = async (req, res) => {
-    const { rid,thumbnail_url } = req.body;
+    const { rid, thumbnail_url } = req.body;
 
     const response = await Restaurant.updateOne(
         { "_id": rid },
-        { $set: { thumbnail_url:thumbnail_url }})
+        { $set: { thumbnail_url: thumbnail_url } })
     console.log(response)
 
     res.send(JSON.stringify(response))
