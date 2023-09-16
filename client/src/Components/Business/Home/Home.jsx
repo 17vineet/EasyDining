@@ -12,11 +12,14 @@ const Home = () => {
   const [updated, setUpdated] = useState(0);
   const { userType, currentUser } = useAuth();
   const navigate = useNavigate();
-  const [thumbnail,setThumbnail] = useState(currentUser.thumbnail_url)
+  const [thumbnail, setThumbnail] = useState(currentUser.thumbnail_url)
+  const [img_urls, setImg_urls] = useState([])
+  const [imgIndex,setimgIndex] = useState(0)
 
   useEffect(() => {
-    console.log(currentUser);
-  }, []);
+    console.log(currentUser.images_urls);
+    setImg_urls(currentUser.images_urls)
+  }, [imgIndex]);
 
   const handleUpdate = () => {
     setUpdated(prev => prev + 1);
@@ -29,10 +32,14 @@ const Home = () => {
 
     const result = await API.post("/cloudinary/thumbnail", formData)
     console.log(result.data.img_urls[0]);
-    const res = await API.post("/restaurant/updateThumbnail",{rid:currentUser._id,"thumbnail_url":result.data.img_urls[0]})
+    const res = await API.post("/restaurant/updateThumbnail", { rid: currentUser._id, "thumbnail_url": result.data.img_urls[0] })
     setThumbnail(result.data.img_urls[0])
     console.log(res.data)
   };
+
+  const handleImgChange = (ind)=>{
+    setimgIndex(ind)
+  }
 
   return (
     <>
@@ -46,7 +53,7 @@ const Home = () => {
                   name="images"
                   onChange={handleFileChange}
                 />
-                <img src={thumbnail} className="thumbnail_img" style={{'zIndex':2}} />
+                <img src={thumbnail} className="thumbnail_img" style={{ 'zIndex': 2 }} />
                 <div className="thumbnail_img">Black</div>
               </div>
             </div>
@@ -61,6 +68,26 @@ const Home = () => {
             </div>
           </div>
           <div className="content2">
+            <div className='RestaurantImgHolder'>
+              <div className='ImageHolderLeft'>
+                <img src={img_urls[imgIndex]} height={420} width={400} />
+              </div>
+              <div className='ImageHolderRight'>
+                {
+                  img_urls.map((ele, index) => {
+
+                    return (
+                      <img src={ele} height={200} width={200} style={{ 'margin': '10px', 'borderRadius': '10px' }} onClick={()=>{
+                        handleImgChange(index)
+                      }} />
+                    )
+                  })
+                }
+              </div>
+            </div>
+
+
+
             <h5>Waiting Time(in minutes)</h5>
             <input type="number" defaultValue={0} />
             <button>Update Waiting time</button>

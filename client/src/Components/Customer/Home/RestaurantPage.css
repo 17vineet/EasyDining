@@ -50,7 +50,44 @@
     padding: 10px;
 }
 
-.content2{
+.content2 {
     background-color: rgb(118, 199, 107);
     padding: 20px 10px;
+}
+
+.restaurantImgHolder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background-color: aqua;
+}
+
+.restaurantImgHolder img {
+    border-radius: 10px;
+}
+
+.imageHolderLeft {
+    width: 40%;
+    background-color: aquamarine;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.imageHolderRight {
+    display: flex;
+    width: 60%;
+    flex-wrap: wrap;
+    overflow: auto;
+    max-height: 400px;
+    justify-content: start;
+    align-items: center;
+}
+
+.restaurant_images {}
+
+.restaurant_images:hover {
+    cursor: pointer;
+    opacity: 0.8;
 }

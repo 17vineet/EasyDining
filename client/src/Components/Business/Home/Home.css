@@ -4,7 +4,7 @@
     padding: 10px;
     /* overflow:scroll; */
     display: grid;
-    height:auto
+    height: auto
 }
 
 .background {
@@ -44,17 +44,17 @@
     border-radius: 50%;
 }
 
-.inputThumbnail{
+.inputThumbnail {
     opacity: 0%;
     position: absolute;
     z-index: 1;
     overflow: hidden;
     left: 50%;
     top: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
 }
 
-.inputThumbnail:hover{
+.inputThumbnail:hover {
     opacity: 100%;
 }
 
@@ -70,17 +70,49 @@
     padding: 10px;
 }
 
-.content2{
+.content2 {
     background-color: blueviolet;
     padding: 20px 10px;
 }
 
-.content3{
+.content3 {
     display: flex;
 }
-.contentLeft{
+
+.contentLeft {
     width: 50%;
 }
-.contentRight{
-    width:50%
+
+.contentRight {
+    width: 50%
+}
+
+.RestaurantImgHolder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background-color: aqua;
+}
+
+.RestaurantImgHolder img {
+    border-radius: 10px;
+}
+
+.ImageHolderLeft {
+    width: 40%;
+    background-color: aquamarine;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.ImageHolderRight {
+    display: flex;
+    width: 60%;
+    flex-wrap: wrap;
+    overflow: auto;
+    max-height: 400px;
+    justify-content: start;
+    align-items: center;
 }

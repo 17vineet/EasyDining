@@ -14,6 +14,12 @@ const CustomerSignIn = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if(currentUser){
+      navigate('/') ;
+    }
+    else{
+      setUserType('Customer') ;
+    }
   }, [])
 
   const handleSubmit = async (e) => {

@@ -14,14 +14,14 @@ export const AuthProvider = ({ children }) => {
     const [userType, setUserType] = useState(null) ;
     // const location = useLocation() ;
 
-    // const loadUser = ()=> {
-    //     const token = JSON.parse(localStorage.getItem('profile')) ;
-    //     if(token){
-    //         const decodecToken = jwtDecode(token) ;
-    //         setCurrentUser(decodecToken) ; 
-    //         setUserType(localStorage.getItem('userType')) ;
-    //     }
-    // }
+    const loadUser = ()=> {
+        const token = JSON.parse(localStorage.getItem('profile')) ;
+        if(token){
+            const decodecToken = jwtDecode(token) ;
+            setCurrentUser(decodecToken) ; 
+            setUserType(localStorage.getItem('userType')) ;
+        }
+    }
 
     const value = { userType, currentUser, setUserType, setCurrentUser }
 
