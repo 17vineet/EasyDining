@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken' ;
+
 import { Restaurant, WaitingList, DiningList, Menu } from "../Database/models.js";
 
 export const signInRestaurant = async (req, res) => {
@@ -10,14 +12,15 @@ export const signInRestaurant = async (req, res) => {
             const newData = {
                 _id: _id,
                 email: email,
-                name: name, range: range,
+                name: name, 
+                range: range,
                 thumbnail_url: thumbnail_url,
                 sitting_capacity: sitting_capacity,
                 location_url: location_url,
-                images_urls: images_urls,
-                authenticated: true
+                images_urls: images_urls
             }
-            res.send(newData);
+            const token = jwt.sign(newData, 'test') ; 
+            res.send({token, authenticated: true});
         }
         else {
             res.send({ authenticated: false, message: "Invalid Credentials" })
@@ -30,7 +33,7 @@ export const signInRestaurant = async (req, res) => {
 
 export const signUpRestaurant = async (req, res) => {
     const { email, password, name, location_url, sitting_capacity, range, thumbnail_url, images_urls } = req.body;
-    let data = new Restaurant({
+    const data = new Restaurant({
         email,
         password,
         name,
@@ -52,7 +55,9 @@ export const signUpRestaurant = async (req, res) => {
     await data2.save();
     await data3.save();
 
-    res.send(JSON.stringify(result));
+    const newData = {email, name, location_url, sitting_capacity, range, thumbnail_url, images_urls} ;
+    const token = jwt.sign(newData, 'test') ; 
+    res.send(token);
 }
 
 export const getRestaurantInfo = async (req, res) => {

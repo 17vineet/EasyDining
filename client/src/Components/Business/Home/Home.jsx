@@ -15,7 +15,7 @@ const Home = () => {
   const [thumbnail,setThumbnail] = useState(currentUser.thumbnail_url)
 
   useEffect(() => {
-    if (currentUser == null) navigate('/');
+    console.log(currentUser);
   }, []);
 
   const handleUpdate = () => {

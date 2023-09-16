@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Card, Button, Alert ,Container} from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom'
+import jwtDecode from 'jwt-decode';
 
 import { useAuth } from '../../contexts/AuthContext';
 import API from "../../axios";
@@ -36,7 +37,11 @@ const CustomerSignUp = () => {
       setLoading(true);
 
       const resp=await API.post("/customer/signup",formData)
-      setCurrentUser(resp.data) ;
+
+      const decodedToken = jwtDecode(resp.data) ;
+      setCurrentUser(decodedToken) ;
+      localStorage.setItem('profile', JSON.stringify(resp.data)) ;
+      localStorage.setItem('userType', 'customer') ;
 
     } catch (error) {
       console.log(error);

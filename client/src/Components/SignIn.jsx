@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Card, Button, Alert, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import jwtDecode from 'jwt-decode' ;
+
 import API from '../axios'
 import { useAuth } from '../contexts/AuthContext';
 
@@ -12,12 +14,6 @@ const CustomerSignIn = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (currentUser) {
-      navigate('/home');
-    }
-    else {
-      setUserType('Customer');
-    }
   }, [])
 
   const handleSubmit = async (e) => {
@@ -27,7 +23,10 @@ const CustomerSignIn = () => {
     const resp = await API.post(`${userType}/signin`, formData);
     const authenticated = resp.data.authenticated ;
     if (authenticated == true) {
-      setCurrentUser(resp.data) ;
+      const decodedToken = jwtDecode(resp.data.token);
+      setCurrentUser(decodedToken) ;
+      localStorage.setItem('profile', JSON.stringify(resp.data.token)) ;
+      localStorage.setItem('userType', userType) ;
       if(userType == 'Restaurant')  navigate('business/home') ;
       else  navigate('/home') ;
     }

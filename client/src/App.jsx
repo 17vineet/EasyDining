@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useEffect} from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import CustomerHome from './Components/Customer/Home/Home';
@@ -7,11 +7,12 @@ import CustomerSignUp from './Components/Customer/SignUpCustomer';
 import BusinessHome from './Components/Business/Home/Home';
 import BusinessSignUp from './Components/Business/SignUpBusiness';
 import RestaurantPage from './Components/Customer/Home/RestaurantPage'
-import SignIn from './Components/SignIn' ;
-import Navbar from './Components/Navbar' ;
+import SignIn from './Components/SignIn';
+import Navbar from './Components/Navbar';
 import Menu from './Components/Business/Menu/Menu';
 
 export const App = () => {
+
   return (
     <BrowserRouter>
       <Navbar />

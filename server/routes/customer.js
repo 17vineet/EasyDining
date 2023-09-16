@@ -1,5 +1,6 @@
 import express from 'express' ;
 
+import auth from '../middlewares/auth.js' ;
 import { 
     signInCustomer, 
     signUpCustomer, 
@@ -13,8 +14,7 @@ const router = express.Router() ;
 router.post('/signin', signInCustomer) ;
 router.post('/signup', signUpCustomer) ;
 router.get('/allRestaurants', getAllRestaurants) ;
-router.post('/insertWaitingList', insertWaitingList) ;
-router.post('/cancelReservation', cancelReservation) ;
-
+router.post('/insertWaitingList', auth, insertWaitingList) ;
+router.post('/cancelReservation', auth, cancelReservation) ;
 
 export default router ;

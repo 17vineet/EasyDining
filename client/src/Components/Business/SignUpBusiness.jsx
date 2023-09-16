@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Typography, Input, Grid, Hidden } from '@mui/material';
-import { Textarea } from '@mui/joy';
+import jwtDecode from 'jwt-decode';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../contexts/AuthContext';
@@ -44,9 +44,7 @@ const SignUp = () => {
         if (selectedFile) {
             const formData = new FormData();
             formData.append('images', selectedFile);
-            console.log(selectedFile)
             const result=await API.post("/cloudinary/thumbnail",formData)
-            console.log(result.data.img_urls[0]);
             setFormData((prev)=>({
                 ...prev,
                 thumbnail_url:result.data.img_urls[0]
@@ -76,10 +74,12 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
         const resp=await API.post("/restaurant/signup",formData)
-        console.log(resp);
-        setCurrentUser(resp.data) ;
+        
+        const decodedToken = jwtDecode(resp.data) ;
+        setCurrentUser(decodedToken) ;
+        localStorage.setItem('profile', JSON.stringify(resp.data)) ;
+        localStorage.setItem('userType', 'restaurant') ;
         navigate('/business/home');
         setLoading(false);
     };

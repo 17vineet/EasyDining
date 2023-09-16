@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+
 import { Customer, WaitingList, Restaurant } from "../Database/models.js";
 
 export const signInCustomer = async (req, res) => {
@@ -5,14 +7,9 @@ export const signInCustomer = async (req, res) => {
     let data = await Customer.findOne({ email: email });
     if (data) {
         let pass = data.password;
-        console.log(data.password);
         if (pass === password) {
-            const { email } = data;
-            const newData = {
-                email: email,
-                authenticated: true
-            }
-            res.send(newData);
+            const token = jwt.sign({ email: data.email }, 'test') ; 
+            res.send({token, authenticated : true});
         }
         else {
             res.send({ authenticated: false, message: "Invalid Credentials" });
@@ -26,8 +23,11 @@ export const signInCustomer = async (req, res) => {
 export const signUpCustomer = async (req, res) => {
     const { email, password, visited } = req.body;
     const data = new Customer({ email, password, visited_restaurant: visited });
-    const result = JSON.stringify(await data.save());
-    res.send(result);
+    const result = await data.save();
+
+    const newData = {email : result.email, visited : result.visited_restaurant} ;
+    const token = jwt.sign(newData, 'test') ;
+    res.send(token);
 }
 
 export const getAllRestaurants = async (req, res) => {
@@ -39,16 +39,10 @@ export const getAllRestaurants = async (req, res) => {
 export const insertWaitingList = async (req, res) => {
     const { rid, name } = req.body;
 
-    console.log(name);
-
     const customersList = await WaitingList.findOne({ restaurant: rid });
 
-    console.log(customersList);
-
-    for(let d of customersList.customers)
-    {
-        if(d.cname===name)
-        {
+    for(let d of customersList.customers){
+        if(d.cname===name){
             res.send({message:"You have already reserved a table here"})
             return
         }
@@ -59,12 +53,10 @@ export const insertWaitingList = async (req, res) => {
         { $push: { customers: { cname: name } } }
     );
 
-    if(resp)
-    {
+    if(resp){
         res.send({message:"Table Reserved Successfully"});
     }
-    else
-    {
+    else{
         res.send({message:"Error, Please retry after some time"})
     }
 }
@@ -75,12 +67,10 @@ export const cancelReservation = async (req, res) => {
         cname:name
     }}})
 
-    if(resp.modifiedCount==1)
-    {
+    if(resp.modifiedCount==1){
         res.send({message:"Reservation Cancelled Successfully"})
     }
-    else
-    {
+    else{
         res.send({message:"You have not reserved a table here"})
     }
 }

@@ -13,6 +13,7 @@ const Navbar = () => {
     const typeOfUser = e.target.id;
     if (currentUser) {
       setCurrentUser(null) ;
+      localStorage.clear() ;
       setUserType('Customer');
       navigate('/');
     }
