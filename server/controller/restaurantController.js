@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken' ;
+import jwt from 'jsonwebtoken';
 
 import { Restaurant, WaitingList, DiningList, Menu } from "../Database/models.js";
 
@@ -8,19 +8,9 @@ export const signInRestaurant = async (req, res) => {
     if (data) {
         let pass = data.password;
         if (pass === password) {
-            const { _id, email, name, range, thumbnail_url, sitting_capacity, location_url, images_urls } = data;
-            const newData = {
-                _id: _id,
-                email: email,
-                name: name, 
-                range: range,
-                thumbnail_url: thumbnail_url,
-                sitting_capacity: sitting_capacity,
-                location_url: location_url,
-                images_urls: images_urls
-            }
-            const token = jwt.sign(newData, 'test') ; 
-            res.send({token, authenticated: true});
+            delete data._doc.password ;
+            const token = jwt.sign(data._doc, 'test');
+            res.send({ token, authenticated: true });
         }
         else {
             res.send({ authenticated: false, message: "Invalid Credentials" })
@@ -32,17 +22,7 @@ export const signInRestaurant = async (req, res) => {
 }
 
 export const signUpRestaurant = async (req, res) => {
-    const { email, password, name, location_url, sitting_capacity, range, thumbnail_url, images_urls } = req.body;
-    const data = new Restaurant({
-        email,
-        password,
-        name,
-        location_url,
-        sitting_capacity: Number(sitting_capacity),
-        range,
-        thumbnail_url,
-        images_urls
-    })
+    const data = new Restaurant({...req.body}) ;
     const result = await data.save();
 
     const data1 = new WaitingList({ restaurant: result._id });
@@ -55,28 +35,18 @@ export const signUpRestaurant = async (req, res) => {
     await data2.save();
     await data3.save();
 
-    const newData = {email, name, location_url, sitting_capacity, range, thumbnail_url, images_urls} ;
-    const token = jwt.sign(newData, 'test') ; 
+    delete result._doc.password ; 
+    const token = jwt.sign(result._doc, 'test');
     res.send(token);
 }
 
 export const getRestaurantInfo = async (req, res) => {
     const { rid } = req.body;
     const response = await Restaurant.findOne({ "_id": rid })
-    const { _id, email, name, range, thumbnail_url, sitting_capacity, location_url,images_urls } = response;
-    const newData = {
-        _id,
-        email,
-        name,
-        range,
-        thumbnail_url,
-        sitting_capacity,
-        location_url,
-        images_urls,
-    }
-    console.log(newData)
 
-    res.send(JSON.stringify(newData))
+    delete response._doc.password ;
+
+    res.send(JSON.stringify(response._doc)) ;
 }
 
 export const getWaitingList = async (req, res) => {
@@ -221,5 +191,19 @@ export const updateThumbnail = async (req, res) => {
         { $set: { thumbnail_url: thumbnail_url } })
     console.log(response)
 
+    res.send(JSON.stringify(response))
+}
+
+export const deleteRestaurantImage = async (req, res) => {
+    const { rid, img_url } = req.body;
+
+    const response = await Restaurant.updateOne(
+        { "_id": rid },
+        {
+            $pull: {
+                "images_urls": img_url
+            }
+        }
+    )
     res.send(JSON.stringify(response))
 }

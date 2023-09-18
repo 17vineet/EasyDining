@@ -14,7 +14,8 @@ import {
     getMenu,
     addCuisine,
     getRestaurantInfo,
-    updateThumbnail
+    updateThumbnail,
+    deleteRestaurantImage
 } from '../controller/restaurantController.js';
 
 const router = express.Router();
@@ -33,5 +34,6 @@ router.post('/getRestaurantMenu', getMenu);
 router.post('/addNewCuisine', addCuisine);
 router.post('/restaurantInfo', getRestaurantInfo);
 router.post('/updateThumbnail', updateThumbnail);
+router.post('/deleteRestaurantImage',deleteRestaurantImage);
 
 export default router;

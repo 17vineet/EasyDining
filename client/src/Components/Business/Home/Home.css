@@ -116,3 +116,36 @@
     justify-content: start;
     align-items: center;
 }
+
+.image_view {
+    height: 200px;
+    width: 200px;
+    margin: 10px;
+    position: relative;
+}
+
+.picture {
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.deletediv {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+}
+
+.deletediv img {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.deletediv:hover img {
+    display: block;
+}

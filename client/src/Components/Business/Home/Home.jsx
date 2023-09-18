@@ -17,7 +17,6 @@ const Home = () => {
   const [imgIndex,setimgIndex] = useState(0)
 
   useEffect(() => {
-    console.log(currentUser.images_urls);
     setImg_urls(currentUser.images_urls)
   }, [imgIndex]);
 
@@ -40,7 +39,28 @@ const Home = () => {
   const handleImgChange = (ind)=>{
     setimgIndex(ind)
   }
+  const deleteRestaurantImage=async(url,index)=>{
+    const ans=confirm("Are you sure you want to delete the Image");
+    if(ans){
+      const resp=await API.post("/cloudinary/deleteImage",{img_url:url});
+      console.log(resp.data);
+      if(resp.data.result.result=='ok'){
+        alert("Image Deleted successfully")
+        const resp2=await API.post("/restaurant/deleteRestaurantImage",{rid:currentUser._id,img_url:url})
 
+       if(resp2.data.matchedCount==1){
+        const arr=[...img_urls];
+        // const arr = arr.slice(0,index).concat(arr.slice(index));
+        arr.splice(index,1);
+        setImg_urls(arr);
+
+       }
+      }
+      else{
+        alert("Image deletion failed")
+      }
+    }
+  }
   return (
     <>
       <div className="main">
@@ -77,12 +97,20 @@ const Home = () => {
                   img_urls.map((ele, index) => {
 
                     return (
-                      <img src={ele} height={200} width={200} style={{ 'margin': '10px', 'borderRadius': '10px' }} onClick={()=>{
-                        handleImgChange(index)
-                      }} />
+                      <div className='image_view'>
+                        <img className="picture" src={ele} onClick={() => {
+                          handleImgChange(index)
+                        }} />
+                        <div className='deletediv'>
+                          <img width="25" height="25" src="https://img.icons8.com/fluency/48/delete-sign.png" alt="delete-sign" onClick={()=>{
+                            deleteRestaurantImage(ele,index)
+                          }} />
+                        </div>
+                      </div>
                     )
                   })
                 }
+                <button className='btn btn-primary'>Add Images</button>
               </div>
             </div>
 

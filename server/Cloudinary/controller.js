@@ -41,3 +41,32 @@ export const uploadThumbnail = async (req, res) => {
             res.status(500).json({ error: 'An error occurred during upload' });
         });
 };
+
+export const deleteImage = async (req, res) => {
+    const {img_url}=req.body
+    const publicId=getPublicIdFromImageUrl(img_url);
+    console.log(publicId)
+    try {
+        const result = await cloudinary.uploader.destroy(publicId);
+        res.json({ message: 'Image deleted successfully', result });
+      } catch (error) {
+        console.error('Error deleting image:', error);
+        res.status(500).json({ error: 'Error deleting image' });
+      }
+
+
+    
+};
+
+function getPublicIdFromImageUrl(imageUrl) {
+    // Use a more flexible regular expression to match the public ID
+    const regex = /\/v\d+\/([\w_\-\/]+)/;
+    const match = imageUrl.match(regex);
+  
+    if (match) {
+      const publicId = match[1];
+      return publicId;
+    }
+  
+    return null;
+  }
