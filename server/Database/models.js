@@ -24,6 +24,9 @@ const restaurantSchema = new Schema({
     },
     images_urls: {
         type: Array
+    },
+    refresh_token: {
+        type: String
     }
 });
 
@@ -36,6 +39,9 @@ const customerSchema = new Schema({
     },
     visited_restaurant: {
         type: Array
+    },
+    refresh_token: {
+        type: String
     }
 });
 

@@ -2,13 +2,17 @@ import jwt from 'jsonwebtoken' ;
 
 const auth = async (req, res, next) => {
 
-    const token = req.headers.authorization.split(" ")[1];
-    try {
-        jwt.verify(token, 'test');
+    const authHeader = req.headers.authorization || req.headers.Authorization  ; 
+
+    if(!authHeader?.startsWith('Bearer ')) return res.sendStatus(401) ;
+
+    const token = authHeader.split(' ')[1] ;
+    jwt.verify(token, 'test', (err, decoded) => {
+        if(err) return res.sendStatus(403) ;
+        console.log(decoded);
         next() ;
-    } catch (error) {
-        console.log(error);
-    }
+    });
+   
 }
 
 export default auth ;

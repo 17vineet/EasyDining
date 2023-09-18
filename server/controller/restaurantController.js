@@ -17,10 +17,19 @@ export const signInRestaurant = async (req, res) => {
                 thumbnail_url: thumbnail_url,
                 sitting_capacity: sitting_capacity,
                 location_url: location_url,
-                images_urls: images_urls
+                images_urls: images_urls,
+                userType : 'restaurant'
             }
-            const token = jwt.sign(newData, 'test') ; 
-            res.send({token, authenticated: true});
+
+            // creating JWT
+            const accessToken = jwt.sign(newData, 'test', {expiresIn : '30s'}) ; 
+            const refreshToken = jwt.sign(newData, 'test', {expiresIn : '1d'}) ; 
+
+            // saving the refreshToken with the current user in DB
+            await Restaurant.findByIdAndUpdate(data._id, {...data._doc, refresh_token : refreshToken}, {new: true}) ;
+
+            res.cookie('jwt', refreshToken, { httpOnly: true, maxAge : 24 * 60 * 60 * 1000 }) ;
+            res.send({accessToken, authenticated: true});
         }
         else {
             res.send({ authenticated: false, message: "Invalid Credentials" })
@@ -55,9 +64,18 @@ export const signUpRestaurant = async (req, res) => {
     await data2.save();
     await data3.save();
 
-    const newData = {email, name, location_url, sitting_capacity, range, thumbnail_url, images_urls} ;
-    const token = jwt.sign(newData, 'test') ; 
-    res.send(token);
+    const newData = {email, name, location_url, sitting_capacity, range, thumbnail_url, images_urls, userType : 'restaurant'} ;
+    
+    // creating JWT
+    const accessToken = jwt.sign(newData, 'test', {expiresIn : '30s'}) ; 
+    const refreshToken = jwt.sign(newData, 'test', {expiresIn : '1d'}) ; 
+
+    // saving the refreshToken with the current user in DB
+    await Restaurant.findByIdAndUpdate(result._id, {...result._doc, refresh_token : refreshToken}, {new: true}) ;
+    console.log(updated);
+
+    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge : 24 * 60 * 60 * 1000 }) ;
+    res.send(accessToken);
 }
 
 export const getRestaurantInfo = async (req, res) => {

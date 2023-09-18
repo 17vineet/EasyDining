@@ -8,8 +8,16 @@ export const signInCustomer = async (req, res) => {
     if (data) {
         let pass = data.password;
         if (pass === password) {
-            const token = jwt.sign({ email: data.email }, 'test') ; 
-            res.send({token, authenticated : true});
+
+            // creating JWT
+            const accessToken = jwt.sign({ email: data.email, userType : 'customer' }, 'test', {expiresIn : '30s'}) ; 
+            const refreshToken = jwt.sign({ email: data.email, userType : 'customer' }, 'test', {expiresIn : '1d'}) ; 
+
+            // saving the refreshToken with the current user in DB
+            await Customer.findByIdAndUpdate(data._id, { ...data._doc, refresh_token: refreshToken}, {new : true})
+
+            res.cookie('jwt', refreshToken, { httpOnly: true, maxAge : 24 * 60 * 60 * 1000 }) ;
+            res.send({accessToken, authenticated : true});
         }
         else {
             res.send({ authenticated: false, message: "Invalid Credentials" });
@@ -22,12 +30,20 @@ export const signInCustomer = async (req, res) => {
 
 export const signUpCustomer = async (req, res) => {
     const { email, password, visited } = req.body;
-    const data = new Customer({ email, password, visited_restaurant: visited });
+    const data = new Customer({ email, password, visited_restaurant: visited, refresh_token: "" });
     const result = await data.save();
 
-    const newData = {email : result.email, visited : result.visited_restaurant} ;
-    const token = jwt.sign(newData, 'test') ;
-    res.send(token);
+    const newData = {email : result.email, visited : result.visited_restaurant, userType : 'customer'} ;
+
+    // creating JWT
+    const accessToken = jwt.sign(newData, 'test', {expiresIn : '30s'}) ;
+    const refreshToken = jwt.sign(newData, 'test', {expiresIn : '1d'}) ;
+
+    // saving the refreshToken with the current user in DB
+    await Customer.findByIdAndUpdate(result._id, { ...result._doc, refresh_token: refreshToken}, {new : true})
+
+    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge : 24 * 60 * 60 * 1000 }) ;
+    res.send(accessToken);
 }
 
 export const getAllRestaurants = async (req, res) => {
