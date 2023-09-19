@@ -8,7 +8,7 @@ export const signInRestaurant = async (req, res) => {
     if (data) {
         let pass = data.password;
         if (pass === password) {
-            delete data._doc.password ;
+            delete data._doc.password;
             const token = jwt.sign(data._doc, 'test');
             res.send({ token, authenticated: true });
         }
@@ -22,7 +22,7 @@ export const signInRestaurant = async (req, res) => {
 }
 
 export const signUpRestaurant = async (req, res) => {
-    const data = new Restaurant({...req.body}) ;
+    const data = new Restaurant({ ...req.body });
     const result = await data.save();
 
     const data1 = new WaitingList({ restaurant: result._id });
@@ -35,7 +35,7 @@ export const signUpRestaurant = async (req, res) => {
     await data2.save();
     await data3.save();
 
-    delete result._doc.password ; 
+    delete result._doc.password;
     const token = jwt.sign(result._doc, 'test');
     res.send(token);
 }
@@ -44,9 +44,9 @@ export const getRestaurantInfo = async (req, res) => {
     const { rid } = req.body;
     const response = await Restaurant.findOne({ "_id": rid })
 
-    delete response._doc.password ;
+    delete response._doc.password;
 
-    res.send(JSON.stringify(response._doc)) ;
+    res.send(JSON.stringify(response._doc));
 }
 
 export const getWaitingList = async (req, res) => {
@@ -205,5 +205,16 @@ export const deleteRestaurantImage = async (req, res) => {
             }
         }
     )
+    res.send(JSON.stringify(response))
+}
+
+export const uploadRestaurantImages = async (req, res) => {
+    const { rid, images_urls } = req.body;
+    console.log(images_urls);
+    const response = await Restaurant.updateOne(
+        { "_id": rid },
+        { $push: { images_urls: { $each: images_urls } } })
+    console.log(response)
+
     res.send(JSON.stringify(response))
 }

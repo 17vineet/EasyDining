@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Container, Typography, Input, Grid, Hidden } from '@mui/material';
+import { TextField, Button, Container, Typography, Input, Grid, Hidden, CircularProgress } from '@mui/material';
+import DoneIcon from '@mui/icons-material/Done';
 import jwtDecode from 'jwt-decode';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -18,8 +19,10 @@ const SignUp = () => {
     });
     const [loading, setLoading] = useState(false);
     const { currentUser, setCurrentUser } = useAuth();
-    const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
+    const [uploadingImages, setUploadingImages] = useState({spinner: false, tick: false}) ;
+    const [uploadingThumbnail, setUploadingThumbnail] = useState({spinner: false, tick: false}) ;
+    const navigate = useNavigate();
 
 
     const handleFileChange = (event) => {
@@ -42,6 +45,7 @@ const SignUp = () => {
     const uploadThumbnail = async (e) => {
         e.preventDefault();
         if (selectedFile) {
+            setUploadingThumbnail({spinner: true, tick: false}) ; 
             const formData = new FormData();
             formData.append('images', selectedFile);
             const result=await API.post("/cloudinary/thumbnail",formData)
@@ -49,14 +53,17 @@ const SignUp = () => {
                 ...prev,
                 thumbnail_url:result.data.img_urls[0]
             }))
-           
-
+            setUploadingThumbnail({spinner: false, tick: true}) ; 
+        }
+        else{
+            alert('Please select an image for thumbnail !!!')
         }
     };
 
     const uploadImages = async (e) => {
         e.preventDefault();
         if (selectedFile) {
+            setUploadingImages({spinner: true, tick: false}) ; 
             const formData = new FormData();
             for (let i = 0; i < selectedFile.length; i++) {
                 formData.append('images', selectedFile[i]);
@@ -67,8 +74,10 @@ const SignUp = () => {
                 ...prev,
                 images_urls:result.data.img_urls
             }))
-           
-
+            setUploadingImages({spinner: false, tick: true}) ; 
+        }
+        else{
+            alert('Please select some images !!!')
         }
     };
 
@@ -203,7 +212,11 @@ const SignUp = () => {
                                     onChange={handleFileChange}
                                 />
                             </Button>
-                            <Button onClick={uploadThumbnail}>Upload</Button>
+                            {
+                                uploadingThumbnail.spinner ? <CircularProgress /> 
+                                    : uploadingThumbnail.tick ? <DoneIcon />
+                                    : <Button onClick={uploadThumbnail}>Upload</Button>
+                            }
                         </form>
                     </Grid>
                     <Grid item xs={12}>
@@ -221,7 +234,11 @@ const SignUp = () => {
                                     multiple
                                 />
                             </Button>
-                            <Button onClick={uploadImages}>Upload</Button>
+                            {
+                                uploadingImages.spinner ? <CircularProgress /> 
+                                    : uploadingImages.tick ?  <DoneIcon />
+                                    : <Button onClick={uploadImages}>Upload</Button>
+                            }
                         </form>
                     </Grid>
 

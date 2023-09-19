@@ -10,12 +10,13 @@ import API from '../../../axios';
 const Home = () => {
 
   const [updated, setUpdated] = useState(0);
-  const { userType, currentUser } = useAuth();
+  const { currentUser, setCurrentUser } = useAuth();
   const navigate = useNavigate();
   const [thumbnail, setThumbnail] = useState(currentUser.thumbnail_url)
   const [img_urls, setImg_urls] = useState([])
-  const [imgIndex,setimgIndex] = useState(0)
-
+  const [imgIndex, setimgIndex] = useState(0)
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [uploadingImages, setUploadingImages] = useState({ spinner: false, tick: false });
   useEffect(() => {
     setImg_urls(currentUser.images_urls)
   }, [imgIndex]);
@@ -36,27 +37,56 @@ const Home = () => {
     console.log(res.data)
   };
 
-  const handleImgChange = (ind)=>{
+  const handleImgChange = (ind) => {
     setimgIndex(ind)
   }
-  const deleteRestaurantImage=async(url,index)=>{
-    const ans=confirm("Are you sure you want to delete the Image");
-    if(ans){
-      const resp=await API.post("/cloudinary/deleteImage",{img_url:url});
-      console.log(resp.data);
-      if(resp.data.result.result=='ok'){
-        alert("Image Deleted successfully")
-        const resp2=await API.post("/restaurant/deleteRestaurantImage",{rid:currentUser._id,img_url:url})
 
-       if(resp2.data.matchedCount==1){
-        const arr=[...img_urls];
-        // const arr = arr.slice(0,index).concat(arr.slice(index));
-        arr.splice(index,1);
-        setImg_urls(arr);
+  const handleFileChangeforMultipleUpload = (event) => {
+    const file = event.target.files;
+    console.log(file)
+    setSelectedFile(file);
+  };
 
-       }
+  const uploadImages = async (e) => {
+    e.preventDefault();
+    if (selectedFile) {
+      setUploadingImages({ spinner: true, tick: false });
+      const formData = new FormData();
+      for (let i = 0; i < selectedFile.length; i++) {
+        formData.append('images', selectedFile[i]);
       }
-      else{
+      const result = await API.post("/cloudinary/images", formData)
+      const new_urls = result.data.img_urls;
+      console.log(new_urls)
+      setImg_urls([...img_urls, ...new_urls]);
+      setUploadingImages({ spinner: false, tick: true });
+      // setCurrentUser(prev => ({ ...prev, images_urls: [...img_urls, ...new_urls] }));
+      setCurrentUser(prev => ({ ...prev, images_urls:img_urls }));
+      await API.post("/restaurant/uploadimages", { rid: currentUser._id, images_urls: result.data.img_urls })
+    }
+    else {
+      alert('Please select some images !!!')
+    }
+  };
+
+  const deleteRestaurantImage = async (url, index) => {
+    const ans = confirm("Are you sure you want to delete the Image");
+    if (ans) {
+      const resp = await API.post("/cloudinary/deleteImage", { img_url: url });
+      console.log(resp.data);
+      if (resp.data.result.result == 'ok') {
+        alert("Image Deleted successfully")
+        const resp2 = await API.post("/restaurant/deleteRestaurantImage", { rid: currentUser._id, img_url: url })
+
+        if (resp2.data.matchedCount == 1) {
+          const arr = [...img_urls];
+          // const arr = arr.slice(0,index).concat(arr.slice(index));
+          arr.splice(index, 1);
+          setImg_urls(arr);
+
+        }
+      }
+      else {
         alert("Image deletion failed")
       }
     }
@@ -93,24 +123,34 @@ const Home = () => {
                 <img src={img_urls[imgIndex]} height={420} width={400} />
               </div>
               <div className='ImageHolderRight'>
-                {
-                  img_urls.map((ele, index) => {
+                <div>
+                  {
+                    img_urls.map((ele, index) => {
 
-                    return (
-                      <div className='image_view'>
-                        <img className="picture" src={ele} onClick={() => {
-                          handleImgChange(index)
-                        }} />
-                        <div className='deletediv'>
-                          <img width="25" height="25" src="https://img.icons8.com/fluency/48/delete-sign.png" alt="delete-sign" onClick={()=>{
-                            deleteRestaurantImage(ele,index)
-                          }} />
+                      return (
+                        <div className='image_view'>
+                          <img className="picture" src={ele} />
+                          <div className='deletediv' onClick={() => {
+                            handleImgChange(index)
+                          }}>
+                            <img width="25" height="25" src="https://img.icons8.com/fluency/48/delete-sign.png" alt="delete-sign" onClick={() => {
+                              deleteRestaurantImage(ele, index)
+                            }} />
+                          </div>
                         </div>
-                      </div>
-                    )
-                  })
-                }
-                <button className='btn btn-primary'>Add Images</button>
+                      )
+                    })
+                  }
+                </div>
+                <div>
+                  <input
+                    type="file"
+                    name="images"
+                    onChange={handleFileChangeforMultipleUpload}
+                    multiple
+                  />
+                  <button onClick={uploadImages}>Upload</button>
+                </div>
               </div>
             </div>
 

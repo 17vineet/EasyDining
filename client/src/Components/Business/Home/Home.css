@@ -106,23 +106,30 @@
     justify-content: center;
     display: flex;
 }
-
-.ImageHolderRight {
+.ImageHolderRight
+{
     display: flex;
-    width: 60%;
+    flex-direction: column;
+    width: 100%;
+}
+.ImageHolderRight div{
+    display: flex;
+    width: 100%;
     flex-wrap: wrap;
     overflow: auto;
     max-height: 400px;
     justify-content: start;
     align-items: center;
 }
-
-.image_view {
+.image_view{
+    position: relative;
+}
+.image_view{
     height: 200px;
     width: 200px;
     margin: 10px;
-    position: relative;
 }
+
 
 .picture {
     width: 100%;
