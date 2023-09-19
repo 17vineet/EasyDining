@@ -26,18 +26,16 @@ const CustomerSignIn = () => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const resp = await API.post(`${userType}/signin`, formData);
-    const authenticated = resp.data.authenticated ;
-    if (authenticated == true) {
-      const decodedToken = jwtDecode(resp.data.token);
+    try {
+      const resp = await API.post(`${userType}/signin`, formData);
+      const decodedToken = jwtDecode(resp.data.accessToken);
       setCurrentUser(decodedToken) ;
-      localStorage.setItem('profile', JSON.stringify(resp.data.token)) ;
+      localStorage.setItem('profile', JSON.stringify(resp.data.accessToken)) ;
       localStorage.setItem('userType', userType) ;
       if(userType == 'Restaurant')  navigate('business/home') ;
       else  navigate('/home') ;
-    }
-    else {
-      setError(resp.data.message);
+    } catch (error) {
+      setError(error.response.data);
     }
     setLoading(false);
   }

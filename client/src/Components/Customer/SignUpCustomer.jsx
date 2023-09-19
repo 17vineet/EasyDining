@@ -38,7 +38,7 @@ const CustomerSignUp = () => {
 
       const resp=await API.post("/customer/signup",formData)
 
-      const decodedToken = jwtDecode(resp.data) ;
+      const decodedToken = jwtDecode(resp.data.accessToken) ;
       setCurrentUser(decodedToken) ;
       localStorage.setItem('profile', JSON.stringify(resp.data)) ;
       localStorage.setItem('userType', 'customer') ;

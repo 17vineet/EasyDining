@@ -18,8 +18,8 @@ const SignUp = () => {
     });
     const [loading, setLoading] = useState(false);
     const { currentUser, setCurrentUser } = useAuth();
-    const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
+    const navigate = useNavigate();
 
 
     const handleFileChange = (event) => {
@@ -28,7 +28,6 @@ const SignUp = () => {
     };
     const handleFileChangeforMultipleUpload = (event) => {
         const file = event.target.files;
-        console.log(file)
         setSelectedFile(file);
     };
 
@@ -62,7 +61,6 @@ const SignUp = () => {
                 formData.append('images', selectedFile[i]);
               }
             const result=await API.post("/cloudinary/images",formData)
-            console.log(result.data.img_urls);
             setFormData((prev)=>({
                 ...prev,
                 images_urls:result.data.img_urls
@@ -75,10 +73,9 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const resp=await API.post("/restaurant/signup",formData)
-        
-        const decodedToken = jwtDecode(resp.data) ;
+        const decodedToken = jwtDecode(resp.data.accessToken) ;
         setCurrentUser(decodedToken) ;
-        localStorage.setItem('profile', JSON.stringify(resp.data)) ;
+        localStorage.setItem('profile', JSON.stringify(resp.data.accessToken)) ;
         localStorage.setItem('userType', 'restaurant') ;
         navigate('/business/home');
         setLoading(false);

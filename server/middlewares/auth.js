@@ -9,7 +9,6 @@ const auth = async (req, res, next) => {
     const token = authHeader.split(' ')[1] ;
     jwt.verify(token, 'test', (err, decoded) => {
         if(err) return res.sendStatus(403) ;
-        console.log(decoded);
         next() ;
     });
    
