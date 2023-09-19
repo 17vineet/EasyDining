@@ -112,8 +112,10 @@
     flex-direction: column;
     width: 100%;
 }
-.ImageHolderRight div{
+.pictureViewer{
+    background-color: bisque;
     display: flex;
+    /* flex-direction: column; */
     width: 100%;
     flex-wrap: wrap;
     overflow: auto;
@@ -121,10 +123,10 @@
     justify-content: start;
     align-items: center;
 }
+
 .image_view{
+    
     position: relative;
-}
-.image_view{
     height: 200px;
     width: 200px;
     margin: 10px;

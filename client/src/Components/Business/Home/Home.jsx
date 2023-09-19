@@ -61,7 +61,7 @@ const Home = () => {
       setImg_urls([...img_urls, ...new_urls]);
       setUploadingImages({ spinner: false, tick: true });
       // setCurrentUser(prev => ({ ...prev, images_urls: [...img_urls, ...new_urls] }));
-      setCurrentUser(prev => ({ ...prev, images_urls:img_urls }));
+      setCurrentUser(prev => ({ ...prev, images_urls: img_urls }));
       await API.post("/restaurant/uploadimages", { rid: currentUser._id, images_urls: result.data.img_urls })
     }
     else {
@@ -123,7 +123,7 @@ const Home = () => {
                 <img src={img_urls[imgIndex]} height={420} width={400} />
               </div>
               <div className='ImageHolderRight'>
-                <div>
+                <div className='pictureViewer'>
                   {
                     img_urls.map((ele, index) => {
 
@@ -149,7 +149,7 @@ const Home = () => {
                     onChange={handleFileChangeforMultipleUpload}
                     multiple
                   />
-                  <button onClick={uploadImages}>Upload</button>
+                  <button className='btn btn-primary' onClick={uploadImages}>Upload</button>
                 </div>
               </div>
             </div>
