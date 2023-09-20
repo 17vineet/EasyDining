@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken' ;
+import jwt from 'jsonwebtoken';
 
 import { Restaurant, WaitingList, DiningList, Menu } from "../Database/models.js";
 
@@ -31,17 +31,7 @@ export const signInRestaurant = async (req, res) => {
 }
 
 export const signUpRestaurant = async (req, res) => {
-    const { email, password, name, location_url, sitting_capacity, range, thumbnail_url, images_urls } = req.body;
-    const data = new Restaurant({
-        email,
-        password,
-        name,
-        location_url,
-        sitting_capacity: Number(sitting_capacity),
-        range,
-        thumbnail_url,
-        images_urls
-    })
+    const data = new Restaurant({ ...req.body });
     const result = await data.save();
 
     const data1 = new WaitingList({ restaurant: result._id });
@@ -69,20 +59,10 @@ export const signUpRestaurant = async (req, res) => {
 export const getRestaurantInfo = async (req, res) => {
     const { rid } = req.body;
     const response = await Restaurant.findOne({ "_id": rid })
-    const { _id, email, name, range, thumbnail_url, sitting_capacity, location_url,images_urls } = response;
-    const newData = {
-        _id,
-        email,
-        name,
-        range,
-        thumbnail_url,
-        sitting_capacity,
-        location_url,
-        images_urls,
-    }
-    console.log(newData)
 
-    res.send(JSON.stringify(newData))
+    delete response._doc.password;
+
+    res.send(JSON.stringify(response._doc));
 }
 
 export const getWaitingList = async (req, res) => {
@@ -225,6 +205,31 @@ export const updateThumbnail = async (req, res) => {
     const response = await Restaurant.updateOne(
         { "_id": rid },
         { $set: { thumbnail_url: thumbnail_url } })
+    console.log(response)
+
+    res.send(JSON.stringify(response))
+}
+
+export const deleteRestaurantImage = async (req, res) => {
+    const { rid, img_url } = req.body;
+
+    const response = await Restaurant.updateOne(
+        { "_id": rid },
+        {
+            $pull: {
+                "images_urls": img_url
+            }
+        }
+    )
+    res.send(JSON.stringify(response))
+}
+
+export const uploadRestaurantImages = async (req, res) => {
+    const { rid, images_urls } = req.body;
+    console.log(images_urls);
+    const response = await Restaurant.updateOne(
+        { "_id": rid },
+        { $push: { images_urls: { $each: images_urls } } })
     console.log(response)
 
     res.send(JSON.stringify(response))
