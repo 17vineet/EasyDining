@@ -12,7 +12,8 @@ import Navbar from './Components/Navbar';
 import Menu from './Components/Business/Menu/Menu';
 
 import RequireAuth from './Components/RequireAuth';
-import Unauthorized from './Components/Unauthorized' ;
+import Unauthorized from './Components/Unauthorized';
+import PersistLogin from './Components/PersistLogin';
 
 export const App = () => {
 
@@ -27,13 +28,16 @@ export const App = () => {
         <Route path='/unauthorized' element={<Unauthorized />} />
 
         {/* We want to protect these routes */}
-        <Route element={<RequireAuth userType='customer'/>} >
-          <Route path='/home' element={<CustomerHome />} />
-          <Route path='/restaurantdetails/:rid' element={<RestaurantPage />} />
-        </Route>
-        <Route element={<RequireAuth userType='restaurant'/>}>
-          <Route path='/business/home' element={<BusinessHome />} />
-          <Route path='/business/menu' element={<Menu />} />
+        <Route element={ <PersistLogin />}>
+          <Route element={<RequireAuth userType='customer' />} >
+            <Route path='/home' element={<CustomerHome />} />
+            <Route path='/restaurantdetails/:rid' element={<RestaurantPage />} />
+          </Route>
+          
+          <Route element={<RequireAuth userType='restaurant' />}>
+            <Route path='/business/home' element={<BusinessHome />} />
+            <Route path='/business/menu' element={<Menu />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
