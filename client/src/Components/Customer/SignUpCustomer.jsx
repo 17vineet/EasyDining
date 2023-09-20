@@ -8,6 +8,8 @@ import API from "../../axios";
 const CustomerSignUp = () => {
 
   const [formData, setFormData] = useState({
+    name:'',
+    phone:'',
     email : '' ,
     password : '' ,
     cpassword : ''
@@ -65,6 +67,29 @@ const CustomerSignUp = () => {
               <h2 className='text-center mb-4'>Sign Up</h2>
               {error && <Alert variant='danger'>{error}</Alert>}
               <Form onSubmit={handleSubmit}>
+
+              <Form.Group id='name'>
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control 
+                    type='text' 
+                    name='name' 
+                    value={formData.name} 
+                    onChange={handleChange} 
+                    required
+                  >
+                  </Form.Control>
+                </Form.Group>
+                <Form.Group id='Phone'>
+                  <Form.Label>Phone</Form.Label>
+                  <Form.Control 
+                    type='tel'
+                    name='phone' 
+                    value={formData.phone} 
+                    onChange={handleChange} 
+                    required
+                  >
+                  </Form.Control>
+                </Form.Group>
                 <Form.Group id='email'>
                   <Form.Label>Email</Form.Label>
                   <Form.Control 

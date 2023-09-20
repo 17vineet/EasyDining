@@ -72,9 +72,9 @@ export const getWaitingList = async (req, res) => {
 }
 
 export const insertWaitingList = async (req, res) => {
-    const { rid, name } = req.body;
+    const { rid, name ,pax,phone,email} = req.body;
 
-    console.log(name);
+    // console.log(name);
 
     const customersList = await WaitingList.findOne({ restaurant: rid });
 
@@ -82,7 +82,7 @@ export const insertWaitingList = async (req, res) => {
 
     const resp = await WaitingList.updateOne(
         { _id: customersList._id },
-        { $push: { customers: { cname: name } } }
+        { $push: { customers: { cname: name ,pax:pax,phone:phone,email} } }
     );
 
     res.send(resp);
@@ -117,17 +117,12 @@ export const getDiningList = async (req, res) => {
 
 export const insertDiningList = async (req, res) => {
 
-    const { rid, name } = req.body;
-
-    console.log(name);
-
+    const { rid, name,phone,email,pax } = req.body;
     const customersList = await DiningList.findOne({ restaurant: rid });
-
-    console.log(customersList);
 
     const resp = await DiningList.updateOne(
         { _id: customersList._id },
-        { $push: { customers: { cname: name } } }
+        { $push: { customers: { cname: name, email,phone,pax } } }
     );
 
     res.send(resp);
@@ -155,7 +150,7 @@ export const removeDiningCustomer = async (req, res) => {
 }
 
 export const addToDineIn = async (req, res) => {
-    const { rid, cname } = req.body;
+    const { rid, cname, email,phone,pax } = req.body;
 
     const diningList = await DiningList.findOne({ restaurant: rid });
 
@@ -163,7 +158,7 @@ export const addToDineIn = async (req, res) => {
 
     const resp = await DiningList.updateOne(
         { _id: diningList._id },
-        { $push: { customers: { cname } } }
+        { $push: { customers: { cname,email,phone,pax } } }
     );
 
     res.send(JSON.stringify(resp));

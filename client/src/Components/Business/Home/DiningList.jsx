@@ -15,8 +15,8 @@ function DiningList({updated}) {
   async function handleClick() {
     if (name.trim().length != 0) {
       setIsLoading(true);
-      await API.post('/restaurant/insertDiningList', { rid: currentUser._id, name: name })
-      setDine((prev) => [...prev, name]);
+      await API.post('/restaurant/insertDiningList', { rid: currentUser._id, name: name,pax:10,phone:123456789,email:"" })
+      setDine((prev) => [...prev, {name:name,pax:10}]);
       setName("");
       setIsLoading(false);
     }
@@ -40,7 +40,15 @@ function DiningList({updated}) {
   useEffect(() => {
     const fetchDiningList = async () => {
       const resp = await API.post('/restaurant/getDiningList', { rid: currentUser._id });
-      const arr = resp.data.customers.map((elem) => elem.cname);
+      const arr = resp.data.customers.map((elem) => {
+        return (
+          {
+            name:elem.cname,
+            pax:elem.pax
+          }
+        )
+      });
+      console.log(arr)
       setDine(arr);
     }
     fetchDiningList();
@@ -58,13 +66,11 @@ function DiningList({updated}) {
           return (
             <>
               <div className='element' key={index}>
-                <div className="Customer_name">{ele}</div>
+                <div className="Customer_name">{ele.name}</div>
+                <div className="Customer_name">{ele.pax}</div>
                 <button className='btn btn-primary delete_btn' onClick={() => {
                   handleDelete(index)
                 }} > <Delete /> </button>
-                {/* <button className='btn btn-primary dine_btn'  onClick={() => {
-                  handleDine(index)
-                }} > Send to Dine</button> */}
               </div>
             </>)
         })}</>)

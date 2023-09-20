@@ -96,13 +96,13 @@ const RestaurantPage = () => {
                         <div className="content2">
                             <div>
                                 <button onClick={async () => {
-                                    const resp = await axiosPrivate.post('/customer/insertWaitingList', { rid, name: currentUser.email })
+                                    const resp = await axiosPrivate.post('/customer/insertWaitingList', { rid, name: currentUser.name, email:currentUser.email,phone:currentUser.phone })
                                     alert(resp.data.message)
                                 }} className='btn btn-primary m-2'>Reserve Table</button>
                             </div>
                             <div>
                                 <button onClick={async () => {
-                                    const resp = await axiosPrivate.post('/customer/cancelReservation', { rid, name: currentUser.email })
+                                    const resp = await axiosPrivate.post('/customer/cancelReservation', { rid, email: currentUser.email })
                                     alert(resp.data.message)
                                 }} className='btn btn-primary m-2'>Cancel Reservation</button>
                             </div>

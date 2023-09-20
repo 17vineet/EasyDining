@@ -31,6 +31,9 @@ const restaurantSchema = new Schema({
 });
 
 const customerSchema = new Schema({
+    name:{
+        type:String
+    },
     email: {
         type: String
     },
@@ -42,6 +45,9 @@ const customerSchema = new Schema({
     },
     refresh_token: {
         type: String
+    },
+    phone:{
+        type:Number
     }
 });
 

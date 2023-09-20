@@ -13,14 +13,14 @@ export const signInCustomer = async (req, res) => {
             delete data._doc.refresh_token
 
             // creating JWT
-            const accessToken = jwt.sign({ ...data._doc, userType : 'customer' }, 'test', {expiresIn : '30s'}) ; 
-            const refreshToken = jwt.sign({ ...data._doc, userType : 'customer' }, 'test', {expiresIn : '1d'}) ; 
+            const accessToken = jwt.sign({ ...data._doc, userType: 'customer' }, 'test', { expiresIn: '30s' });
+            const refreshToken = jwt.sign({ ...data._doc, userType: 'customer' }, 'test', { expiresIn: '1d' });
 
             // saving the refreshToken with the current user in DB
-            await Customer.findByIdAndUpdate(data._id, { ...data._doc, refresh_token: refreshToken}, {new : true})
+            await Customer.findByIdAndUpdate(data._id, { ...data._doc, refresh_token: refreshToken }, { new: true })
 
-            res.cookie('jwt', refreshToken, { httpOnly: true, maxAge : 24 * 60 * 60 * 1000 }) ;
-            res.status(200).send({accessToken});
+            res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+            res.status(200).send({ accessToken });
         }
         else {
             res.status(401).send('Invalid Credentials');
@@ -32,22 +32,22 @@ export const signInCustomer = async (req, res) => {
 }
 
 export const signUpCustomer = async (req, res) => {
-    const { email, password, visited } = req.body;
-    const data = new Customer({ email, password, visited_restaurant: visited, refresh_token: "" });
+    const { name, email, password, visited, phone } = req.body;
+    const data = new Customer({ name, email, password, visited_restaurant: visited, phone, refresh_token: "" });
     const result = await data.save();
 
-    delete result._doc.password ;
-    delete result._doc.refresh_token ;
+    delete result._doc.password;
+    delete result._doc.refresh_token;
 
     // creating JWT
-    const accessToken = jwt.sign({ ...result._doc, userType : 'customer' }, 'test', {expiresIn : '30s'}) ; 
-    const refreshToken = jwt.sign({ ...result._doc, userType : 'customer' }, 'test', {expiresIn : '1d'}) ; 
+    const accessToken = jwt.sign({ ...result._doc, userType: 'customer' }, 'test', { expiresIn: '30s' });
+    const refreshToken = jwt.sign({ ...result._doc, userType: 'customer' }, 'test', { expiresIn: '1d' });
 
     // saving the refreshToken with the current user in DB
-    await Customer.findByIdAndUpdate(result._id, { ...result._doc, refresh_token: refreshToken}, {new : true})
+    await Customer.findByIdAndUpdate(result._id, { ...result._doc, refresh_token: refreshToken }, { new: true })
 
-    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge : 24 * 60 * 60 * 1000 }) ;
-    res.status(200).send({accessToken});
+    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    res.status(200).send({ accessToken });
 }
 
 export const getAllRestaurants = async (req, res) => {
@@ -57,40 +57,44 @@ export const getAllRestaurants = async (req, res) => {
 }
 
 export const insertWaitingList = async (req, res) => {
-    const { rid, name } = req.body;
+    const { rid, name, email, phone } = req.body;
 
     const customersList = await WaitingList.findOne({ restaurant: rid });
 
-    for(let d of customersList.customers){
-        if(d.cname===name){
-            res.send({message:"You have already reserved a table here"})
+    for (let d of customersList.customers) {
+        if (d.cname === name) {
+            res.send({ message: "You have already reserved a table here" })
             return
         }
     }
 
     const resp = await WaitingList.updateOne(
         { _id: customersList._id },
-        { $push: { customers: { cname: name } } }
+        { $push: { customers: { cname: name, phone, email } } }
     );
 
-    if(resp){
-        res.send({message:"Table Reserved Successfully"});
+    if (resp) {
+        res.send({ message: "Table Reserved Successfully" });
     }
-    else{
-        res.send({message:"Error, Please retry after some time"})
+    else {
+        res.send({ message: "Error, Please retry after some time" })
     }
 }
 
 export const cancelReservation = async (req, res) => {
-    const { rid, name } = req.body;
-    const resp=await WaitingList.updateOne({restaurant:rid},{$pull:{customers:{
-        cname:name
-    }}})
+    const { rid, email } = req.body;
+    const resp = await WaitingList.updateOne({ restaurant: rid }, {
+        $pull: {
+            customers: {
+                'email': email
+            }
+        }
+    })
 
-    if(resp.modifiedCount==1){
-        res.send({message:"Reservation Cancelled Successfully"})
+    if (resp.modifiedCount == 1) {
+        res.send({ message: "Reservation Cancelled Successfully" })
     }
-    else{
-        res.send({message:"You have not reserved a table here"})
+    else {
+        res.send({ message: "You have not reserved a table here" })
     }
 }
