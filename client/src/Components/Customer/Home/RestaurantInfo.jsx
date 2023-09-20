@@ -1,18 +1,20 @@
 import React from 'react' ;
+
 import './RestaurantInfo.css' ;
-import API from '../../../axios' ;
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 
 import { useAuth } from '../../../contexts/AuthContext';
 
 const RestaurantInfo = (prop) => {
 
     const {currentUser} = useAuth() ;
+    const axiosPrivate = useAxiosPrivate() ; 
 
     const name=prop.name;
     const thumbnail_url=prop.thumbnail_url;
 
     const handleClick = async ()=>{
-        const resp = await API.post('/customer/insertWaitingList', { rid: prop.id, name : currentUser.email })
+        const resp = await axiosPrivate.post('/customer/insertWaitingList', { rid: prop.id, name : currentUser.email })
     }
     
     return (   
