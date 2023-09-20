@@ -17,7 +17,7 @@ const SignUp = () => {
         numberOfTables: '',
     });
     const [loading, setLoading] = useState(false);
-    const { currentUser, setCurrentUser } = useAuth();
+    const { currentUser, setCurrentUser, setAuth } = useAuth();
     const [selectedFile, setSelectedFile] = useState(null);
     const navigate = useNavigate();
 
@@ -75,8 +75,7 @@ const SignUp = () => {
         const resp=await API.post("/restaurant/signup",formData)
         const decodedToken = jwtDecode(resp.data.accessToken) ;
         setCurrentUser(decodedToken) ;
-        localStorage.setItem('profile', JSON.stringify(resp.data.accessToken)) ;
-        localStorage.setItem('userType', 'restaurant') ;
+        setAuth(data.resp.accessToken) ;
         navigate('/business/home');
         setLoading(false);
     };

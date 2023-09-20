@@ -3,7 +3,7 @@ import './WaitingList.css';
 import 'bootstrap/dist/css/bootstrap.css'
 import API from '../../../axios';
 import Delete from '@mui/icons-material/Delete';
-import Loading from '../../Loading';
+import Loading from '../../Loading/Loading';
 import { useAuth } from '../../../contexts/AuthContext';
 
 function DiningList({updated}) {

@@ -12,7 +12,7 @@ const CustomerSignUp = () => {
     password : '' ,
     cpassword : ''
   }) ;
-  const {currentUser, setCurrentUser} = useAuth();
+  const {currentUser, setCurrentUser, setAuth} = useAuth();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate() ;
@@ -35,14 +35,10 @@ const CustomerSignUp = () => {
     try {
       setError(null);
       setLoading(true);
-
       const resp=await API.post("/customer/signup",formData)
-
       const decodedToken = jwtDecode(resp.data.accessToken) ;
       setCurrentUser(decodedToken) ;
-      localStorage.setItem('profile', JSON.stringify(resp.data)) ;
-      localStorage.setItem('userType', 'customer') ;
-
+      setAuth(resp.data.accessToken) ;
     } catch (error) {
       console.log(error);
       setError("Failed to create an account")

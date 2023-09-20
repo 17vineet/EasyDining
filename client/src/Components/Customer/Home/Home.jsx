@@ -85,7 +85,7 @@ const Home = () => {
 
           <div className="restaurant_display" >
             {restaurants.map((elem, index) => (
-              <div onClick={()=>{
+              <div key={index} onClick={()=>{
                 navigate(`/restaurantdetails/${elem.id}`)
                }}>
                 <RestaurantInfo name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} />
