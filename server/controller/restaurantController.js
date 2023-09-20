@@ -8,16 +8,25 @@ export const signInRestaurant = async (req, res) => {
     if (data) {
         let pass = data.password;
         if (pass === password) {
-            delete data._doc.password;
-            const token = jwt.sign(data._doc, 'test');
-            res.send({ token, authenticated: true });
+            delete data._doc.password ;
+            delete data._doc.refresh_token ;
+
+            // creating JWT
+            const accessToken = jwt.sign({...data._doc, userType: 'restaurant'}, 'test', {expiresIn : '30s'}) ; 
+            const refreshToken = jwt.sign({...data._doc, userType: 'restaurant'}, 'test', {expiresIn : '1d'}) ; 
+
+            // saving the refreshToken with the current user in DB
+            await Restaurant.findByIdAndUpdate(data._id, {...data._doc, refresh_token : refreshToken}, {new: true}) ;
+
+            res.cookie('jwt', refreshToken, { httpOnly: true, maxAge : 24 * 60 * 60 * 1000 }) ;
+            res.status(200).send({accessToken});
         }
         else {
-            res.send({ authenticated: false, message: "Invalid Credentials" })
+            res.status(401).send("Invalid Credentials" )
         }
     }
     else {
-        res.send({ authenticated: false, message: "User account not found" })
+        res.status(404).send("User account not found" )
     }
 }
 
@@ -26,18 +35,25 @@ export const signUpRestaurant = async (req, res) => {
     const result = await data.save();
 
     const data1 = new WaitingList({ restaurant: result._id });
-
     const data2 = new DiningList({ restaurant: result._id });
-
     const data3 = new Menu({ restaurant: result._id })
 
     await data1.save();
     await data2.save();
     await data3.save();
 
-    delete result._doc.password;
-    const token = jwt.sign(result._doc, 'test');
-    res.send(token);
+    delete result._doc.password ;
+    delete result._doc.refresh_token ;
+    
+    // creating JWT
+    const accessToken = jwt.sign({...result._doc, userType: 'restaurant'}, 'test', {expiresIn : '30s'}) ; 
+    const refreshToken = jwt.sign({...result._doc, userType: 'restaurant'}, 'test', {expiresIn : '1d'}) ; 
+
+    // saving the refreshToken with the current user in DB
+    await Restaurant.findByIdAndUpdate(result._id, {...result._doc, refresh_token : refreshToken}, {new: true}) ;
+
+    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge : 24 * 60 * 60 * 1000 }) ;
+    res.status(200).send({accessToken});
 }
 
 export const getRestaurantInfo = async (req, res) => {

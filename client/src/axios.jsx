@@ -1,14 +1,16 @@
 import axios from "axios";
 
-const API=axios.create({
-    baseURL:"http://localhost:4000/"
+const BASE_URL = 'http://localhost:4000/' ; 
+
+const API = axios.create({
+    baseURL: BASE_URL,
+    withCredentials: true
 }) ;
 
-API.interceptors.request.use((req) => {
-    if (localStorage.getItem('profile')) {
-        req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('profile'))}`;
-    }
-    return req;
-});
+export const axiosPrivate = axios.create({
+    baseURL: BASE_URL, 
+    headers:{ "Content-Type" : 'application/json' },
+    withCredentials: true
+}) ;
 
-export default API;
+export default API ;

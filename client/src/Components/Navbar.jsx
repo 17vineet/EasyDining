@@ -5,24 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 const Navbar = () => {
-
   const navigate = useNavigate();
-  const { currentUser, setUserType, setCurrentUser } = useAuth();
+  const { currentUser, setCurrentUser, setAuth } = useAuth();
 
   const handleClick = async (e) => {
     const typeOfUser = e.target.id;
     if (currentUser) {
-      setCurrentUser(null) ;
-      localStorage.clear() ;
-      setUserType('Customer');
+      setCurrentUser(null);
+      setAuth(null);
       navigate('/');
     }
-    else if (typeOfUser === 'Customer') {
-      navigate('/signup');
-    }
-    else {
-      navigate('/business/signup');
-    }
+    else if (typeOfUser === 'Customer') navigate('/signup') ;
+    else navigate('/business/signup') ;
   }
 
   return (
@@ -35,22 +29,18 @@ const Navbar = () => {
             EasyDining
           </Typography>
           {
-            currentUser &&
-            <Button color="inherit" variant="outlined" onClick={handleClick}>
-              Signout
-            </Button>
-          }
-          {
-            !currentUser &&
-            <Button color="inherit" variant="outlined" onClick={handleClick} id="Customer" >
-              For Customer
-            </Button>
-          } &nbsp;&nbsp;
-          {
-            !currentUser &&
-            <Button color="inherit" variant="outlined" onClick={handleClick} id="Business">
-              For Business
-            </Button>
+            currentUser ?
+              <Button color="inherit" variant="outlined" onClick={handleClick}>
+                Signout
+              </Button> :
+              <>
+                <Button color="inherit" variant="outlined" onClick={handleClick} id="Customer" >
+                  For Customer
+                </Button>&nbsp;&nbsp;
+                <Button color="inherit" variant="outlined" onClick={handleClick} id="Business">
+                  For Business
+                </Button>
+              </>
           }
         </Toolbar>
       </AppBar>
