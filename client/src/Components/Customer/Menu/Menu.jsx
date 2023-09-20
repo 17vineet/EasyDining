@@ -11,7 +11,7 @@ const Menu = ({ menu, updateMenuModel }) => {
                 <img width="35" height="35" src="https://img.icons8.com/fluency/48/delete-sign.png" alt="delete-sign" onClick={() => { updateMenuModel(false) } } className='close-btn'/><br/>
                 {menu.menu.map((ele, ind) => {
                     return (
-                        <div className='Cuisine_container'>
+                        <div className='Cuisine_container' key={ind}>
                             <h2>{ele.name}</h2>
                             <div className='item_container_title'>
                                 <div><b>Item Name</b></div>
