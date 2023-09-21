@@ -3,16 +3,17 @@ import { AppBar, Box, Toolbar, Typography, Button, IconButton } from "@mui/mater
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../contexts/AuthContext";
+import useLogout from '../hooks/useLogout' ; 
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { currentUser, setCurrentUser, setAuth } = useAuth();
+  const { currentUser } = useAuth();
+  const logout = useLogout() ; 
 
   const handleClick = async (e) => {
     const typeOfUser = e.target.id;
     if (currentUser) {
-      setCurrentUser(null);
-      setAuth(null);
+      await logout() ; 
       navigate('/');
     }
     else if (typeOfUser === 'Customer') navigate('/signup') ;
