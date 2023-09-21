@@ -7,30 +7,45 @@ import Loading from '../../Loading/Loading';
 import { useAuth } from '../../../contexts/AuthContext';
 
 function DiningList({updated}) {
-  const [name, setName] = useState('')
+  // const [name, setName] = useState('')
+  const [formData,setFormData]=useState({
+    name:'',
+    pax:'',
+    phone:'',
+    email:''
+  })
   const [dine, setDine] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
   const { currentUser } = useAuth();
 
   async function handleClick() {
-    if (name.trim().length != 0) {
+    if (formData.name.trim().length != 0 &&formData.pax.trim().length!=0 && formData.phone.trim().length!=0) {
       setIsLoading(true);
-      await API.post('/restaurant/insertDiningList', { rid: currentUser._id, name: name,pax:10,phone:123456789,email:"" })
-      setDine((prev) => [...prev, {name:name,pax:10}]);
-      setName("");
+      await API.post('/restaurant/insertDiningList', { rid: currentUser._id, name: formData.name,pax:formData.pax,phone:formData.phone,email:"" })
+      setDine((prev) => [...prev, {name:formData.name,pax:formData.pax,phone:formData.phone}]);
+      setFormData({
+        name:'',
+        pax:'',
+        phone:'',
+        email:''
+      })
       setIsLoading(false);
     }
     else {
-      alert("Enter proper name")
+      alert("Enter proper information")
     }
 
   }
   function handleChange(event) {
-    setName(event.target.value)
+    const {name, value} = event.target ;
+    setFormData((prevValue)=> ({
+      ...prevValue,
+      [name] : value
+    })) ;
   }
   async function handleDelete(index) {
     setIsLoading(true);
-    const resp = await API.post('/restaurant/removeDiningCustomer', { rid: currentUser._id, index });
+    const resp = await API.post('/restaurant/removeDiningCustomer', { rid: currentUser._id, phone:dine[index].phone });
     setIsLoading(false);
     const updatedList = dine.filter((_, ind) => index != ind)
     setDine(updatedList)
@@ -44,7 +59,8 @@ function DiningList({updated}) {
         return (
           {
             name:elem.cname,
-            pax:elem.pax
+            pax:elem.pax,
+            phone:elem.phone
           }
         )
       });
@@ -58,9 +74,11 @@ function DiningList({updated}) {
     < >
       {isLoading && <Loading />}
       <div   >
-        <input type='text' placeholder='Enter your name to reserve table' onChange={handleChange} value={name}></input>
+        <input type='text' placeholder='Enter name to reserve table' onChange={handleChange} value={formData.name} name='name'></input>
+        <input type='number' placeholder='Enter number of persons' onChange={handleChange} value={formData.pax} name='pax'></input>
+        <input type='tel' placeholder='Enter Mobile number' onChange={handleChange} value={formData.phone} name='phone'></input>
         <button onClick={handleClick} className='btn btn-primary add_btn'>Add Element</button>
-      </div><br></br>
+      </div><br/><br/><br/>
       {
         dine.map((ele, index) => {
           return (
@@ -68,6 +86,7 @@ function DiningList({updated}) {
               <div className='element' key={index}>
                 <div className="Customer_name">{ele.name}</div>
                 <div className="Customer_name">{ele.pax}</div>
+                <div className="Customer_name">{ele.phone}</div>
                 <button className='btn btn-primary delete_btn' onClick={() => {
                   handleDelete(index)
                 }} > <Delete /> </button>

@@ -38,7 +38,7 @@ function WaitingList({handleUpdate}) {
 
   async function handleDelete(index) {
     setIsLoading(true);
-    const resp = await API.post('/restaurant/removeWaitingCustomer', { rid: currentUser._id, index });
+    const resp = await API.post('/restaurant/removeWaitingCustomer', { rid: currentUser._id, phone:loe[index].phone });
     const updatedList = loe.filter((_, ind) => index != ind)
     setLoe(updatedList)
     setIsLoading(false);
@@ -70,7 +70,7 @@ function WaitingList({handleUpdate}) {
       {isLoading && <Loading />}
       <div   >
         <input type='text' name="name" placeholder='Enter name to reserve table' onChange={handleChange} value={formData.name}></input>
-        <input type='PAX' name="pax" placeholder='Enter number of persons' onChange={handleChange} value={formData.pax}></input>
+        <input type='number' name="pax" placeholder='Enter number of persons' onChange={handleChange} value={formData.pax}></input>
         <input type='phone' name="phone" placeholder='Enter Phone' onChange={handleChange} value={formData.phone}></input>
         <button onClick={handleClick} className='btn btn-primary add_btn'><AddIcon /></button>
       </div><br/><br/><br/><br/>

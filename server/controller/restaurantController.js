@@ -8,25 +8,25 @@ export const signInRestaurant = async (req, res) => {
     if (data) {
         let pass = data.password;
         if (pass === password) {
-            delete data._doc.password ;
-            delete data._doc.refresh_token ;
+            delete data._doc.password;
+            delete data._doc.refresh_token;
 
             // creating JWT
-            const accessToken = jwt.sign({...data._doc, userType: 'restaurant'}, 'test', {expiresIn : '30s'}) ; 
-            const refreshToken = jwt.sign({...data._doc, userType: 'restaurant'}, 'test', {expiresIn : '1d'}) ; 
+            const accessToken = jwt.sign({ ...data._doc, userType: 'restaurant' }, 'test', { expiresIn: '30s' });
+            const refreshToken = jwt.sign({ ...data._doc, userType: 'restaurant' }, 'test', { expiresIn: '1d' });
 
             // saving the refreshToken with the current user in DB
-            await Restaurant.findByIdAndUpdate(data._id, {...data._doc, refresh_token : refreshToken}, {new: true}) ;
+            await Restaurant.findByIdAndUpdate(data._id, { ...data._doc, refresh_token: refreshToken }, { new: true });
 
-            res.cookie('jwt', refreshToken, { httpOnly: true, maxAge : 24 * 60 * 60 * 1000 }) ;
-            res.status(200).send({accessToken});
+            res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+            res.status(200).send({ accessToken });
         }
         else {
-            res.status(401).send("Invalid Credentials" )
+            res.status(401).send("Invalid Credentials")
         }
     }
     else {
-        res.status(404).send("User account not found" )
+        res.status(404).send("User account not found")
     }
 }
 
@@ -42,18 +42,18 @@ export const signUpRestaurant = async (req, res) => {
     await data2.save();
     await data3.save();
 
-    delete result._doc.password ;
-    delete result._doc.refresh_token ;
-    
+    delete result._doc.password;
+    delete result._doc.refresh_token;
+
     // creating JWT
-    const accessToken = jwt.sign({...result._doc, userType: 'restaurant'}, 'test', {expiresIn : '30s'}) ; 
-    const refreshToken = jwt.sign({...result._doc, userType: 'restaurant'}, 'test', {expiresIn : '1d'}) ; 
+    const accessToken = jwt.sign({ ...result._doc, userType: 'restaurant' }, 'test', { expiresIn: '30s' });
+    const refreshToken = jwt.sign({ ...result._doc, userType: 'restaurant' }, 'test', { expiresIn: '1d' });
 
     // saving the refreshToken with the current user in DB
-    await Restaurant.findByIdAndUpdate(result._id, {...result._doc, refresh_token : refreshToken}, {new: true}) ;
+    await Restaurant.findByIdAndUpdate(result._id, { ...result._doc, refresh_token: refreshToken }, { new: true });
 
-    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge : 24 * 60 * 60 * 1000 }) ;
-    res.status(200).send({accessToken});
+    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    res.status(200).send({ accessToken });
 }
 
 export const getRestaurantInfo = async (req, res) => {
@@ -72,7 +72,7 @@ export const getWaitingList = async (req, res) => {
 }
 
 export const insertWaitingList = async (req, res) => {
-    const { rid, name ,pax,phone,email} = req.body;
+    const { rid, name, pax, phone, email } = req.body;
 
     // console.log(name);
 
@@ -82,28 +82,19 @@ export const insertWaitingList = async (req, res) => {
 
     const resp = await WaitingList.updateOne(
         { _id: customersList._id },
-        { $push: { customers: { cname: name ,pax:pax,phone:phone,email} } }
+        { $push: { customers: { cname: name, pax: pax, phone: phone, email } } }
     );
 
     res.send(resp);
 }
 
 export const removeWaitingCustomer = async (req, res) => {
-    const { rid, index } = req.body;
+    const { rid, phone } = req.body;
     try {
-        const doc = await WaitingList.findOne({ restaurant: rid });
-        if (doc) {
-            if (index >= 0 && index < doc.customers.length) {
-                doc.customers.splice(index, 1);
-                let resp = await doc.save();
-                console.log('Element deleted successfully.');
-                res.send(JSON.stringify(resp))
-            } else {
-                console.error('Index out of bounds.');
-            }
-        } else {
-            console.error('Document not found.');
-        }
+        const resp = await WaitingList.updateOne({ restaurant: rid },
+            { $pull: { customers: { phone: phone } } });
+            console.log(resp);
+        res.send(JSON.stringify(resp));
     } catch (err) {
         console.error(err);
     }
@@ -117,40 +108,30 @@ export const getDiningList = async (req, res) => {
 
 export const insertDiningList = async (req, res) => {
 
-    const { rid, name,phone,email,pax } = req.body;
+    const { rid, name, phone, email, pax } = req.body;
     const customersList = await DiningList.findOne({ restaurant: rid });
 
     const resp = await DiningList.updateOne(
         { _id: customersList._id },
-        { $push: { customers: { cname: name, email,phone,pax } } }
+        { $push: { customers: { cname: name, email, phone, pax } } }
     );
 
     res.send(resp);
 }
 
 export const removeDiningCustomer = async (req, res) => {
-    const { rid, index } = req.body;
+    const { rid, phone } = req.body;
     try {
-        const doc = await DiningList.findOne({ restaurant: rid });
-        if (doc) {
-            if (index >= 0 && index < doc.customers.length) {
-                doc.customers.splice(index, 1);
-                let resp = await doc.save();
-                console.log('Element deleted successfully.');
-                res.send(JSON.stringify(resp))
-            } else {
-                console.error('Index out of bounds.');
-            }
-        } else {
-            console.error('Document not found.');
-        }
+        const resp = await DiningList.updateOne({ restaurant: rid },
+            { $pull: { customers: { phone: phone } } })
+        res.send(resp)
     } catch (err) {
         console.error(err);
     }
 }
 
 export const addToDineIn = async (req, res) => {
-    const { rid, cname, email,phone,pax } = req.body;
+    const { rid, cname, email, phone, pax } = req.body;
 
     const diningList = await DiningList.findOne({ restaurant: rid });
 
@@ -158,7 +139,7 @@ export const addToDineIn = async (req, res) => {
 
     const resp = await DiningList.updateOne(
         { _id: diningList._id },
-        { $push: { customers: { cname,email,phone,pax } } }
+        { $push: { customers: { cname, email, phone, pax } } }
     );
 
     res.send(JSON.stringify(resp));
