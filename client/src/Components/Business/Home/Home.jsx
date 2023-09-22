@@ -169,12 +169,10 @@ const Home = () => {
             <br />
             <br />
             <div className='content3'>
-              <div className='contentLeft'>
-                <h3>Waiting List</h3>
+              <div className='waitingList'>
                 <WaitingList key={"1"} handleUpdate={handleUpdate} />
               </div>
-              <div className='contentLeft'>
-                <h3>Dining List</h3>
+              <div className='diningList'>
                 <DiningList key={"1"} updated={updated} />
               </div>
             </div>

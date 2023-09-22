@@ -3,6 +3,7 @@ import './WaitingList.css';
 import 'bootstrap/dist/css/bootstrap.css'
 import API from '../../../axios';
 import Delete from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import Loading from '../../Loading/Loading';
 import { useAuth } from '../../../contexts/AuthContext';
 
@@ -73,11 +74,12 @@ function DiningList({updated}) {
   return (
     < >
       {isLoading && <Loading />}
+      <h2>Dining List</h2>
       <div   >
         <input type='text' placeholder='Enter name to reserve table' onChange={handleChange} value={formData.name} name='name'></input>
         <input type='number' placeholder='Enter number of persons' onChange={handleChange} value={formData.pax} name='pax'></input>
         <input type='tel' placeholder='Enter Mobile number' onChange={handleChange} value={formData.phone} name='phone'></input>
-        <button onClick={handleClick} className='btn btn-primary add_btn'>Add Element</button>
+        <button onClick={handleClick} className='btn btn-primary add_btn'><AddIcon /></button>
       </div><br/><br/><br/>
       {
         dine.map((ele, index) => {

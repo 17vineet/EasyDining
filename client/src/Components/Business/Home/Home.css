@@ -75,16 +75,27 @@
     padding: 20px 10px;
 }
 
-.content3 {
+/* .content3 {
+    
+} */
+
+.waitingList div{
     display: flex;
+    flex-direction: row;
+}
+.waitingList div input{
+    margin: 10px;
+    border-radius: 5px;
 }
 
-.contentLeft {
-    width: 50%;
+.diningList div {
+    display: flex;
+    flex-direction: row;
 }
 
-.contentRight {
-    width: 50%
+.diningList div input{
+    margin: 10px;
+    border-radius: 5px;
 }
 
 .RestaurantImgHolder {

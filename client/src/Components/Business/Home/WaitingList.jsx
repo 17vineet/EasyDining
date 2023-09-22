@@ -68,6 +68,7 @@ function WaitingList({handleUpdate}) {
   return (
     <>
       {isLoading && <Loading />}
+      <h2>Waiting List</h2>
       <div   >
         <input type='text' name="name" placeholder='Enter name to reserve table' onChange={handleChange} value={formData.name}></input>
         <input type='number' name="pax" placeholder='Enter number of persons' onChange={handleChange} value={formData.pax}></input>
