@@ -14,6 +14,7 @@ import Menu from './Components/Business/Menu/Menu';
 import RequireAuth from './Components/RequireAuth';
 import Unauthorized from './Components/Unauthorized';
 import PersistLogin from './Components/PersistLogin';
+import Missing from './Components/Missing';
 
 export const App = () => {
 
@@ -39,6 +40,8 @@ export const App = () => {
             <Route path='/business/menu' element={<Menu />} />
           </Route>
         </Route>
+
+        <Route path="/*" element={<Missing />} />
       </Routes>
     </BrowserRouter>
   )
