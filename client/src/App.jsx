@@ -3,13 +3,16 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import CustomerHome from './Components/Customer/Home/Home';
 import CustomerSignUp from './Components/Customer/SignUpCustomer';
+import CustomerProfile from './Components/Profile/CustomerProfile';
+import RestaurantPage from './Components/Customer/Home/RestaurantPage'
 
 import BusinessHome from './Components/Business/Home/Home';
 import BusinessSignUp from './Components/Business/SignUpBusiness';
-import RestaurantPage from './Components/Customer/Home/RestaurantPage'
+import Menu from './Components/Business/Menu/Menu';
+import RestaurantProfile from './Components/Profile/RestaurantProfile';
+
 import SignIn from './Components/SignIn';
 import Navbar from './Components/Navbar';
-import Menu from './Components/Business/Menu/Menu';
 
 import RequireAuth from './Components/RequireAuth';
 import Unauthorized from './Components/Unauthorized';
@@ -33,11 +36,13 @@ export const App = () => {
           <Route element={<RequireAuth userType='customer' />} >
             <Route path='/home' element={<CustomerHome />} />
             <Route path='/restaurantdetails/:rid' element={<RestaurantPage />} />
+            <Route path='/profile' element={<CustomerProfile />} />
           </Route>
           
           <Route element={<RequireAuth userType='restaurant' />}>
             <Route path='/business/home' element={<BusinessHome />} />
             <Route path='/business/menu' element={<Menu />} />
+            <Route path='/business/profile' element={<RestaurantProfile />} />
           </Route>
         </Route>
 

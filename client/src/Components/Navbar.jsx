@@ -1,23 +1,20 @@
 import React from "react";
 import { AppBar, Box, Toolbar, Typography, Button, IconButton } from "@mui/material"
 import { useNavigate } from "react-router-dom";
+import Profile from '../Components/Profile/Profile' ; 
 
 import { useAuth } from "../contexts/AuthContext";
-import useLogout from '../hooks/useLogout' ; 
+import useLogout from '../hooks/useLogout';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const logout = useLogout() ; 
+  const logout = useLogout();
 
   const handleClick = async (e) => {
     const typeOfUser = e.target.id;
-    if (currentUser) {
-      await logout() ; 
-      navigate('/');
-    }
-    else if (typeOfUser === 'Customer') navigate('/signup') ;
-    else navigate('/business/signup') ;
+    if (typeOfUser === 'Customer') navigate('/signup');
+    else navigate('/business/signup');
   }
 
   return (
@@ -31,9 +28,8 @@ const Navbar = () => {
           </Typography>
           {
             currentUser ?
-              <Button color="inherit" variant="outlined" onClick={handleClick}>
-                Signout
-              </Button> :
+              <Profile />
+              :
               <>
                 <Button color="inherit" variant="outlined" onClick={handleClick} id="Customer" >
                   For Customer
