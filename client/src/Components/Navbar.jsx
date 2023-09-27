@@ -1,7 +1,7 @@
 import React from "react";
 import { AppBar, Box, Toolbar, Typography, Button, IconButton } from "@mui/material"
 import { useNavigate } from "react-router-dom";
-import Profile from '../Components/Profile/Profile' ; 
+import Profile from './Profile'
 
 import { useAuth } from "../contexts/AuthContext";
 

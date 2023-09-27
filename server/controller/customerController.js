@@ -18,7 +18,7 @@ export const signInCustomer = async (req, res) => {
 
             // saving the refreshToken with the current user in DB
             await Customer.findByIdAndUpdate(data._id, { ...data._doc, refresh_token: refreshToken }, { new: true })
-
+            
             res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
             res.status(200).send({ accessToken });
         }
@@ -108,15 +108,12 @@ export const updateCustomerDetails = async (req, res) => {
         resp = await Customer.findOneAndUpdate({ '_id': _id}, {
             $set: { 'name': name }
         }, {new: true})
-        
-        // delete resp['password']
     }
     else if(change==='email'){
         const {email,password} = req.body;
         resp = await Customer.findOneAndUpdate({ '_id': _id,'password':password}, {
             $set: { 'email': email }
         }, {new: true})
-        // delete resp['password']
     }
     else if(change==='phone'){
         const {phone,password} = req.body;
@@ -125,7 +122,6 @@ export const updateCustomerDetails = async (req, res) => {
         }, {new: true})
     }
 
-    
     if (resp) {
         delete resp._doc.password
         delete resp._doc.refresh_token
@@ -139,7 +135,7 @@ export const updateCustomerDetails = async (req, res) => {
         res.status(200).send({ accessToken });
     }
     else {
-        res.send({ message: "Could not update the details due to wrong password" })
+        res.status(401).send('Wrong Password');
     }
 }
 

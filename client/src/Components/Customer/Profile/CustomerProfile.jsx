@@ -3,7 +3,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import EmailIcon from '@mui/icons-material/Email';
 
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import './CustomerProfile.css'
 import NameModel from './NameModel';
 

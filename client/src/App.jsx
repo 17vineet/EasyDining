@@ -3,13 +3,13 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import CustomerHome from './Components/Customer/Home/Home';
 import CustomerSignUp from './Components/Customer/SignUpCustomer';
-import CustomerProfile from './Components/Profile/CustomerProfile';
+import CustomerProfile from './Components/Customer/Profile/CustomerProfile';
 import RestaurantPage from './Components/Customer/Home/RestaurantPage'
 
 import BusinessHome from './Components/Business/Home/Home';
 import BusinessSignUp from './Components/Business/SignUpBusiness';
 import Menu from './Components/Business/Menu/Menu';
-import RestaurantProfile from './Components/Profile/RestaurantProfile';
+import RestaurantProfile from './Components/Business/Profile/RestaurantProfile';
 
 import SignIn from './Components/SignIn';
 import Navbar from './Components/Navbar';
