@@ -100,17 +100,43 @@ export const cancelReservation = async (req, res) => {
 }
 
 export const updateCustomerDetails = async (req, res) => {
-    const { _id, name, email, password, phone } = req.body;
-    const resp = await Customer.updateOne({ '_id': _id, 'password': password }, {
-        $set: {
-            'name': name,
-            'email': email,
-            'phone': phone,
-        }
-    })
+    let resp = null ;
 
-    if (resp.modifiedCount == 1) {
-        res.send({ message: "Data updated successfully" })
+    const { _id, change } = req.body;
+    if(change==='name'){
+        const {name} = req.body;
+        resp = await Customer.findOneAndUpdate({ '_id': _id}, {
+            $set: { 'name': name }
+        }, {new: true})
+        
+        // delete resp['password']
+    }
+    else if(change==='email'){
+        const {email,password} = req.body;
+        resp = await Customer.findOneAndUpdate({ '_id': _id,'password':password}, {
+            $set: { 'email': email }
+        }, {new: true})
+        // delete resp['password']
+    }
+    else if(change==='phone'){
+        const {phone,password} = req.body;
+        resp = await Customer.findOneAndUpdate({ '_id': _id,'password':password}, {
+            $set: { 'phone': phone }
+        }, {new: true})
+    }
+
+    
+    if (resp) {
+        delete resp._doc.password
+        delete resp._doc.refresh_token
+    
+        const accessToken = jwt.sign({ ...resp._doc, userType: 'customer' }, 'test', { expiresIn: '30s' });
+        const refreshToken = jwt.sign({ ...resp._doc, userType: 'customer' }, 'test', { expiresIn: '1d' });
+
+        await Customer.findByIdAndUpdate(resp._id, { ...resp._doc, refresh_token: refreshToken }, { new: true });
+
+        res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+        res.status(200).send({ accessToken });
     }
     else {
         res.send({ message: "Could not update the details due to wrong password" })

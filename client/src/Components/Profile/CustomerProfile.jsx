@@ -3,10 +3,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import EmailIcon from '@mui/icons-material/Email';
 
+import { useAuth } from '../../contexts/AuthContext';
 import './CustomerProfile.css'
 import NameModel from './NameModel';
 
 const CustomerProfile = () => {
+  const {currentUser} =useAuth() ; 
   const [models, setModel] = useState({ name: false, email: false, phone: false });
 
   return (
@@ -20,9 +22,9 @@ const CustomerProfile = () => {
           <div className="customerDetails">
             <ul >
             
-              <li  > Name &nbsp;&nbsp;<EditIcon onClick={() => setModel({ ...models, name: true })} style={{ fontSize: '15px' }} htmlColor='red' /></li>
-              <li><LocalPhoneIcon /> &nbsp;&nbsp;Phone &nbsp;&nbsp;<EditIcon style={{ fontSize: '15px' }} htmlColor='red' /></li>
-              <li><EmailIcon /> &nbsp;&nbsp;Email &nbsp;&nbsp;<EditIcon style={{ fontSize: '15px' }} htmlColor='red' /></li>
+              <li  > {currentUser.name} &nbsp;&nbsp;<EditIcon onClick={() => setModel({ ...models, name: true })} style={{ fontSize: '15px' }} htmlColor='red' /></li>
+              <li><LocalPhoneIcon /> &nbsp;&nbsp;{currentUser.phone} &nbsp;&nbsp;<EditIcon style={{ fontSize: '15px' }} htmlColor='red' /></li>
+              <li><EmailIcon /> &nbsp;&nbsp;{currentUser.email} &nbsp;&nbsp;<EditIcon style={{ fontSize: '15px' }} htmlColor='red' /></li>
             </ul>
           </div>
         </div>

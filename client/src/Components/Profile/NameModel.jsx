@@ -1,8 +1,10 @@
 import {React,useState} from 'react'
 import CloseIcon from '@mui/icons-material/Close';
+import TextField from '@mui/material/TextField';
 
 import { useAuth } from '../../contexts/AuthContext'
 import './NameModel.css'
+import API from '../../axios';
 
 const NameModel = (prop) => {
     
@@ -19,11 +21,14 @@ const NameModel = (prop) => {
                     <img src="./profile.jpeg" alt="" />
                 </div>
                 <div className='cust_name'>
-                    <input type="text" name="" id="" value={name} onChange={(event)=>{
-                        setName(event.target.value)
-                    }}/>
+                <TextField label='Name' variant='outlined' value={name} fullWidth onChange={(event)=>{
+                    setName(event.target.value) }} />
                 </div>
-                <button className='btn btn-primary'>Save Changes</button>
+              
+                <button className='btn btn-primary' onClick={async()=>{
+                    const resp=await API.post("/customer/updateDetails",{_id:currentUser._id,name:name.trim(),change:'name'})
+                    console.log(resp.data)
+                }}>Save Changes</button>
             </div>
         </div>
     )
