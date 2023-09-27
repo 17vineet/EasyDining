@@ -4,12 +4,10 @@ import { useNavigate } from "react-router-dom";
 import Profile from '../Components/Profile/Profile' ; 
 
 import { useAuth } from "../contexts/AuthContext";
-import useLogout from '../hooks/useLogout';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const logout = useLogout();
 
   const handleClick = async (e) => {
     const typeOfUser = e.target.id;

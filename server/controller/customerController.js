@@ -98,3 +98,37 @@ export const cancelReservation = async (req, res) => {
         res.send({ message: "You have not reserved a table here" })
     }
 }
+
+export const updateCustomerDetails = async (req, res) => {
+    const { _id, name, email, password, phone } = req.body;
+    const resp = await Customer.updateOne({ '_id': _id, 'password': password }, {
+        $set: {
+            'name': name,
+            'email': email,
+            'phone': phone,
+        }
+    })
+
+    if (resp.modifiedCount == 1) {
+        res.send({ message: "Data updated successfully" })
+    }
+    else {
+        res.send({ message: "Could not update the details due to wrong password" })
+    }
+}
+
+export const updateCustomerPassword = async (req, res) => {
+    const { _id, opass, npass } = req.body;
+    const resp = await Customer.updateOne({ '_id': _id, 'password': opass }, {
+        $set: {
+            'password': npass
+        }
+    })
+
+    if (resp.modifiedCount == 1) {
+        res.send({ message: "Password Updated Successfully" })
+    }
+    else {
+        res.send({ message: "Incorrect Old Password" })
+    }
+}

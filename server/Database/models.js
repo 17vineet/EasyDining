@@ -27,6 +27,12 @@ const restaurantSchema = new Schema({
     },
     refresh_token: {
         type: String
+    },
+    total_tables:{
+        type:Object
+    },
+    available_tables:{
+        type:Object
     }
 });
 
@@ -78,6 +84,21 @@ const menuSchema = new Schema({
     }
 });
 
+const billSchema = new Schema({
+    restaurant_id: {
+        type: String
+    },
+    customer_id: {
+        type: Array
+    },
+    items_ordered:{
+        type:Array
+    },
+    bill_amt:{
+        type:Number
+    }
+});
+
 export const Restaurant = model('restaurant', restaurantSchema);
 
 export const Customer = model('customer', customerSchema);
@@ -87,3 +108,5 @@ export const WaitingList = model('waiting', waitingListSchema);
 export const DiningList = model('dining', diningListSchema);
 
 export const Menu = model('menu', menuSchema)
+
+export const Bill = model('bill',billSchema)

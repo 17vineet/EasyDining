@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -16,7 +16,7 @@ import { useAuth } from '../../contexts/AuthContext';
 export default function AccountMenu() {
     const logout = useLogout();
     const { currentUser } = useAuth() ;
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
     const navigate = useNavigate() ; 
 
     const open = Boolean(anchorEl);
@@ -30,12 +30,10 @@ export default function AccountMenu() {
     };
 
     const handleOpenProfile = async() => {
-      if(currentUser.userType==='customer')
-      {
+      if(currentUser.userType==='customer'){
         navigate('/profile')
       }
-      else
-      {
+      else{
         navigate('/business/profile')
       }
   };
@@ -59,6 +57,7 @@ export default function AccountMenu() {
                 anchorEl={anchorEl}
                 id="account-menu"
                 open={open}
+                onClose={()=>setAnchorEl(null)}
                 PaperProps={{
                     elevation: 0,
                     sx: {

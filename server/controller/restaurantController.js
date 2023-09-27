@@ -93,7 +93,7 @@ export const removeWaitingCustomer = async (req, res) => {
     try {
         const resp = await WaitingList.updateOne({ restaurant: rid },
             { $pull: { customers: { phone: phone } } });
-            console.log(resp);
+        console.log(resp);
         res.send(JSON.stringify(resp));
     } catch (err) {
         console.error(err);
@@ -207,6 +207,32 @@ export const uploadRestaurantImages = async (req, res) => {
         { "_id": rid },
         { $push: { images_urls: { $each: images_urls } } })
     console.log(response)
+
+    res.send(JSON.stringify(response))
+}
+
+export const checkWaiting = async (req, res) => {
+    const { rid, pax } = req.body;
+    const response = await Restaurant.findOne(
+        { "_id": rid })
+
+        l = []
+        for(tab in response.available_tables)
+        {
+            if(tab[0]>=pax && tab[1]>=1)
+            {
+                l.push(tab)
+            }
+        }
+        l = l.sort((a, b) => a - b)
+        if(l.length>=1)
+        {
+            response['message'] = 'Available'
+            response['table_size'] = l[0]
+        }
+        else{
+            response['message'] = 'Waiting'
+        }
 
     res.send(JSON.stringify(response))
 }
