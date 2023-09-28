@@ -21,18 +21,20 @@ const CuisineModel = (prop) => {
     const handleEdit = (id) => {
         setFormData(items[id]);
         setItems((prev) => prev.map((ele, ind) => (id == ind ? { ...ele, editable: true } : ele)));
+        
     };
 
     const handleSave = (id) => {
         setItems((prev) => prev.map((ele, ind) => id == ind ? { ...formData, editable: false, id: id } : ele))
+        setFormData({ Name: '', Price: '', Description: '' })
+
     };
 
     const handleDiscard = () => {
         setItems((prev) => prev.map((ele) => ({ ...ele, editable: false })));
-    }
+        setFormData({ Name: '', Price: '', Description: '' })
 
-    const handleChange = (id, newName) => {
-    };
+    }
 
     const handleAddNewCuisine = (event) => {
         setShowAddForm(true);
@@ -43,23 +45,19 @@ const CuisineModel = (prop) => {
         _items.push(formData)
         setItems(_items);
         setShowAddForm(false);
+        setFormData({ Name: '', Price: '', Description: '' })
+
     }
 
     const handleAddSave = async () => {
-        console.log(items);
         const resp = await API.post('restaurant/updateRestaurantMenu', { rid: currentUser._id, items, cuisine_name });
-        console.log(resp);
         setDisable(false);
         setShowAddForm(false);
     };
-    const handleAddDiscard = () => {
-        setDisable(false);
-        setShowAddForm(false);
-    };
-
-    const handleKeyPress = (event, id) => {
+  
+    const discardAllChanges=()=>{
+        setItems(prop.items)
     }
-
 
     return (
         <div className="modal">
@@ -160,7 +158,7 @@ const CuisineModel = (prop) => {
 
                 <div>
                     <button className='btn btn-primary m-2' onClick={handleAddSave}>Save All Changes</button>&nbsp;
-                    <button className='btn btn-primary m-2'>Discard All Changes</button>
+                    <button className='btn btn-primary m-2' onClick={discardAllChanges}>Discard All Changes</button>
                 </div>
             </div>
         </div>

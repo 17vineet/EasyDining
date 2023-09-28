@@ -121,6 +121,22 @@ export const updateCustomerDetails = async (req, res) => {
             $set: { 'phone': phone }
         }, {new: true})
     }
+    else if(change==='password')
+    {
+        const {opass,npass} = req.body;
+        resp = await Customer.findOneAndUpdate({'_id':_id, 'password':opass},
+        {$set:{
+            'password':npass}
+        },{new:true})
+        if(resp)
+        {
+            resp['message'] = 'Password Updated Successfully'
+        }
+        else
+        {
+            resp['message'] = 'Existing password does not match'
+        }
+    }
 
     if (resp) {
         delete resp._doc.password
@@ -136,21 +152,5 @@ export const updateCustomerDetails = async (req, res) => {
     }
     else {
         res.status(401).send('Wrong Password');
-    }
-}
-
-export const updateCustomerPassword = async (req, res) => {
-    const { _id, opass, npass } = req.body;
-    const resp = await Customer.updateOne({ '_id': _id, 'password': opass }, {
-        $set: {
-            'password': npass
-        }
-    })
-
-    if (resp.modifiedCount == 1) {
-        res.send({ message: "Password Updated Successfully" })
-    }
-    else {
-        res.send({ message: "Incorrect Old Password" })
     }
 }

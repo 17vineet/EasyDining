@@ -1,6 +1,6 @@
 import { React, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close';
-import { TextField, Alert, AlertTitle } from '@mui/material';
+import { TextField, Alert } from '@mui/material';
 import jwtDecode from 'jwt-decode';
 
 import { useAuth } from '../../../contexts/AuthContext'

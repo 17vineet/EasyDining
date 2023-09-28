@@ -216,23 +216,100 @@ export const checkWaiting = async (req, res) => {
     const response = await Restaurant.findOne(
         { "_id": rid })
 
-        l = []
-        for(tab in response.available_tables)
-        {
-            if(tab[0]>=pax && tab[1]>=1)
-            {
-                l.push(tab)
+    l = []
+    for (tab in response.available_tables) {
+        if (tab[0] >= pax && tab[1] >= 1) {
+            l.push(tab)
+        }
+    }
+    l = l.sort((a, b) => a - b)
+    if (l.length >= 1) {
+        response['message'] = 'Available'
+        response['table_size'] = l[0]
+    }
+    else {
+        response['message'] = 'Waiting'
+    }
+
+    res.send(JSON.stringify(response))
+}
+
+export const updateRestaurantDetails = async (req, res) => {
+    const { rid, change } = req.body;
+    let resp = null
+    if (change === 'name') {
+        const { name } = req.body;
+        resp = await Restaurant.findOneAndUpdate({ '_id': rid }, {
+            $set: {
+                'name': name
             }
+        },{new:true})
+        if (resp) {
+            resp['message'] = 'Restaurant Name Updated Successfully'
         }
-        l = l.sort((a, b) => a - b)
-        if(l.length>=1)
-        {
-            response['message'] = 'Available'
-            response['table_size'] = l[0]
+        else {
+            resp['message'] = 'Error changing Restaurant Name'
         }
-        else{
-            response['message'] = 'Waiting'
+    }
+    else if (change === 'phone') {
+        const { phone, password } = req.body;
+        resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': password },
+            {
+                $set: {
+                    'phone': phone
+                }
+            },{new:true})
+        if (resp) {
+            resp['message'] = 'Phone Number Updated Successfully'
         }
+        else {
+            resp['message'] = 'Could not change Phone due to incorrect password'
+        }
+    }
+    else if (change === 'email') {
+        const { email, password } = req.body;
+        resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': password },
+            {
+                $set: {
+                    'email': email
+                }
+            },{new:true})
+        if (resp) {
+            resp['message'] = 'Email updated successfully'
+        }
+        else {
+            resp['message'] = 'Could not change email due to incorrect password'
+        }
+    }
+    else if (change === 'password') {
+        const { opass, npass } = req.body;
+        resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': opass },
+            {
+                $set: {
+                    'password': npass
+                }
+            },{new:true})
+        if (resp) {
+            resp['message'] = 'Password Updated Successfully'
+        }
+        else {
+            resp['message'] = 'Existing password does not match'
+        }
+    }
+    if(resp)
+    {
+        delete resp['password']
+        res.send(JSON.stringify(resp))
+    }
+}
+
+export const deleteCuisine = async (req, res) => {
+    const { rid, cuisine } = req.body;
+    const response = await Menu.findOneAndUpdate(
+        { "restaurant": rid },
+        { $pull: { 'menu': { 'name': cuisine } } },
+        {new:true})
+    console.log(response)
 
     res.send(JSON.stringify(response))
 }
