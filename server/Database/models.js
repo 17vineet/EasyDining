@@ -2,7 +2,8 @@ import { Schema, model } from 'mongoose';
 
 const restaurantSchema = new Schema({
     email: {
-        type: String
+        type: String,
+        unique:true
     },
     password: {
         type: String
@@ -33,6 +34,9 @@ const restaurantSchema = new Schema({
     },
     available_tables:{
         type:Object
+    },
+    phone:{
+        type:Number
     }
 });
 
@@ -41,7 +45,8 @@ const customerSchema = new Schema({
         type:String
     },
     email: {
-        type: String
+        type: String,
+        unique:true
     },
     password: {
         type: String

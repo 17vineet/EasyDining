@@ -14,11 +14,12 @@ const SignUp = () => {
         location_url: '',
         sitting_capacity: '',
         range: '',
+        phone:'',
         thumbnail_url: '',
         numberOfTables: '',
     });
     const [loading, setLoading] = useState(false);
-    const { currentUser, setCurrentUser } = useAuth();
+    const { currentUser, setCurrentUser ,setAuth} = useAuth();
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadingImages, setUploadingImages] = useState({spinner: false, tick: false}) ;
     const [uploadingThumbnail, setUploadingThumbnail] = useState({spinner: false, tick: false}) ;
@@ -84,7 +85,7 @@ const SignUp = () => {
         const resp=await API.post("/restaurant/signup",formData)
         const decodedToken = jwtDecode(resp.data.accessToken) ;
         setCurrentUser(decodedToken) ;
-        setAuth(data.resp.accessToken) ;
+        setAuth(resp.data.accessToken) ;
         navigate('/business/home');
         setLoading(false);
     };
@@ -167,6 +168,17 @@ const SignUp = () => {
                             margin="normal"
                             name="range"
                             value={formData.range}
+                            onChange={handleInputChange}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Phone"
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            name="phone"
+                            value={formData.phone}
                             onChange={handleInputChange}
                         />
                     </Grid>

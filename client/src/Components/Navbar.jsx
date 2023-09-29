@@ -2,7 +2,7 @@ import React from "react";
 import { AppBar, Box, Toolbar, Typography, Button, IconButton } from "@mui/material"
 import { useNavigate } from "react-router-dom";
 import Profile from './Profile'
-
+import "./Navbar.css"
 import { useAuth } from "../contexts/AuthContext";
 
 const Navbar = () => {
@@ -21,7 +21,14 @@ const Navbar = () => {
         <Toolbar>
           <IconButton size="large" edge="start" color="inherit" aria-label="menu">
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography className="Logo" onClick={()=>{
+            if(currentUser.userType=='customer'){
+              navigate("/home");
+            }
+            else{
+              navigate("/business/home")
+            }
+          }} variant="h6" component="div" sx={{ flexGrow: 1 }}>
             EasyDining
           </Typography>
           {

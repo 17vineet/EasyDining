@@ -30,7 +30,9 @@ export const signInRestaurant = async (req, res) => {
     }
 }
 
+
 export const signUpRestaurant = async (req, res) => {
+    
     const data = new Restaurant({ ...req.body });
     const result = await data.save();
 
@@ -239,68 +241,41 @@ export const updateRestaurantDetails = async (req, res) => {
     let resp = null
     if (change === 'name') {
         const { name } = req.body;
-        resp = await Restaurant.findOneAndUpdate({ '_id': rid }, {
-            $set: {
-                'name': name
-            }
-        },{new:true})
-        if (resp) {
-            resp['message'] = 'Restaurant Name Updated Successfully'
-        }
-        else {
-            resp['message'] = 'Error changing Restaurant Name'
-        }
+        resp = await Restaurant.findOneAndUpdate({ '_id': rid }, 
+        { $set: {'name': name }},{new:true})
     }
     else if (change === 'phone') {
         const { phone, password } = req.body;
         resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': password },
-            {
-                $set: {
-                    'phone': phone
-                }
-            },{new:true})
-        if (resp) {
-            resp['message'] = 'Phone Number Updated Successfully'
-        }
-        else {
-            resp['message'] = 'Could not change Phone due to incorrect password'
-        }
+            {$set: {'phone': phone}},{new:true})
     }
     else if (change === 'email') {
         const { email, password } = req.body;
         resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': password },
-            {
-                $set: {
-                    'email': email
-                }
-            },{new:true})
-        if (resp) {
-            resp['message'] = 'Email updated successfully'
-        }
-        else {
-            resp['message'] = 'Could not change email due to incorrect password'
-        }
+            {$set: {'email': email}},{new:true})
     }
     else if (change === 'password') {
         const { opass, npass } = req.body;
         resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': opass },
-            {
-                $set: {
-                    'password': npass
-                }
-            },{new:true})
-        if (resp) {
-            resp['message'] = 'Password Updated Successfully'
-        }
-        else {
-            resp['message'] = 'Existing password does not match'
-        }
+            {$set: {'password': npass}},{new:true})
     }
-    if(resp)
-    {
-        delete resp['password']
-        res.send(JSON.stringify(resp))
+
+    if (resp) {
+        delete resp._doc.password
+        delete resp._doc.refresh_token
+    
+        const accessToken = jwt.sign({ ...resp._doc, userType: 'restaurant' }, 'test', { expiresIn: '30s' });
+        const refreshToken = jwt.sign({ ...resp._doc, userType: 'restaurant' }, 'test', { expiresIn: '1d' });
+
+        await Restaurant.findByIdAndUpdate(resp._id, { ...resp._doc, refresh_token: refreshToken }, { new: true });
+
+        res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+        res.status(200).send({ accessToken });
     }
+    else {
+        res.status(401).send('Wrong Password');
+    }
+
 }
 
 export const deleteCuisine = async (req, res) => {
