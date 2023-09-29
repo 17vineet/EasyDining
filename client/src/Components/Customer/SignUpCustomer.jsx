@@ -41,11 +41,10 @@ const CustomerSignUp = () => {
       const decodedToken = jwtDecode(resp.data.accessToken) ;
       setCurrentUser(decodedToken) ;
       setAuth(resp.data.accessToken) ;
+      navigate('/home') ;
     } catch (error) {
-      console.log(error);
-      setError("Failed to create an account")
+      setError(error.response.data) ;
     }
-    navigate('/home') ;
     setLoading(false);
   }
 

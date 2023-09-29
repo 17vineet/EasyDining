@@ -3,7 +3,8 @@ import { Schema, model } from 'mongoose';
 const restaurantSchema = new Schema({
     email: {
         type: String,
-        unique:true
+        // unique: true,
+        // index:true
     },
     password: {
         type: String
@@ -46,7 +47,8 @@ const customerSchema = new Schema({
     },
     email: {
         type: String,
-        unique:true
+        // unique:true,
+        // index:true
     },
     password: {
         type: String

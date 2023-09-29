@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Typography, Input, Grid, Hidden, CircularProgress } from '@mui/material';
+import {Alert} from 'react-bootstrap';
 import DoneIcon from '@mui/icons-material/Done';
 import jwtDecode from 'jwt-decode';
 import { Link, useNavigate } from 'react-router-dom';
@@ -18,6 +19,7 @@ const SignUp = () => {
         thumbnail_url: '',
         numberOfTables: '',
     });
+    const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const { currentUser, setCurrentUser ,setAuth} = useAuth();
     const [selectedFile, setSelectedFile] = useState(null);
@@ -82,12 +84,16 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const resp=await API.post("/restaurant/signup",formData)
-        const decodedToken = jwtDecode(resp.data.accessToken) ;
-        setCurrentUser(decodedToken) ;
-        setAuth(resp.data.accessToken) ;
-        navigate('/business/home');
-        setLoading(false);
+        try {
+            const resp=await API.post("/restaurant/signup",formData)
+            const decodedToken = jwtDecode(resp.data.accessToken) ;
+            setCurrentUser(decodedToken) ;
+            setAuth(resp.data.accessToken) ;
+            setLoading(false);
+            navigate('/business/home');
+        } catch (error) {
+            setError(error.response.data) ;
+        }
     };
 
     useEffect(() => {
@@ -101,6 +107,7 @@ const SignUp = () => {
             <Typography variant="h3" align="center" gutterBottom>
                 Restaurant Details
             </Typography>
+            {error && <Alert variant='danger'>{error}</Alert>}
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>

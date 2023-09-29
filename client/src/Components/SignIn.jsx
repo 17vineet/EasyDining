@@ -8,7 +8,7 @@ import API from '../axios'
 import { useAuth } from '../contexts/AuthContext';
 
 const CustomerSignIn = () => {
-  const [formData, setFormData] = useState({ email: 'hetvik@gmail.com', password: '123456' })
+  const [formData, setFormData] = useState({ emailpass: 'hetvik@gmail.com', password: '123456' })
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [userType, setUserType] = useState('customer') ;
@@ -60,12 +60,12 @@ const CustomerSignIn = () => {
                 <FormControlLabel value="restaurant" control={<Radio />} label="Restaurant" />
               </RadioGroup>
               <Form onSubmit={handleSubmit}>
-                <Form.Group id='email'>
-                  <Form.Label>Email</Form.Label>
+                <Form.Group id='emailpass'>
+                  <Form.Label>Email/Phone</Form.Label>
                   <Form.Control
-                    type='email'
-                    name='email'
-                    value={formData.email}
+                    type='text'
+                    name='emailpass'
+                    value={formData.emailpass}
                     onChange={handleChange}
                     required
                   ></Form.Control>

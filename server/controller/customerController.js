@@ -2,9 +2,20 @@ import jwt from "jsonwebtoken";
 
 import { Customer, WaitingList, Restaurant } from "../Database/models.js";
 
+
+function containsOnlyNumbers(inputStr) {
+    return /^[0-9]+$/.test(inputStr);
+}
+
 export const signInCustomer = async (req, res) => {
-    const { email, password } = req.body;
-    let data = await Customer.findOne({ email: email });
+    let data = null;
+    const { emailpass, password } = req.body;
+    if (containsOnlyNumbers(emailpass)) {
+        data = await Customer.findOne({ 'phone': emailpass })
+    }
+    else {
+        data = await Customer.findOne({'email': emailpass})
+    }
     if (data) {
         let pass = data.password;
         if (pass === password) {
@@ -18,7 +29,7 @@ export const signInCustomer = async (req, res) => {
 
             // saving the refreshToken with the current user in DB
             await Customer.findByIdAndUpdate(data._id, { ...data._doc, refresh_token: refreshToken }, { new: true })
-            
+
             res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
             res.status(200).send({ accessToken });
         }
@@ -31,8 +42,38 @@ export const signInCustomer = async (req, res) => {
     }
 }
 
+const findEmail = async (email) => {
+    const resp = await Customer.findOne({ 'email': email })
+    if (resp) {
+        return true
+    }
+    else {
+        return false
+    }
+}
+
+const findPhone = async (phone) => {
+    const resp = await Customer.findOne({ 'phone': phone });
+    if (resp) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 export const signUpCustomer = async (req, res) => {
     const { name, email, password, visited, phone } = req.body;
+    console.log(email)
+    if (await findEmail(email)) {
+        res.status(409).send(`An account already exists corresponding to this email id`)
+        return
+    }
+    if (await findPhone(phone)) {
+        res.status(409).send(`An account already exists corresponding to this phone number`)
+        return
+    }
+
     const data = new Customer({ name, email, password, visited_restaurant: visited, phone, refresh_token: "" });
     const result = await data.save();
 
@@ -100,40 +141,39 @@ export const cancelReservation = async (req, res) => {
 }
 
 export const updateCustomerDetails = async (req, res) => {
-    let resp = null ;
+    let resp = null;
 
     const { _id, change } = req.body;
-    if(change==='name'){
-        const {name} = req.body;
-        resp = await Customer.findOneAndUpdate({ '_id': _id}, {
+    if (change === 'name') {
+        const { name } = req.body;
+        resp = await Customer.findOneAndUpdate({ '_id': _id }, {
             $set: { 'name': name }
-        }, {new: true})
+        }, { new: true })
     }
-    else if(change==='email'){
-        const {email,password} = req.body;
-        resp = await Customer.findOneAndUpdate({ '_id': _id,'password':password}, {
+    else if (change === 'email') {
+        const { email, password } = req.body;
+        resp = await Customer.findOneAndUpdate({ '_id': _id, 'password': password }, {
             $set: { 'email': email }
-        }, {new: true})
+        }, { new: true })
     }
-    else if(change==='phone'){
-        const {phone,password} = req.body;
-        resp = await Customer.findOneAndUpdate({ '_id': _id,'password':password}, {
+    else if (change === 'phone') {
+        const { phone, password } = req.body;
+        resp = await Customer.findOneAndUpdate({ '_id': _id, 'password': password }, {
             $set: { 'phone': phone }
-        }, {new: true})
+        }, { new: true })
     }
-    else if(change==='password')
-    {
-        const {opass,npass} = req.body;
-        resp = await Customer.findOneAndUpdate({'_id':_id, 'password':opass},
-        {$set:{
-            'password':npass}
-        },{new:true})
-        if(resp)
-        {
+    else if (change === 'password') {
+        const { opass, npass } = req.body;
+        resp = await Customer.findOneAndUpdate({ '_id': _id, 'password': opass },
+            {
+                $set: {
+                    'password': npass
+                }
+            }, { new: true })
+        if (resp) {
             resp['message'] = 'Password Updated Successfully'
         }
-        else
-        {
+        else {
             resp['message'] = 'Existing password does not match'
         }
     }
@@ -141,7 +181,7 @@ export const updateCustomerDetails = async (req, res) => {
     if (resp) {
         delete resp._doc.password
         delete resp._doc.refresh_token
-    
+
         const accessToken = jwt.sign({ ...resp._doc, userType: 'customer' }, 'test', { expiresIn: '30s' });
         const refreshToken = jwt.sign({ ...resp._doc, userType: 'customer' }, 'test', { expiresIn: '1d' });
 

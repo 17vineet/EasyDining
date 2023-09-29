@@ -2,9 +2,21 @@ import jwt from 'jsonwebtoken';
 
 import { Restaurant, WaitingList, DiningList, Menu } from "../Database/models.js";
 
+function containsOnlyNumbers(inputStr) {
+    return /^[0-9]+$/.test(inputStr);
+}
+
 export const signInRestaurant = async (req, res) => {
-    const { email, password } = req.body;
-    let data = await Restaurant.findOne({ email: email });
+    let data = null;
+    const { emailpass, password } = req.body;
+    
+    if (containsOnlyNumbers(emailpass)) {
+        data = await Restaurant.findOne({ 'phone': emailpass })
+    }
+    else {
+        data = await Restaurant.findOne({'email': emailpass})
+    }
+
     if (data) {
         let pass = data.password;
         if (pass === password) {
@@ -30,8 +42,37 @@ export const signInRestaurant = async (req, res) => {
     }
 }
 
+const findEmail = async (email) => {
+    const resp = await Restaurant.findOne({ 'email': email })
+    if (resp) {
+        return true
+    }
+    else {
+        return false
+    }
+}
+
+const findPhone = async (phone) => {
+    const resp = await Restaurant.findOne({ 'phone': phone });
+    if (resp) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
 export const signUpRestaurant = async (req, res) => {
+
+    const { email, phone } = req.body;
+    if (await findEmail(email)) {
+        res.status(409).send(`An account already exists corresponding to this email id`)
+        return
+    }
+    if (await findPhone(phone)) {
+        res.status(409).send(`An account already exists corresponding to this phone number`)
+        return
+    }
     
     const data = new Restaurant({ ...req.body });
     const result = await data.save();

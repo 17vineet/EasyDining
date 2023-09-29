@@ -62,7 +62,7 @@ const PhoneEmailModel = ({ editField, closePEmodel }) => {
                         </div>
                     }
                     <div>
-                        <TextField label='Password' name="password" variant='outlined' value={formData.password} fullWidth onChange={handleChange} />
+                        <TextField label='Password' name="password" type='password' variant='outlined' value={formData.password} fullWidth onChange={handleChange} />
                     </div>
                     <button className='btn btn-primary' onClick={handleSave}>Save Changes</button>
                    

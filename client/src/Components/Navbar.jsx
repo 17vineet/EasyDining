@@ -15,20 +15,25 @@ const Navbar = () => {
     else navigate('/business/signup');
   }
 
+  const handleHomeClick = () => {
+    if (!currentUser) {
+      navigate('/')
+    }
+    else if (currentUser.userType == 'customer') {
+      navigate("/home");
+    }
+    else {
+      navigate("/business/home")
+    }
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position='static'>
         <Toolbar>
           <IconButton size="large" edge="start" color="inherit" aria-label="menu">
           </IconButton>
-          <Typography className="Logo" onClick={()=>{
-            if(currentUser.userType=='customer'){
-              navigate("/home");
-            }
-            else{
-              navigate("/business/home")
-            }
-          }} variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography className="Logo" onClick={handleHomeClick} variant="h6" component="div" sx={{ flexGrow: 1 }}>
             EasyDining
           </Typography>
           {
