@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 import { Restaurant, WaitingList, DiningList, Menu } from "../Database/models.js";
+import { trusted } from 'mongoose';
 
 function containsOnlyNumbers(inputStr) {
     return /^[0-9]+$/.test(inputStr);
@@ -9,12 +10,12 @@ function containsOnlyNumbers(inputStr) {
 export const signInRestaurant = async (req, res) => {
     let data = null;
     const { emailpass, password } = req.body;
-    
+
     if (containsOnlyNumbers(emailpass)) {
         data = await Restaurant.findOne({ 'phone': emailpass })
     }
     else {
-        data = await Restaurant.findOne({'email': emailpass})
+        data = await Restaurant.findOne({ 'email': emailpass })
     }
 
     if (data) {
@@ -42,40 +43,21 @@ export const signInRestaurant = async (req, res) => {
     }
 }
 
-const findEmail = async (email) => {
-    const resp = await Restaurant.findOne({ 'email': email })
-    if (resp) {
-        return true
-    }
-    else {
-        return false
-    }
-}
-
-const findPhone = async (phone) => {
-    const resp = await Restaurant.findOne({ 'phone': phone });
-    if (resp) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 export const signUpRestaurant = async (req, res) => {
-
-    const { email, phone } = req.body;
-    if (await findEmail(email)) {
-        res.status(409).send(`An account already exists corresponding to this email id`)
-        return
+    try {
+        const data = new Restaurant({ ...req.body });
+        var result = await data.save();
     }
-    if (await findPhone(phone)) {
-        res.status(409).send(`An account already exists corresponding to this phone number`)
-        return
+    catch (e) {
+        if (e.keyValue.email != undefined) {
+            res.status(409).send(`An account already exists corresponding to this email id`)
+            return
+        }
+        else {
+            res.status(409).send(`An account already exists corresponding to this phone number`)
+            return
+        }
     }
-    
-    const data = new Restaurant({ ...req.body });
-    const result = await data.save();
 
     const data1 = new WaitingList({ restaurant: result._id });
     const data2 = new DiningList({ restaurant: result._id });
@@ -282,29 +264,29 @@ export const updateRestaurantDetails = async (req, res) => {
     let resp = null
     if (change === 'name') {
         const { name } = req.body;
-        resp = await Restaurant.findOneAndUpdate({ '_id': rid }, 
-        { $set: {'name': name }},{new:true})
+        resp = await Restaurant.findOneAndUpdate({ '_id': rid },
+            { $set: { 'name': name } }, { new: true })
     }
     else if (change === 'phone') {
         const { phone, password } = req.body;
         resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': password },
-            {$set: {'phone': phone}},{new:true})
+            { $set: { 'phone': phone } }, { new: true })
     }
     else if (change === 'email') {
         const { email, password } = req.body;
         resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': password },
-            {$set: {'email': email}},{new:true})
+            { $set: { 'email': email } }, { new: true })
     }
     else if (change === 'password') {
         const { opass, npass } = req.body;
         resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': opass },
-            {$set: {'password': npass}},{new:true})
+            { $set: { 'password': npass } }, { new: true })
     }
 
     if (resp) {
         delete resp._doc.password
         delete resp._doc.refresh_token
-    
+
         const accessToken = jwt.sign({ ...resp._doc, userType: 'restaurant' }, 'test', { expiresIn: '30s' });
         const refreshToken = jwt.sign({ ...resp._doc, userType: 'restaurant' }, 'test', { expiresIn: '1d' });
 
@@ -324,7 +306,7 @@ export const deleteCuisine = async (req, res) => {
     const response = await Menu.findOneAndUpdate(
         { "restaurant": rid },
         { $pull: { 'menu': { 'name': cuisine } } },
-        {new:true})
+        { new: true })
     console.log(response)
 
     res.send(JSON.stringify(response))

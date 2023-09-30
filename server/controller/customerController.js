@@ -14,7 +14,7 @@ export const signInCustomer = async (req, res) => {
         data = await Customer.findOne({ 'phone': emailpass })
     }
     else {
-        data = await Customer.findOne({'email': emailpass})
+        data = await Customer.findOne({ 'email': emailpass })
     }
     if (data) {
         let pass = data.password;
@@ -42,40 +42,23 @@ export const signInCustomer = async (req, res) => {
     }
 }
 
-const findEmail = async (email) => {
-    const resp = await Customer.findOne({ 'email': email })
-    if (resp) {
-        return true
-    }
-    else {
-        return false
-    }
-}
-
-const findPhone = async (phone) => {
-    const resp = await Customer.findOne({ 'phone': phone });
-    if (resp) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 export const signUpCustomer = async (req, res) => {
     const { name, email, password, visited, phone } = req.body;
-    console.log(email)
-    if (await findEmail(email)) {
-        res.status(409).send(`An account already exists corresponding to this email id`)
-        return
+    try {
+        // const data = new Customer({ name, email, password, visited_restaurant:visited, phone, refresh_token: "" });
+        const data = new Customer({ ...req.body });
+        var result = await data.save();
     }
-    if (await findPhone(phone)) {
-        res.status(409).send(`An account already exists corresponding to this phone number`)
-        return
+    catch (e) {
+        if (e.keyValue.email != undefined) {
+            res.status(409).send(`An account already exists corresponding to this email id`)
+            return
+        }
+        else {
+            res.status(409).send(`An account already exists corresponding to this phone number`)
+            return
+        }
     }
-
-    const data = new Customer({ name, email, password, visited_restaurant: visited, phone, refresh_token: "" });
-    const result = await data.save();
 
     delete result._doc.password;
     delete result._doc.refresh_token;
