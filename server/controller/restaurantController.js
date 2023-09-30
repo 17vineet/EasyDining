@@ -49,7 +49,7 @@ export const signUpRestaurant = async (req, res) => {
         var result = await data.save();
     }
     catch (e) {
-        if (e.keyValue.email != undefined) {
+        if (e?.keyValue?.email != undefined) {
             res.status(409).send(`An account already exists corresponding to this email id`)
             return
         }
@@ -310,4 +310,27 @@ export const deleteCuisine = async (req, res) => {
     console.log(response)
 
     res.send(JSON.stringify(response))
+}
+
+export const updateTable = async (req,res) =>{
+    const {rid,total_tables} = req.body;
+    const response = await Restaurant.findOneAndUpdate({'restaurant':rid},
+    {$set:{'total_tables':total_tables}},{new:true})
+    console.log(response)
+
+    res.send(JSON.stringify(response))
+}
+
+export const deleteAccount = async (req,res) =>{
+    const {rid,password} = req.body;
+    const response = await Restaurant.deleteOne({'restaurant':rid, 'password':password})
+    console.log(response)
+    if(response.deletedCount==1)
+    {
+        res.send(JSON.stringify({'message':'Success'}))
+    }
+    else
+    {
+        res.send(JSON.stringify({'message':'Failure'}))
+    }
 }

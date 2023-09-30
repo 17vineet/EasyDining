@@ -1,5 +1,5 @@
 .main {
-    background-color: aquamarine;
+    /* background-color: aquamarine; */
     min-height: 100vh;
     padding: 10px;
     /* overflow:scroll; */
@@ -8,7 +8,7 @@
 }
 
 .background {
-    background-color: antiquewhite;
+    /* background-color: antiquewhite; */
     height: 100%;
     border-radius: 5px;
     min-height: 100%;
@@ -21,7 +21,7 @@
 }
 
 .content1 {
-    background-color: palevioletred;
+    /* background-color: palevioletred; */
     padding: 10px;
     display: flex;
     /* height: 50%; */
@@ -65,13 +65,13 @@
 }
 
 .content1_right {
-    background-color: rgb(71, 201, 201);
+    /* background-color: rgb(71, 201, 201); */
     width: 50%;
     padding: 10px;
 }
 
 .content2 {
-    background-color: blueviolet;
+    /* background-color: blueviolet; */
     padding: 20px 10px;
 }
 
@@ -103,7 +103,7 @@
     align-items: center;
     justify-content: center;
     gap: 20px;
-    background-color: aqua;
+    /* background-color: aqua; */
 }
 
 .RestaurantImgHolder img {
@@ -112,7 +112,7 @@
 
 .ImageHolderLeft {
     width: 40%;
-    background-color: aquamarine;
+    /* background-color: aquamarine; */
     align-items: center;
     justify-content: center;
     display: flex;
@@ -124,7 +124,7 @@
     width: 100%;
 }
 .pictureViewer{
-    background-color: bisque;
+    /* background-color: bisque; */
     display: flex;
     /* flex-direction: column; */
     width: 100%;

@@ -177,3 +177,11 @@ export const updateCustomerDetails = async (req, res) => {
         res.status(401).send('Wrong Password');
     }
 }
+
+export const deleteAccount = async (req,res) =>{
+    const {_id,password} = req.body;
+    const response = await Customer.deleteOne({'_id':_id, 'password':password})
+    console.log(response)
+
+    res.send(JSON.stringify(response))
+}
