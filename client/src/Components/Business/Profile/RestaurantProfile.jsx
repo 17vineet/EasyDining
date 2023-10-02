@@ -16,15 +16,18 @@ import API from '../../../axios';
 import Loading from '../../Loading/Loading';
 const RestaurantProfile = () => {
 
+  
   const navigate = useNavigate();
-  const { currentUser ,setCurrentUser} = useAuth();
+  const { currentUser ,setCurrentUser, setAuth} = useAuth();
   const [models, setModel] = useState({ name: false, email: false, phone: false });
   const [img_urls, setImg_urls] = useState([])
   // const [imgIndex, setimgIndex] = useState(0)
   const [selectedFile, setSelectedFile] = useState(null)
   const [uploadingImages, setUploadingImages] = useState({ spinner: false, tick: false });
   const [loading,setLoading]=useState(false)
-
+  
+  console.log(currentUser);
+  
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -112,13 +115,13 @@ const RestaurantProfile = () => {
       const password = prompt('Please confirm your password to delete your account')
       const resp =await API.post('/restaurant/deleteAccount', { 'password': password })
       
-      if(resp.data.message==='Success')
-      {
+      if(resp.data.message==='Success'){
         alert('Account Deleted Successfully')
+        setCurrentUser(null) ;
+        setAuth(null) ;
         navigate('/')
       }
-      else
-      {
+      else{
         alert('Account could not be deleted due to incorrect password')
       }
     }
@@ -179,27 +182,15 @@ const RestaurantProfile = () => {
                 }
               </div>
               <div>
-                {/* <input
-                  type="file"
-                  name="images"
-                  onChange={handleFileChangeforMultipleUpload}
-                  multiple
-                /> */}
-
                 <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                   Upload file
                   <VisuallyHiddenInput type="file" name='images'   onChange={handleFileChangeforMultipleUpload}
                   multiple/>
                 </Button>
-
                 <button className='btn btn-primary' onClick={uploadImages}>Upload</button>
               </div>
             </div>
           </div>
-
-
-
-
         </div>
       </div>
     </>

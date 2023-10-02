@@ -25,6 +25,7 @@
     overflow: auto;
     display: flex;
     flex-direction: column;
+    z-index: 5;
 }
 
 .cust_name{

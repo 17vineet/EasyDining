@@ -23,7 +23,7 @@ const Home = () => {
     console.log(result.data.img_urls[0]);
     const res = await API.post("/restaurant/updateThumbnail", { rid: currentUser._id, "thumbnail_url": result.data.img_urls[0] })
     setThumbnail(result.data.img_urls[0])
-    console.log(res.data)
+    setCurrentUser({...currentUser,thumbnail_url: result.data.img_urls[0]})
   };
   const handleUpdate = () => {
     setUpdated(prev => prev + 1);
