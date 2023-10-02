@@ -12,19 +12,9 @@ const Home = () => {
   const [updated, setUpdated] = useState(0);
   const { currentUser, setCurrentUser } = useAuth();
   const navigate = useNavigate();
-  const [thumbnail, setThumbnail] = useState(currentUser.thumbnail_url)
 
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    const formData = new FormData();
-    formData.append('images', file);
 
-    const result = await API.post("/cloudinary/thumbnail", formData)
-    console.log(result.data.img_urls[0]);
-    const res = await API.post("/restaurant/updateThumbnail", { rid: currentUser._id, "thumbnail_url": result.data.img_urls[0] })
-    setThumbnail(result.data.img_urls[0])
-    setCurrentUser({...currentUser,thumbnail_url: result.data.img_urls[0]})
-  };
+ 
   const handleUpdate = () => {
     setUpdated(prev => prev + 1);
   }
@@ -35,12 +25,8 @@ const Home = () => {
           <div className="content1">
             <div className="content1_left">
               <div className="thumbnail_pic">
-                <input className="inputThumbnail"
-                  type="file"
-                  name="images"
-                  onChange={handleFileChange}
-                />
-                <img src={thumbnail} className="thumbnail_img" style={{ 'zIndex': 2 }} />
+            
+                <img src={currentUser.thumbnail_url} className="thumbnail_img" style={{ 'zIndex': 2 }} />
                 <div className="thumbnail_img">Black</div>
               </div>
             </div>

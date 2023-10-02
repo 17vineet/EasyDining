@@ -22,7 +22,6 @@ const RestaurantInfo = (prop) => {
                 <div className="rest_content">
                     <div className="rest_image"><img src={thumbnail_url}/></div>
                     <div className="rest_name">{name}</div>
-                    <button onClick={handleClick}>Reserve</button>
                 </div>
             </div>
              

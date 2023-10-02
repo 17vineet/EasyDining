@@ -14,20 +14,22 @@ import { TextField, Fab } from '@mui/material';
 import NameModel from './NameModel';
 import API from '../../../axios';
 import Loading from '../../Loading/Loading';
+
+
 const RestaurantProfile = () => {
 
-  
+
   const navigate = useNavigate();
-  const { currentUser ,setCurrentUser, setAuth} = useAuth();
+  const { currentUser, setCurrentUser, setAuth } = useAuth();
   const [models, setModel] = useState({ name: false, email: false, phone: false });
   const [img_urls, setImg_urls] = useState([])
-  // const [imgIndex, setimgIndex] = useState(0)
+  const [thumbnail, setThumbnail] = useState(currentUser.thumbnail_url)
   const [selectedFile, setSelectedFile] = useState(null)
   const [uploadingImages, setUploadingImages] = useState({ spinner: false, tick: false });
-  const [loading,setLoading]=useState(false)
-  
+  const [loading, setLoading] = useState(false)
+
   console.log(currentUser);
-  
+
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -42,10 +44,6 @@ const RestaurantProfile = () => {
   useEffect(() => {
     setImg_urls(currentUser.images_urls)
   }, []);
-
-
-
-
 
   const handleImgChange = (ind) => {
     setimgIndex(ind)
@@ -71,18 +69,15 @@ const RestaurantProfile = () => {
       console.log(new_urls)
       setImg_urls([...img_urls, ...new_urls]);
       setUploadingImages({ spinner: false, tick: true });
-      // setCurrentUser(prev => ({ ...prev, images_urls: [...img_urls, ...new_urls] }));
-      setCurrentUser(prev => ({ ...prev, images_urls: img_urls }));
+      setCurrentUser(prev => ({ ...prev, images_urls: [...img_urls, ...new_urls] }));
       await API.post("/restaurant/uploadimages", { rid: currentUser._id, images_urls: result.data.img_urls })
-    setLoading(false)
-
+      setLoading(false)
     }
     else {
       alert('Please select some images !!!')
-    setLoading(false)
-
+      setLoading(false)
     }
-    
+
   };
 
   const deleteRestaurantImage = async (url, index) => {
@@ -97,10 +92,9 @@ const RestaurantProfile = () => {
 
         if (resp2.data.matchedCount == 1) {
           const arr = [...img_urls];
-          // const arr = arr.slice(0,index).concat(arr.slice(index));
           arr.splice(index, 1);
           setImg_urls(arr);
-
+          setCurrentUser(prev => ({...prev, images_urls: arr})) ;
         }
       }
       else {
@@ -113,32 +107,53 @@ const RestaurantProfile = () => {
     const res = confirm('Are you sure you want to delete your account \n*Note that this action is not reversible and you cannot retrieve your account back')
     if (res) {
       const password = prompt('Please confirm your password to delete your account')
-      const resp =await API.post('/restaurant/deleteAccount', { 'password': password })
-      
-      if(resp.data.message==='Success'){
+      const resp = await API.post('/restaurant/deleteAccount', { 'password': password })
+
+      if (resp.data.message === 'Success') {
         alert('Account Deleted Successfully')
-        setCurrentUser(null) ;
-        setAuth(null) ;
+        setCurrentUser(null);
+        setAuth(null);
         navigate('/')
       }
-      else{
+      else {
         alert('Account could not be deleted due to incorrect password')
       }
     }
   }
 
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('images', file);
+
+    const result = await API.post("/cloudinary/thumbnail", formData)
+    console.log(result.data.img_urls[0]);
+    const res = await API.post("/restaurant/updateThumbnail", { rid: currentUser._id, "thumbnail_url": result.data.img_urls[0] })
+    setThumbnail(result.data.img_urls[0])
+    setCurrentUser({...currentUser,thumbnail_url: result.data.img_urls[0]})
+  };
+
   return (
     <>
-      {loading && <Loading/>}
+      {loading && <Loading />}
       {models.name && <NameModel closeNameModel={(newstate) => setModel({ ...models, name: newstate })} />}
       {models.phone && <PhoneEmailModel editField="phone" closePEmodel={(newstate) => setModel({ ...models, phone: newstate })} />}
       {models.email && <PhoneEmailModel editField="email" closePEmodel={(newstate) => setModel({ ...models, email: newstate })} />}
 
       <div className="backdrop">
         <div className="RestaurantDetailsHolder">
-          <div className="profilePicHolder">
-            <img className='thumbnail' src={`${currentUser.thumbnail_url}`} alt="" />
-          </div>
+          {/* <div className="profilePicHolder"> */}
+          <div className="thumbnail_pic">
+                <input className="inputThumbnail"
+                  type="file"
+                  name="images"
+                  onChange={handleFileChange}
+                />
+                <img src={thumbnail} className="thumbnail_img" style={{ 'zIndex': 2 }} />
+                {/* <div className="thumbnail_img">Black</div> */}
+              </div>
+            {/* <img className='thumbnail' src={`${currentUser.thumbnail_url}`} alt="" /> */}
+          {/* </div> */}
           <div className="RestaurantDetails">
             <ul >
               <li>{currentUser.name} &nbsp;&nbsp;
@@ -184,8 +199,8 @@ const RestaurantProfile = () => {
               <div>
                 <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                   Upload file
-                  <VisuallyHiddenInput type="file" name='images'   onChange={handleFileChangeforMultipleUpload}
-                  multiple/>
+                  <VisuallyHiddenInput type="file" name='images' onChange={handleFileChangeforMultipleUpload}
+                    multiple />
                 </Button>
                 <button className='btn btn-primary' onClick={uploadImages}>Upload</button>
               </div>
