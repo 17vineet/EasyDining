@@ -1,0 +1,180 @@
+.signin {
+    align-items: center;
+    background-color: #ffffff;
+    display: flex;
+    gap: 1px;
+    height: 832px;
+    justify-content: center;
+    min-width: 1280px;
+    position: relative;
+    width: 100%;
+  }
+  
+  .signin .form {
+    height: 832px;
+    position: relative;
+    width: 766px;
+  }
+  
+  .signin .text-wrapper {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 42px;
+    font-weight: 700;
+    left: 40px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 24px;
+  }
+  
+  .signin .login {
+    height: 725px;
+    left: 39px;
+    position: absolute;
+    top: 76px;
+    width: 688px;
+  }
+  
+  .signin .div {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 42px;
+    font-weight: 700;
+    left: 287px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 29px;
+  }
+  
+  .signin .username {
+    background-color: #d9d9d9;
+    height: 85px;
+    left: 44px;
+    position: absolute;
+    top: 187px;
+    width: 600px;
+  }
+  
+  .signin .password {
+    background-color: #d9d9d9;
+    height: 85px;
+    left: 44px;
+    position: absolute;
+    top: 301px;
+    width: 600px;
+  }
+  
+  .signin .don-t-have-an {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 24px;
+    font-weight: 400;
+    left: 168px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 441px;
+    white-space: nowrap;
+    width: 353px;
+  }
+  
+  .signin .span {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 24px;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  
+  .signin .text-wrapper-2 {
+    font-weight: 700;
+  }
+  
+  .signin .line {
+    height: 2px;
+    left: 44px;
+    object-fit: cover;
+    position: absolute;
+    top: 455px;
+    width: 107px;
+  }
+  
+  .signin .img {
+    height: 2px;
+    left: 537px;
+    object-fit: cover;
+    position: absolute;
+    top: 456px;
+    width: 107px;
+  }
+  
+  .signin .overlap {
+    background-color: #fffdfd;
+    border: 1px solid;
+    border-color: #000000;
+    border-radius: 12px;
+    height: 75px;
+    left: 128px;
+    position: absolute;
+    top: 504px;
+    width: 432px;
+  }
+  
+  .signin .for-business {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 24px;
+    font-weight: 400;
+    left: 140px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 21px;
+  }
+  
+  .signin .overlap-group {
+    background-color: #ffffff;
+    border: 1px solid;
+    border-color: #000000;
+    border-radius: 12px;
+    height: 75px;
+    left: 128px;
+    position: absolute;
+    top: 612px;
+    width: 432px;
+  }
+  
+  .signin .for-customer {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 24px;
+    font-weight: 400;
+    left: 139px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 21px;
+  }
+  
+  .signin .image {
+    height: 832px;
+    position: relative;
+    width: 513px;
+  }
+  
+  .signin .element {
+    height: 683px;
+    left: 0;
+    object-fit: cover;
+    position: absolute;
+    top: 59px;
+    width: 513px;
+  }
+  
+  @media only screen and (max-width: 768px) {
+    .image {
+      display: none
+    }
+  }

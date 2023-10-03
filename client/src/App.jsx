@@ -11,6 +11,7 @@ import BusinessSignUp from './Components/Business/SignUpBusiness';
 import Menu from './Components/Business/Menu/Menu';
 import RestaurantProfile from './Components/Business/Profile/RestaurantProfile';
 
+import Signin from './Components/SignIn/SignIn';
 import SignIn from './Components/SignIn';
 import Navbar from './Components/Navbar';
 

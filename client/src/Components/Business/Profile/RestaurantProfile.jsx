@@ -28,8 +28,6 @@ const RestaurantProfile = () => {
   const [uploadingImages, setUploadingImages] = useState({ spinner: false, tick: false });
   const [loading, setLoading] = useState(false)
 
-  console.log(currentUser);
-
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -182,7 +180,7 @@ const RestaurantProfile = () => {
                   img_urls.map((ele, index) => {
 
                     return (
-                      <div className='image_view'>
+                      <div className='image_view' key={index}>
                         <img className="picture" src={ele} />
                         <div className='deletediv' onClick={() => {
                           handleImgChange(index)

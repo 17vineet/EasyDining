@@ -19,10 +19,10 @@ const handleTokenController = async (req, res) => {
     jwt.verify(refreshToken, 'test', (err, decoded) => {
         if (err || foundUser.email !== decoded.email) return res.sendStatus(403);
         
-        delete decoded.iat;
-        delete decoded.exp;
+        delete foundUser._doc.password
+        delete foundUser._doc.refresh_token;
 
-        const accessToken = jwt.sign({...decoded}, 'test', {expiresIn: '30s'}) ;
+        const accessToken = jwt.sign({...foundUser._doc, userType: 'restaurant'}, 'test', {expiresIn: '30s'}) ;
         res.status(200).send({accessToken}) ;
     }) ;
 }

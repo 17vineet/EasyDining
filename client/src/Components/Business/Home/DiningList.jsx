@@ -65,7 +65,6 @@ function DiningList({updated}) {
           }
         )
       });
-      console.log(arr)
       setDine(arr);
     }
     fetchDiningList();
