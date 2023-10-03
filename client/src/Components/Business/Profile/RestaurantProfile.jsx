@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 // import AddIcon from "@material-ui/icons/Add";
 import { TextField, Fab } from '@mui/material';
 import NameModel from './NameModel';
+import TableModal from './TableModal';
 import API from '../../../axios';
 import Loading from '../../Loading/Loading';
 
@@ -21,11 +22,12 @@ const RestaurantProfile = () => {
 
   const navigate = useNavigate();
   const { currentUser, setCurrentUser, setAuth } = useAuth();
-  const [models, setModel] = useState({ name: false, email: false, phone: false });
+  const [models, setModel] = useState({ name: false, email: false, phone: false ,table:false});
   const [img_urls, setImg_urls] = useState([])
   const [thumbnail, setThumbnail] = useState(currentUser.thumbnail_url)
   const [selectedFile, setSelectedFile] = useState(null)
   const [uploadingImages, setUploadingImages] = useState({ spinner: false, tick: false });
+
   const [loading, setLoading] = useState(false)
 
   const VisuallyHiddenInput = styled('input')({
@@ -78,6 +80,7 @@ const RestaurantProfile = () => {
 
   };
 
+ 
   const deleteRestaurantImage = async (url, index) => {
     const ans = confirm("Are you sure you want to delete the Image");
     if (ans) {
@@ -92,7 +95,7 @@ const RestaurantProfile = () => {
           const arr = [...img_urls];
           arr.splice(index, 1);
           setImg_urls(arr);
-          setCurrentUser(prev => ({...prev, images_urls: arr})) ;
+          setCurrentUser(prev => ({ ...prev, images_urls: arr }));
         }
       }
       else {
@@ -105,7 +108,7 @@ const RestaurantProfile = () => {
     const res = confirm('Are you sure you want to delete your account \n*Note that this action is not reversible and you cannot retrieve your account back')
     if (res) {
       const password = prompt('Please confirm your password to delete your account')
-      const resp = await API.post('/restaurant/deleteAccount', { 'password': password })
+      const resp = await API.post('/restaurant/deleteAccount', { 'rid': currentUser._id, 'password': password })
 
       if (resp.data.message === 'Success') {
         alert('Account Deleted Successfully')
@@ -128,7 +131,7 @@ const RestaurantProfile = () => {
     console.log(result.data.img_urls[0]);
     const res = await API.post("/restaurant/updateThumbnail", { rid: currentUser._id, "thumbnail_url": result.data.img_urls[0] })
     setThumbnail(result.data.img_urls[0])
-    setCurrentUser({...currentUser,thumbnail_url: result.data.img_urls[0]})
+    setCurrentUser({ ...currentUser, thumbnail_url: result.data.img_urls[0] })
   };
 
   return (
@@ -137,20 +140,21 @@ const RestaurantProfile = () => {
       {models.name && <NameModel closeNameModel={(newstate) => setModel({ ...models, name: newstate })} />}
       {models.phone && <PhoneEmailModel editField="phone" closePEmodel={(newstate) => setModel({ ...models, phone: newstate })} />}
       {models.email && <PhoneEmailModel editField="email" closePEmodel={(newstate) => setModel({ ...models, email: newstate })} />}
+      {models.table && <TableModal closeTableModel={(newstate)=>setModel({...models,table:newstate})}/>}
 
       <div className="backdrop">
         <div className="RestaurantDetailsHolder">
           {/* <div className="profilePicHolder"> */}
           <div className="thumbnail_pic">
-                <input className="inputThumbnail"
-                  type="file"
-                  name="images"
-                  onChange={handleFileChange}
-                />
-                <img src={thumbnail} className="thumbnail_img" style={{ 'zIndex': 2 }} />
-                {/* <div className="thumbnail_img">Black</div> */}
-              </div>
-            {/* <img className='thumbnail' src={`${currentUser.thumbnail_url}`} alt="" /> */}
+            <input className="inputThumbnail"
+              type="file"
+              name="images"
+              onChange={handleFileChange}
+            />
+            <img src={thumbnail} className="thumbnail_img" style={{ 'zIndex': 2 }} />
+            {/* <div className="thumbnail_img">Black</div> */}
+          </div>
+          {/* <img className='thumbnail' src={`${currentUser.thumbnail_url}`} alt="" /> */}
           {/* </div> */}
           <div className="RestaurantDetails">
             <ul >
@@ -166,7 +170,10 @@ const RestaurantProfile = () => {
                 <EditIcon onClick={() => setModel({ ...models, email: true })} style={{ fontSize: '15px' }} htmlColor='red' />
               </li>
             </ul>
-            <button className='btn btn-danger' onClick={handelDeleteAccount}>Delete Account</button>
+            <button className='btn btn-danger m-2' onClick={handelDeleteAccount}>Delete Account</button>
+            <button className='btn btn-primary m-2' onClick={()=>{
+                  setModel({...models,table:true})
+                }}>Update Table</button>
           </div>
         </div>
         <div className="content2">
@@ -194,6 +201,7 @@ const RestaurantProfile = () => {
                   })
                 }
               </div>
+              
               <div>
                 <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                   Upload file

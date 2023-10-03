@@ -22,7 +22,7 @@ const handleTokenController = async (req, res) => {
         delete foundUser._doc.password
         delete foundUser._doc.refresh_token;
 
-        const accessToken = jwt.sign({...foundUser._doc, userType: 'restaurant'}, 'test', {expiresIn: '30s'}) ;
+        const accessToken = jwt.sign({...foundUser._doc, userType}, 'test', {expiresIn: '30s'}) ;
         res.status(200).send({accessToken}) ;
     }) ;
 }

@@ -33,13 +33,13 @@ export const App = () => {
         <Route path='/unauthorized' element={<Unauthorized />} />
 
         {/* We want to protect these routes */}
-        <Route element={ <PersistLogin />}>
+        <Route element={<PersistLogin />}>
           <Route element={<RequireAuth userType='customer' />} >
             <Route path='/home' element={<CustomerHome />} />
             <Route path='/restaurantdetails/:rid' element={<RestaurantPage />} />
             <Route path='/profile' element={<CustomerProfile />} />
           </Route>
-          
+
           <Route element={<RequireAuth userType='restaurant' />}>
             <Route path='/business/home' element={<BusinessHome />} />
             <Route path='/business/menu' element={<Menu />} />

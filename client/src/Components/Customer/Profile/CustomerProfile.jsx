@@ -6,16 +6,17 @@ import PhoneEmailModel from './PhoneEmailModel'
 import { useAuth } from '../../../contexts/AuthContext';
 import './CustomerProfile.css'
 import NameModel from './NameModel';
+import API from '../../../axios';
 
 const CustomerProfile = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, setCurrentUser, setAuth } = useAuth();
   const [models, setModel] = useState({ name: false, email: false, phone: false });
 
   const handelDeleteAccount = async () => {
     const res = confirm('Are you sure you want to delete your account \n*Note that this action is not reversible and you cannot retrieve your account back')
     if (res) {
       const password = prompt('Please confirm your password to delete your account')
-      const resp = await API.post('/customer/deleteAccount', { 'password': password })
+      const resp = await API.post('/customer/deleteAccount', { '_id': currentUser._id, 'password': password })
 
       if (resp.data.message === 'Success') {
         alert('Account Deleted Successfully')

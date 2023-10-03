@@ -1,0 +1,53 @@
+.table-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 4;
+}
+.closeBtn{
+    align-self: flex-end;   
+}
+.closeBtn:hover{
+   cursor: pointer;  
+}
+.table-modal-content {
+    height: 670px;
+    width: 500px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    z-index: 5;
+}
+
+.editTableCapacity{
+    
+}
+
+.editNumberOfTable{
+
+}
+
+.editTable{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:5px;
+}
+
+.editTablesTable{
+    border: 1px solid black;
+    margin:20px
+}
+.editTablesTable td,th{
+    border: 1px solid black;
+}
