@@ -34,14 +34,15 @@
 }
 
 .editNumberOfTable{
-
+   
 }
 
 .editTable{
     display: flex;
     align-items: center;
     justify-content: center;
-    gap:5px;
+    gap:10px;
+    margin: 5px;
 }
 
 .editTablesTable{

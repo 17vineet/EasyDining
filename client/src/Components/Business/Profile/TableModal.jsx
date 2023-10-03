@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { TextField } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import CheckIcon from '@mui/icons-material/Check';
 
 import './TableModal.css';
 
@@ -15,7 +17,7 @@ const TableModal = ({ closeTableModel }) => {
                 <CloseIcon className='closeBtn' onClick={() => {
                     closeTableModel(false)
                 }} />
-                <table className='editTablesTable'>
+                {/* <table className='editTablesTable'>
                     <tr>
                         <th>Table Capacity</th>
                         <th>No. of Tables</th>
@@ -43,14 +45,37 @@ const TableModal = ({ closeTableModel }) => {
                          )
                     })
                 }
-            </table>
+            </table> */}
             <div>
                 <div className='editTable'>
                     <TextField label='Table Capacity' type='number' size='small' className='editTableCapacity' />
                     <TextField label='Number of tables' type='number' size='small' className='editNumberOfTables' />
                     <button className='btn btn-primary m-1'><AddIcon /></button>
                 </div>
-            </div>
+            </div><br />
+            {
+                tablelist.tableSize.map((ele, ind)=>{ return (
+                    <div className='editTable'>
+                        <TextField 
+                            variant='outlined' 
+                            label='Table Capacity' 
+                            value={ele} 
+                            disabled={editable != ind}
+                            className='editTableCapacity'
+                            size='small'
+                        /> 
+                        <TextField 
+                            variant='outlined' 
+                            label='Number of tables' 
+                            value={tablelist.noOfTables[ind]} 
+                            disabled={editable != ind}
+                            className='editNumberOfTables'
+                            size='small'
+                        />
+                        {editable == ind ? <CheckIcon onClick={()=> setEdittable(null) }/> : <EditIcon onClick={()=> setEdittable(ind) }/>}
+                    </div>
+                )})
+            }
         </div>
         </div>
     )
