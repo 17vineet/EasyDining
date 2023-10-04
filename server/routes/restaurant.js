@@ -20,7 +20,8 @@ import {
     checkWaiting,
     updateRestaurantDetails,
     deleteCuisine,
-    deleteAccount
+    deleteAccount,
+    saveTableChanges
 } from '../controller/restaurantController.js';
 
 const router = express.Router();
@@ -45,5 +46,6 @@ router.post('/checkWaiting',checkWaiting);
 router.post('/updateDetails',updateRestaurantDetails);
 router.post('/deleteCuisine',deleteCuisine);
 router.post('/deleteAccount',deleteAccount);
+router.post('/changeTables',saveTableChanges);
 
 export default router;

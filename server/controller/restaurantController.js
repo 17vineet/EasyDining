@@ -331,3 +331,14 @@ export const deleteAccount = async (req, res) => {
         res.send(JSON.stringify({ 'message': 'Failure' }))
     }
 }
+
+export const saveTableChanges = async (req,res) => {
+    const {tables,_id} = req.body;
+    const resp = await Restaurant.updateOne({'_id':_id},{'total_tables':tables})
+    if(resp.modifiedCount==1){
+        res.send(JSON.stringify({ 'message': 'Success' }))
+    }
+    else{
+        res.send(JSON.stringify({ 'message': 'Failure' }))
+    }
+}
