@@ -10,7 +10,7 @@ import './PhoneEmailModel.css';
 const PhoneEmailModel = ({ editField, closePEmodel }) => {
 
     const { currentUser, setCurrentUser, setAuth } = useAuth();
-    console.log(editField)
+    // console.log(editField)
 
     const [formData, setFormData] = useState({
         phone: currentUser.phone,

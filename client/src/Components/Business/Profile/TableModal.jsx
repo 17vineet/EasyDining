@@ -14,11 +14,11 @@ const TableModal = ({ closeTableModel }) => {
     const [tablelist, setTableList] = useState({ tableSize: [], noOfTables: [] })
     const [editable, setEdittable] = useState(null)
     const [tableInfo, setTableInfo] = useState({ tableSize: "", noOfTables: "" });
-    const [wasTouched, setWasTouched] = useState({tableSize: false, noOfTables: false}) ;
-    const { currentUser, setCurrentUser } = useAuth() ; 
+    const [wasTouched, setWasTouched] = useState({ tableSize: false, noOfTables: false });
+    const { currentUser, setCurrentUser } = useAuth();
 
-    useEffect(()=>{
-        setTableList(currentUser.total_tables) ;
+    useEffect(() => {
+        setTableList(currentUser.total_tables);
     }, [])
 
     const handleAddTable = () => {
@@ -43,7 +43,7 @@ const TableModal = ({ closeTableModel }) => {
                 setTableList({ tableSize: newTableSize, noOfTables: newNoOfTables })
             }
             setTableInfo({ tableSize: "", noOfTables: "" })
-            setWasTouched({tableSize: false, noOfTables: false})
+            setWasTouched({ tableSize: false, noOfTables: false })
         }
         else {
             alert("Please fill all the fields to add the table information")
@@ -52,13 +52,21 @@ const TableModal = ({ closeTableModel }) => {
 
     const handleSaveTable = async () => {
         const resp = await API.post('/restaurant/changeTables', { '_id': currentUser._id, 'tables': tablelist })
-        if(resp.data.message==='Success'){
+        if (resp.data.message === 'Success') {
             alert("Tables Updated Successfully")
-            setCurrentUser({...currentUser, total_tables: tablelist}) ;
+            setCurrentUser({ ...currentUser, total_tables: tablelist });
         }
-        else{
-            alert("Table Updatation Failed")   
+        else {
+            alert("No new changes found")
         }
+    }
+
+    const handleDeleteTable = (e, ind) => {
+        let newTableSize = tablelist.tableSize;
+        let newNoOfTables = tablelist.noOfTables;
+        newTableSize = newTableSize.slice(0, ind).concat(newTableSize.slice(ind + 1))
+        newNoOfTables = newNoOfTables.slice(0, ind).concat(newNoOfTables.slice(ind + 1))
+        setTableList({ tableSize: newTableSize, noOfTables: newNoOfTables })
     }
 
     const handleChange = (event, ind) => {
@@ -87,11 +95,11 @@ const TableModal = ({ closeTableModel }) => {
                             value={tableInfo.tableSize}
                             onChange={(e) => {
                                 setTableInfo(prev => ({ ...prev, tableSize: e.target.value }))
-                                setWasTouched({...wasTouched, tableSize: true})
+                                setWasTouched({ ...wasTouched, tableSize: true })
                             }}
                             InputProps={{ inputProps: { min: 1 } }}
-                            error = { wasTouched.tableSize ? tableInfo.tableSize < 1 ? true : false : false }
-                            helperText = { wasTouched.tableSize ? tableInfo.tableSize < 1 ? "Enter proper value" : "" : "" }
+                            error={wasTouched.tableSize ? tableInfo.tableSize < 1 ? true : false : false}
+                            helperText={wasTouched.tableSize ? tableInfo.tableSize < 1 ? "Enter proper value" : "" : ""}
                         />
                         <TextField
                             label='Number of tables'
@@ -101,13 +109,13 @@ const TableModal = ({ closeTableModel }) => {
                             value={tableInfo.noOfTables}
                             onChange={(e) => {
                                 setTableInfo(prev => ({ ...prev, noOfTables: e.target.value }))
-                                setWasTouched({...wasTouched, noOfTables: true})
+                                setWasTouched({ ...wasTouched, noOfTables: true })
                             }}
                             InputProps={{ inputProps: { min: 1 } }}
-                            error = { wasTouched.noOfTables ? tableInfo.noOfTables < 1 ? true : false : false }
-                            helperText = { wasTouched.noOfTables ? tableInfo.noOfTables < 1 ? "Enter proper value" : "" : "" }
+                            error={wasTouched.noOfTables ? tableInfo.noOfTables < 1 ? true : false : false}
+                            helperText={wasTouched.noOfTables ? tableInfo.noOfTables < 1 ? "Enter proper value" : "" : ""}
                         />
-                        <button className='btn btn-primary m-1' disabled={tableInfo.tableSize<1 || tableInfo.noOfTables<1} onClick={handleAddTable}><AddIcon /></button>
+                        <button className='btn btn-primary m-1' disabled={tableInfo.tableSize < 1 || tableInfo.noOfTables < 1} onClick={handleAddTable}><AddIcon /></button>
                     </div>
                 </div><br />
                 {
@@ -142,6 +150,9 @@ const TableModal = ({ closeTableModel }) => {
                                 {editable == ind ? <CheckIcon onClick={() => setEdittable(null)} /> : <EditIcon onClick={() => {
                                     setEdittable(ind)
                                 }} />}
+                                <button className='btn btn-danger' onClick={(event) => {
+                                    handleDeleteTable(event, ind)
+                                }}>Delete Table</button>
                             </div>
                         )
                     })

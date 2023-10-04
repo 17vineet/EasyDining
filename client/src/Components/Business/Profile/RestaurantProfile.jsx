@@ -203,12 +203,12 @@ const RestaurantProfile = () => {
               </div>
               
               <div>
-                <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                <Button component="label" className='m-2' variant="contained" startIcon={<CloudUploadIcon />}>
                   Upload file
                   <VisuallyHiddenInput type="file" name='images' onChange={handleFileChangeforMultipleUpload}
                     multiple />
                 </Button>
-                <button className='btn btn-primary' onClick={uploadImages}>Upload</button>
+                <button className='btn btn-primary m-2' onClick={uploadImages}>Upload</button>
               </div>
             </div>
           </div>
