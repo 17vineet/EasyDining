@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 
 import { Restaurant, WaitingList, DiningList, Menu } from "../Database/models.js";
 import { trusted } from 'mongoose';
+import { deleteAllImages } from '../Cloudinary/controller.js';
 
 function containsOnlyNumbers(inputStr) {
     return /^[0-9]+$/.test(inputStr);
@@ -323,6 +324,14 @@ export const updateTable = async (req, res) => {
 
 export const deleteAccount = async (req, res) => {
     const { rid, password } = req.body;
+    const resp = await Restaurant.findOne({ '_id': rid, 'password': password })
+    if (resp == null) {
+        res.send(JSON.stringify({ 'message': 'Failure' }))
+        return
+    }
+    let img_urls = resp.images_urls;
+    img_urls.push(resp.thumbnail_url)
+    const resp2 = await deleteAllImages(img_urls);
     const response = await Restaurant.deleteOne({ '_id': rid, 'password': password })
     if (response.deletedCount == 1) {
         res.send(JSON.stringify({ 'message': 'Success' }))
@@ -332,13 +341,13 @@ export const deleteAccount = async (req, res) => {
     }
 }
 
-export const saveTableChanges = async (req,res) => {
-    const {tables,_id} = req.body;
-    const resp = await Restaurant.updateOne({'_id':_id},{'total_tables':tables})
-    if(resp.modifiedCount==1){
+export const saveTableChanges = async (req, res) => {
+    const { tables, _id } = req.body;
+    const resp = await Restaurant.updateOne({ '_id': _id }, { 'total_tables': tables })
+    if (resp.modifiedCount == 1) {
         res.send(JSON.stringify({ 'message': 'Success' }))
     }
-    else{
+    else {
         res.send(JSON.stringify({ 'message': 'Failure' }))
     }
 }
