@@ -46,7 +46,7 @@ export const signInRestaurant = async (req, res) => {
 
 export const signUpRestaurant = async (req, res) => {
     try {
-        const data = new Restaurant({ ...req.body, 'total_tables':{'tableSize':[], 'noOfTables':[]}, 'available_tables':{'tableSize':[], 'noOfTables':[]} });
+        const data = new Restaurant({ ...req.body, 'total_tables':{'tableSize':[], 'noOfTables':[]}, 'occupied_tables':{'tableSize':[], 'noOfTables':[]} });
         var result = await data.save();
     }
     catch (e) {
