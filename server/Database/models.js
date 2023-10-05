@@ -33,7 +33,7 @@ const restaurantSchema = new Schema({
     total_tables:{
         type:Object
     },
-    available_tables:{
+    occupied_tables:{
         type:Object
     },
     phone:{

@@ -46,16 +46,21 @@ export const signInRestaurant = async (req, res) => {
 
 export const signUpRestaurant = async (req, res) => {
     try {
-        const data = new Restaurant({ ...req.body });
+        const data = new Restaurant({ ...req.body, 'total_tables':{'tableSize':[], 'noOfTables':[]}, 'available_tables':{'tableSize':[], 'noOfTables':[]} });
         var result = await data.save();
     }
     catch (e) {
+        console.log(e)
         if (e?.keyValue?.email != undefined) {
             res.status(409).send(`An account already exists corresponding to this email id`)
             return
         }
-        else {
+        else if(e?.keyValue?.phone != undefined){
             res.status(409).send(`An account already exists corresponding to this phone number`)
+            return
+        }
+        else{
+            res.status(409).send(`Something went wrong`)
             return
         }
     }
@@ -100,7 +105,7 @@ export const getWaitingList = async (req, res) => {
 export const insertWaitingList = async (req, res) => {
     const { rid, name, pax, phone, email } = req.body;
 
-    // console.log(name);
+    console.log(pax);
 
     const customersList = await WaitingList.findOne({ restaurant: rid });
 
@@ -325,20 +330,23 @@ export const updateTable = async (req, res) => {
 export const deleteAccount = async (req, res) => {
     const { rid, password } = req.body;
     const resp = await Restaurant.findOne({ '_id': rid, 'password': password })
-    if (resp == null) {
+    const response = await Restaurant.deleteOne({ '_id': rid, 'password': password })
+    if (response.deletedCount == 1) {
+        res.send(JSON.stringify({ 'message': 'Success' }))
+        await Waiting.deleteOne({ 'restaurant': rid})
+        await Dining.deleteOne({ 'restaurant': rid})
+        await Menu.deleteOne({ 'restaurant': rid})
+    }
+    else {
         res.send(JSON.stringify({ 'message': 'Failure' }))
+    }
+    if (resp == null) {
+        // res.send(JSON.stringify({ 'message': 'Failure' }))
         return
     }
     let img_urls = resp.images_urls;
     img_urls.push(resp.thumbnail_url)
     const resp2 = await deleteAllImages(img_urls);
-    const response = await Restaurant.deleteOne({ '_id': rid, 'password': password })
-    if (response.deletedCount == 1) {
-        res.send(JSON.stringify({ 'message': 'Success' }))
-    }
-    else {
-        res.send(JSON.stringify({ 'message': 'Failure' }))
-    }
 }
 
 export const saveTableChanges = async (req, res) => {

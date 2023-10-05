@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import API from '../../../axios';
 import { useAuth } from '../../../contexts/AuthContext';
+import Alert from '@mui/material/Alert';
 
 import './TableModal.css';
 
@@ -15,6 +16,7 @@ const TableModal = ({ closeTableModel }) => {
     const [editable, setEdittable] = useState(null)
     const [tableInfo, setTableInfo] = useState({ tableSize: "", noOfTables: "" });
     const [wasTouched, setWasTouched] = useState({ tableSize: false, noOfTables: false });
+    const [success, setSuccess] = useState(false) ; 
     const { currentUser, setCurrentUser } = useAuth();
 
     useEffect(() => {
@@ -55,6 +57,7 @@ const TableModal = ({ closeTableModel }) => {
         if (resp.data.message === 'Success') {
             alert("Tables Updated Successfully")
             setCurrentUser({ ...currentUser, total_tables: tablelist });
+            setSuccess(true) ; 
         }
         else {
             alert("No new changes found")
@@ -119,7 +122,7 @@ const TableModal = ({ closeTableModel }) => {
                     </div>
                 </div><br />
                 {
-                    tablelist.tableSize.map((ele, ind) => {
+                    tablelist?.tableSize.map((ele, ind) => {
                         return (
                             <div className='editTable' key={ind}>
                                 <TextField
@@ -157,7 +160,10 @@ const TableModal = ({ closeTableModel }) => {
                         )
                     })
                 }
-                <button className='btn btn-primary' onClick={handleSaveTable}>Save All Changes</button>
+                <div><button className='btn btn-primary m-4' onClick={handleSaveTable}>Save All Changes</button></div>
+                <div className='col-12 d-flex justify-content-center'>
+                    {success && <Alert severity='success'>Tables updated successfully</Alert>}
+                </div>
             </div>
         </div>
     )

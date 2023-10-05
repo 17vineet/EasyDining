@@ -24,9 +24,9 @@ li{
     display: flex;
     align-items: center;
 }
-li:nth-of-type(1){
+/* li:nth-of-type(1){
     font-size: 30px;
-}
+} */
 .thumbnail{
     height: 200px;
     aspect-ratio: 1;

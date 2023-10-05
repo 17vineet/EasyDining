@@ -81,7 +81,7 @@ export const getAllRestaurants = async (req, res) => {
 }
 
 export const insertWaitingList = async (req, res) => {
-    const { rid, name, email, phone } = req.body;
+    const { rid, name, email, phone ,pax} = req.body;
 
     const customersList = await WaitingList.findOne({ restaurant: rid });
 
@@ -94,7 +94,7 @@ export const insertWaitingList = async (req, res) => {
 
     const resp = await WaitingList.updateOne(
         { _id: customersList._id },
-        { $push: { customers: { cname: name, phone, email } } }
+        { $push: { customers: { cname: name, phone, email,pax } } }
     );
 
     if (resp) {
