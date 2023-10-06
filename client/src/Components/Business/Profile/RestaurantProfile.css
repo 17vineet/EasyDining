@@ -3,6 +3,7 @@
     min-height: 100vh;
     width: 100%;
     background-color: lightgray;
+    
 }
 .RestaurantDetailsHolder{
     width: 100%;
@@ -12,6 +13,7 @@
     align-items: center;
     padding: 20px 50px;
     font-size: 20px;
+
 }
 .profilePicHolder img{
     width: 100px;
@@ -31,4 +33,9 @@ li{
     height: 200px;
     aspect-ratio: 1;
     border-radius: 50%;
+}
+.content2{
+    background-color: white;
+    margin: 10px;
+    border-radius: 5px;
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import './RestaurantImageModel.css';
 
 const RestaurantImageModel = (props) => {
@@ -25,9 +26,9 @@ const RestaurantImageModel = (props) => {
   return (
     <div className="modal">
       <div className="modal-content" key={"modal"}>
-        <button type="button" className="btn" onClick={closeModel}>
-          Close
-        </button>
+      
+        <div  className='close_btn_div'>  <CloseIcon onClick={closeModel}/> </div>
+       
 
         <div id="carouselExample" className="carousel slide" data-bs-ride="carousel">
           <div className="carousel-inner">

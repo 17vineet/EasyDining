@@ -17,11 +17,12 @@ import {
     updateThumbnail,
     deleteRestaurantImage,
     uploadRestaurantImages,
-    checkWaiting,
     updateRestaurantDetails,
     deleteCuisine,
     deleteAccount,
-    saveTableChanges
+    saveTableChanges,
+    checkWaiting,
+    addOccupiedTable
 } from '../controller/restaurantController.js';
 
 const router = express.Router();
@@ -47,5 +48,7 @@ router.post('/updateDetails',updateRestaurantDetails);
 router.post('/deleteCuisine',deleteCuisine);
 router.post('/deleteAccount',deleteAccount);
 router.post('/changeTables',saveTableChanges);
+router.post('/checkWaiting',checkWaiting);
+router.post('/addOccupied',addOccupiedTable);
 
 export default router;

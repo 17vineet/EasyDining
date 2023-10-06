@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Box, InputLabel, MenuItem, FormControl } from '@mui/material';
 import Select from '@mui/material/Select';
+import SendIcon from '@mui/icons-material/Send';
+import Button from '@mui/joy/Button';
+
 
 import Menu from '../Menu/Menu'
 import './RestaurantPage.css'
@@ -63,7 +66,7 @@ const RestaurantPage = () => {
 
     return (
         <>
-            <h1>Restaurant Page</h1>
+           
             {menuModel && <Menu updateMenuModel={updateMenuModel} menu={restmenu} />}
             {
                 restaurantImgModel.open && <RestaurantImageModel updateImageModel={updateImageModel} img_urls={img_urls} imgmodel={restaurantImgModel} />
@@ -105,22 +108,6 @@ const RestaurantPage = () => {
                             </div>
                         </div>
                         <div className="content2">
-                            {/* <div>
-                                <select name="PAX" id="pax">
-                                    <option value={1}>1 Guest</option>
-                                    <option value={2}>2 Guest</option>
-                                    <option value={3}>3 Guest</option>
-                                    <option value={4}>4 Guest</option>
-                                    <option value={5}>5 Guest</option>
-                                    <option value={6}>6 Guest</option>
-                                    <option value={7}>7 Guest</option>
-                                    <option value={8}>8 Guest</option>
-                                    <option value={9}>9 Guest</option>
-                                    <option value={10}>10 Guest</option>
-                                    <option value={'More'}>More than 10 Guest</option>
-                                </select>
-                                
-                            </div> */}
                             <Box sx={{ minWidth: 120 }}>
                                 <FormControl>
                                     <InputLabel id="demo-simple-select-label">Pax</InputLabel>
@@ -141,6 +128,9 @@ const RestaurantPage = () => {
                                     alert(resp.data.message)
                                 }} className='btn btn-primary m-2'>Reserve Table For Free</button>
                                 </FormControl>
+                                <Button loading loadingPosition="end" endDecorator={<SendIcon />}>
+                                    Check waiting time
+                                </Button>
                             </Box>
                             <div>
                                 <button onClick={async () => {
