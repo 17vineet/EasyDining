@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { Restaurant, WaitingList, DiningList, Menu } from "../Database/models.js";
+import { Restaurant, WaitingList, DiningList, Menu ,Customer,Bill} from "../Database/models.js";
 import { trusted } from 'mongoose';
 import { deleteAllImages } from '../Cloudinary/controller.js';
 
@@ -139,22 +139,24 @@ export const getDiningList = async (req, res) => {
 
 export const insertDiningList = async (req, res) => {
 
-    const { rid, name, phone, email, pax } = req.body;
+    const { rid, name, phone, email, pax, size } = req.body;
     const customersList = await DiningList.findOne({ restaurant: rid });
 
     const resp = await DiningList.updateOne(
         { _id: customersList._id },
-        { $push: { customers: { cname: name, email, phone, pax } } }
+        { $push: { customers: { cname: name, email, phone, pax, size } } }
     );
 
     res.send(resp);
 }
 
 export const removeDiningCustomer = async (req, res) => {
-    const { rid, phone } = req.body;
+    const { rid, phone, tableSize } = req.body;
     try {
         const resp = await DiningList.updateOne({ restaurant: rid },
             { $pull: { customers: { phone: phone } } })
+        const resp2 = await deleteOccupiedTable(rid, tableSize);
+        console.log(resp2)
         res.send(resp)
     } catch (err) {
         console.error(err);
@@ -338,6 +340,7 @@ export const updateTable = async (req, res) => {
 
 export const checkWaiting = async (req, res) => {
     const { rid, pax } = req.body;
+    console.log("Checking for "+pax+" people")
     const response = await Restaurant.findOne({ "_id": rid })
     let tableSize = response.total_tables.tableSize;
     let noOfTables = response.total_tables.noOfTables;
@@ -368,7 +371,7 @@ export const checkWaiting = async (req, res) => {
 }
 
 export const addOccupiedTable = async (req, res) => {
-    const {rid,pax} = req.body;
+    const { rid, pax } = req.body;
     const response = await Restaurant.findOne({ "_id": rid })
     let tableSize = response.total_tables.tableSize;
     let noOfTables = response.total_tables.noOfTables;
@@ -390,14 +393,14 @@ export const addOccupiedTable = async (req, res) => {
         else {
             const oc = response.occupied_tables.noOfTables[ocIndex]
             if (tab[1] - oc >= 1) {
-                let occupied_modified = response.occupied_tables.noOfTables ; 
-                occupied_modified[ocIndex] = oc+1
-                await Restaurant.updateOne({'_id':rid},
-                {
-                    $set:{
-                        'occupied_tables':{'tableSize':response.occupied_tables.tableSize,'noOfTables':occupied_modified}
-                    }
-                })
+                let occupied_modified = response.occupied_tables.noOfTables;
+                occupied_modified[ocIndex] = oc + 1
+                await Restaurant.updateOne({ '_id': rid },
+                    {
+                        $set: {
+                            'occupied_tables': { 'tableSize': response.occupied_tables.tableSize, 'noOfTables': occupied_modified }
+                        }
+                    })
                 res.send({ "message": "Available", "Size": tab[0] })
                 return;
             }
@@ -407,4 +410,29 @@ export const addOccupiedTable = async (req, res) => {
         }
     }
     res.send(JSON.stringify({ 'message': "Unavailable" }))
+}
+
+const deleteOccupiedTable = async (rid, tableSize) => {
+    const resp = await Restaurant.findOne({ '_id': rid })
+    let noOfTables = resp.occupied_tables.noOfTables;
+    const ocIndex = resp.occupied_tables.tableSize.indexOf(tableSize)
+    noOfTables[ocIndex] -= 1
+    const resp2 = await Restaurant.updateOne({ '_id': rid },
+        { $set: { 'occupied_tables': { 'tableSize': resp.occupied_tables.tableSize, 'noOfTables': noOfTables } } })
+    if (resp2.modifiedCount == 1) {
+        return "Deleted Occupied Table"
+    }
+    else {
+        return "Failed to delete Occupied table"
+    }
+}
+
+export const deleteAll = async(req,res)=> {
+    await Restaurant.deleteMany({})
+    await Menu.deleteMany({})
+    await Bill.deleteMany({})
+    await DiningList.deleteMany({})
+    await Customer.deleteMany({})
+    await WaitingList.deleteMany({})
+    res.send("Success")
 }

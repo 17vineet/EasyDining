@@ -9,14 +9,14 @@ import API from '../../../axios';
 
 const Home = () => {
 
-  const [updated, setUpdated] = useState(0);
+  const [updated, setUpdated] = useState(true);
   const { currentUser, setCurrentUser } = useAuth();
   const navigate = useNavigate();
 
 
  
   const handleUpdate = () => {
-    setUpdated(prev => prev + 1);
+    setUpdated(prev => !prev );
   }
   return (
     <>
@@ -54,10 +54,10 @@ const Home = () => {
             <br />
             <div className='content3'>
               <div className='waitingList'>
-                <WaitingList key={"1"} handleUpdate={handleUpdate} />
+                <WaitingList key={"1"} handleUpdate={handleUpdate} updated={updated} />
               </div>
               <div className='diningList'>
-                <DiningList key={"1"} updated={updated} />
+                <DiningList key={"1"} updated={updated} handleUpdate={handleUpdate} />
               </div>
             </div>
 

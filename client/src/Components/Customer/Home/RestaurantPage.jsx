@@ -21,15 +21,34 @@ const RestaurantPage = () => {
     const [menuModel, setMenuModel] = useState(false);
     const [img_urls, setImg_urls] = useState([])
     const [pax, setPax] = useState('');
+    const [checking, setChecking] = useState(false);
     const axiosPrivate = useAxiosPrivate();
     const [restaurantImgModel, setrestaurantImgModel] = useState({
         open: false,
         index: undefined
     });
+
     useEffect(() => {
         fetchData();
     }, [])
 
+    const handleCheckWaiting = async () => {
+        setChecking(true);
+        if (pax != "") {
+            const resp = await API.post("/restaurant/checkWaiting", { rid, pax });
+            // console.log(resp.data)
+            if (resp.data.message == "Available") {
+                alert("Table is Available")
+            }
+            else {
+                alert("You need to wait for some time")
+            }
+        }
+        else {
+            alert("Enter Pax")
+        }
+        setChecking(false);
+    }
     const passengers = ['1 guest', '2 guests', '3 guests', '4 guests', '5 guests', '6 guests', '7 guests', '8 guests', '9 guests', '10 guests']
 
     const fetchData = async () => {
@@ -66,7 +85,7 @@ const RestaurantPage = () => {
 
     return (
         <>
-           
+
             {menuModel && <Menu updateMenuModel={updateMenuModel} menu={restmenu} />}
             {
                 restaurantImgModel.open && <RestaurantImageModel updateImageModel={updateImageModel} img_urls={img_urls} imgmodel={restaurantImgModel} />
@@ -118,19 +137,21 @@ const RestaurantPage = () => {
                                         label="Pax"
                                         onChange={handlePaxChange}
                                     >
-                                    {passengers.map((ele,ind)=>{
-                                        return (<MenuItem value={ind+1} key={ind} >{ele}</MenuItem>)
-                                    })}
-                                        
+                                        {passengers.map((ele, ind) => {
+                                            return (<MenuItem value={ind + 1} key={ind} >{ele}</MenuItem>)
+                                        })}
+
                                     </Select>
                                     <button onClick={async () => {
-                                    const resp = await axiosPrivate.post('/customer/insertWaitingList', { rid, name: currentUser.name, email:currentUser.email,phone:currentUser.phone ,pax:pax })
-                                    alert(resp.data.message)
-                                }} className='btn btn-primary m-2'>Reserve Table For Free</button>
+                                        const resp = await axiosPrivate.post('/customer/insertWaitingList', { rid, name: currentUser.name, email: currentUser.email, phone: currentUser.phone, pax: pax })
+                                        alert(resp.data.message)
+                                    }} className='btn btn-primary m-2'>Reserve Table For Free</button>
                                 </FormControl>
-                                <Button loading loadingPosition="end" endDecorator={<SendIcon />}>
-                                    Check waiting time
-                                </Button>
+                                <div>
+                                    <Button loading={checking} onClick={handleCheckWaiting} loadingPosition="end" endDecorator={<SendIcon />}>
+                                        Check waiting
+                                    </Button>
+                                </div>
                             </Box>
                             <div>
                                 <button onClick={async () => {

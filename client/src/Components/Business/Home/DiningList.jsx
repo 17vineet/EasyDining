@@ -7,13 +7,14 @@ import AddIcon from '@mui/icons-material/Add';
 import Loading from '../../Loading/Loading';
 import { useAuth } from '../../../contexts/AuthContext';
 
-function DiningList({updated}) {
+function DiningList({updated, handleUpdate}) {
   // const [name, setName] = useState('')
   const [formData,setFormData]=useState({
     name:'',
     pax:'',
     phone:'',
-    email:''
+    email:'',
+    size:''
   })
   const [dine, setDine] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
@@ -22,15 +23,38 @@ function DiningList({updated}) {
   async function handleClick() {
     if (formData.name.trim().length != 0 &&formData.pax.trim().length!=0 && formData.phone.trim().length!=0) {
       setIsLoading(true);
-      await API.post('/restaurant/insertDiningList', { rid: currentUser._id, name: formData.name,pax:formData.pax,phone:formData.phone,email:"" })
-      setDine((prev) => [...prev, {name:formData.name,pax:formData.pax,phone:formData.phone}]);
+      const resp=await API.post('/restaurant/addOccupied',{rid:currentUser._id,pax:formData.pax})
+      console.log(resp.data)
+      
+      if(resp.data.message==="Available")
+      {
+        
+        await API.post('/restaurant/insertDiningList', { rid: currentUser._id, name: formData.name,pax:formData.pax,phone:formData.phone,email:"", 'tableSize':resp.data.size })
+        setDine((prev) => [...prev, {name:formData.name,pax:formData.pax,phone:formData.phone,size:resp.data.Size}]);
+      setIsLoading(false);
+
+      }
+      else
+      {
+        setIsLoading(false);
+        alert("Table of required size is not available right now")
+        const reply = confirm("Would you like to add the customer in waiting list ");
+        if(reply)
+        {
+          await API.post('/restaurant/insertWaitingList', { rid: currentUser._id, name: formData.name, pax: formData.pax, phone: formData.phone, email: '' });
+          handleUpdate() ; 
+        }
+        else
+        {
+          // nothing
+        }
+      }
       setFormData({
         name:'',
         pax:'',
         phone:'',
         email:''
       })
-      setIsLoading(false);
     }
     else {
       alert("Enter proper information")
@@ -46,7 +70,7 @@ function DiningList({updated}) {
   }
   async function handleDelete(index) {
     setIsLoading(true);
-    const resp = await API.post('/restaurant/removeDiningCustomer', { rid: currentUser._id, phone:dine[index].phone });
+    const resp = await API.post('/restaurant/removeDiningCustomer', { rid: currentUser._id, phone:dine[index].phone ,tableSize:dine[index].size});
     setIsLoading(false);
     const updatedList = dine.filter((_, ind) => index != ind)
     setDine(updatedList)
@@ -61,7 +85,8 @@ function DiningList({updated}) {
           {
             name:elem.cname,
             pax:elem.pax,
-            phone:elem.phone
+            phone:elem.phone,
+            size:elem.size
           }
         )
       });
@@ -88,6 +113,7 @@ function DiningList({updated}) {
                 <div className="Customer_name">{ele.name}</div>
                 <div className="Customer_name">{ele.pax}</div>
                 <div className="Customer_name">{ele.phone}</div>
+                <div className="Customer_name">{ele.size}</div>
                 <button className='btn btn-primary delete_btn' onClick={() => {
                   handleDelete(index)
                 }} > <Delete /> </button>

@@ -9,7 +9,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { Box, InputLabel, MenuItem, FormControl } from '@mui/material';
 import Select from '@mui/material/Select';
 
-function WaitingList({ handleUpdate }) {
+function WaitingList({ handleUpdate, updated }) {
   const [formData, setFormData] = useState({ name: '', pax: '', phone: '' })
   const [loe, setLoe] = useState([]);
   const { currentUser } = useAuth();
@@ -73,7 +73,7 @@ function WaitingList({ handleUpdate }) {
       setLoe(arr);
     }
     fetchWaitingList();
-  }, []);
+  }, [updated]);
   const passengers = ['1 guest', '2 guests', '3 guests', '4 guests', '5 guests', '6 guests', '7 guests', '8 guests', '9 guests', '10 guests']
 
   return (
@@ -83,7 +83,8 @@ function WaitingList({ handleUpdate }) {
       <div className='form_input'  >
         <input type='text' name="name" placeholder='Enter name to reserve table' onChange={handleChange} value={formData.name}></input>
         {/* <input type='number' name="pax" placeholder='Enter number of persons' onChange={handleChange} value={formData.pax}></input> */}
-        <div><FormControl>
+       <div>
+       <FormControl >
           <InputLabel id="demo-simple-select-label">Pax</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -91,14 +92,16 @@ function WaitingList({ handleUpdate }) {
             value={pax}
             label="Pax"
             onChange={handlePaxChange}
-            
+            style={{width: '150px'}}
+            autoWidth={true}
           >
             {passengers.map((ele, ind) => {
-              return (<MenuItem value={ind + 1} key={ind} >{ele}</MenuItem>)
+              return (<MenuItem  value={ind + 1} key={ind} >{ele}</MenuItem>)
             })}
 
           </Select>
-        </FormControl></div>
+        </FormControl>
+       </div>
         <input type='phone' name="phone" placeholder='Enter Phone' onChange={handleChange} value={formData.phone}></input>
        <button onClick={handleClick} className='btn btn-primary add_btn'><AddIcon /></button>
       </div><br /><br /><br /><br />
