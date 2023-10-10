@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { Restaurant, WaitingList, DiningList, Menu ,Customer,Bill} from "../Database/models.js";
+import { Restaurant, WaitingList, DiningList, Menu ,Customer,Bill, Cuisine, Item} from "../Database/models.js";
 import { trusted } from 'mongoose';
 import { deleteAllImages } from '../Cloudinary/controller.js';
 
@@ -194,17 +194,6 @@ export const updateMenu = async (req, res) => {
         { "restaurant": rid, "menu.name": cuisine_name },
         { $set: { "menu.$.items": newMenuItems } })
     // console.log(response)
-    res.send(JSON.stringify(response))
-}
-
-export const addCuisine = async (req, res) => {
-    const { rid, cuisine } = req.body;
-
-    const response = await Menu.updateOne(
-        { "restaurant": rid },
-        { $push: { menu: { 'name': cuisine, 'items': [] } } })
-    // console.log(response)
-
     res.send(JSON.stringify(response))
 }
 
@@ -467,4 +456,15 @@ export const clearOccupied = async(req,res)=>{
     const {rid} = req.body;
     const resp = await Restaurant.updateOne({'_id':rid},{$set:{'occupied_tables':{'tableSize':[],'noOfTables':[]}}});
     res.send(JSON.stringify(resp))
+}
+
+export const addCuisine = async(req,res)=>{
+    const {rid,cuisineId,cuisineName} = req.body;
+    const resp2 = await Menu.findOne()
+    const resp = await Menu.findOneAndUpdate({'restaurant':rid},
+    {
+        $push:{'menu':{'name':cuisineName,'cid':cuisineId,items:[]}}   
+    },{new:true})
+    console.log(resp)
+    res.send(resp)
 }

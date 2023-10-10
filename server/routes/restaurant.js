@@ -12,7 +12,6 @@ import {
     addToDineIn,
     updateMenu,
     getMenu,
-    addCuisine,
     getRestaurantInfo,
     updateThumbnail,
     deleteRestaurantImage,
@@ -25,7 +24,7 @@ import {
     addOccupiedTable,
     deleteAll,
     showAvailableTables,
-    clearOccupied
+    clearOccupied,addCuisine
 } from '../controller/restaurantController.js';
 
 const router = express.Router();
@@ -41,7 +40,6 @@ router.post('/removeDiningCustomer', removeDiningCustomer);
 router.post('/addToDineIn', addToDineIn);
 router.post('/updateRestaurantMenu', updateMenu);
 router.post('/getRestaurantMenu', getMenu);
-router.post('/addNewCuisine', addCuisine);
 router.post('/restaurantInfo', getRestaurantInfo);
 router.post('/updateThumbnail', updateThumbnail);
 router.post('/deleteRestaurantImage',deleteRestaurantImage);
@@ -56,6 +54,7 @@ router.post('/addOccupied',addOccupiedTable);
 router.post('/deleteAll',deleteAll);
 router.post('/availableTables',showAvailableTables);
 router.post('/clearOccupied',clearOccupied);
+router.post('/addNewCuisine',addCuisine);
 
 
 export default router;

@@ -4,6 +4,7 @@ import multer from 'multer';
 import cookieParser from 'cookie-parser';
 
 import cloudinaryRoutes from './routes/cloudinary.js' ;
+import menuRoutes from './routes/menu.js'
 import customerRouters from './routes/customer.js' ;
 import restaurantRoutes from './routes/restaurant.js' ;
 import { connectToDb } from "./Database/config.js";
@@ -29,6 +30,7 @@ app.get('/refresh', handleRefreshToken) ;
 app.use('/cloudinary', cloudinaryRoutes) ;
 app.use('/customer', customerRouters) ;
 app.use('/restaurant', restaurantRoutes) ;
+app.use('/menu', menuRoutes) ;
 app.get('/logout', handleLogout)
 
 app.get("/", (req, res) => {

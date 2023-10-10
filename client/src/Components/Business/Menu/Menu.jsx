@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import API from '../../../axios'
 import CuisineModel from './CuisineModel'
 import { useAuth } from '../../../contexts/AuthContext'
+import MenuDropDown from './MenuDropDown' ;
 import "./Menu.css"
 const Menu = () => {
 
   const [cuisines, setCuisines] = useState([])
   const [items, setItems] = useState([]);
-  const [newCuisine, setNewCuisine] = useState("")
   const [cuisineModel, setCuisineModel] = useState(null)
   const { currentUser } = useAuth();
   const [menu, setMenu] = useState([])
@@ -32,14 +32,18 @@ const Menu = () => {
   const updateCuisineModel = (newstate) => {
     setCuisineModel(newstate);
   }
-  const handleChange = (e) => {
-    setNewCuisine(e.target.value)
-  }
-  const handleAddCuisine = async () => {
-    const resp = await API.post("/restaurant/addNewCuisine", { rid: currentUser._id, cuisine: newCuisine });
-    console.log(resp.data);
-    setCuisines((prev) => [...prev, newCuisine])
-    setNewCuisine("")
+  
+  const handleAddCuisine = async ({_id, name}) => {
+    console.log(name,_id)
+    if(cuisines.indexOf(name)==-1){
+      const resp = await API.post("/restaurant/addNewCuisine", { rid: currentUser._id, cuisineName: name, cuisineId:_id });
+      console.log(resp.data);
+      setCuisines((prev) => [...prev, name])
+    }
+    else{
+      alert("Cuisine already Exists")
+    }
+    
   }
 
   const handleDeleteCuisine = async (event,cuname) => {
@@ -54,8 +58,8 @@ const Menu = () => {
       <div className="container">
         <h1> Menu </h1>
         <div className="container">
-          <input type="text" name="" className='addCuisine' value={newCuisine} onChange={handleChange} placeholder='Enter Cuisine' />
-          <button className='btn btn-primary m-2' onClick={handleAddCuisine}>Add Cuisine</button>
+          {/* <input type="text" name="" className='addCuisine' value={newCuisine} onChange={handleChange} placeholder='Enter Cuisine' /> */}
+          <MenuDropDown handleAddCuisine={handleAddCuisine}/>
         </div><br />
         <div className="container">
           {
