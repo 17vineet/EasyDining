@@ -105,11 +105,11 @@ export const getWaitingList = async (req, res) => {
 export const insertWaitingList = async (req, res) => {
     const { rid, name, pax, phone, email } = req.body;
 
-    console.log(pax);
+    // console.log(pax);
 
     const customersList = await WaitingList.findOne({ restaurant: rid });
 
-    console.log(customersList);
+    // console.log(customersList);
 
     const resp = await WaitingList.updateOne(
         { _id: customersList._id },
@@ -124,7 +124,7 @@ export const removeWaitingCustomer = async (req, res) => {
     try {
         const resp = await WaitingList.updateOne({ restaurant: rid },
             { $pull: { customers: { phone: phone } } });
-        console.log(resp);
+        // console.log(resp);
         res.send(JSON.stringify(resp));
     } catch (err) {
         console.error(err);
@@ -164,15 +164,15 @@ export const removeDiningCustomer = async (req, res) => {
 }
 
 export const addToDineIn = async (req, res) => {
-    const { rid, cname, email, phone, pax } = req.body;
+    const { rid, cname, email, phone, pax, size } = req.body;
 
     const diningList = await DiningList.findOne({ restaurant: rid });
 
-    console.log(diningList);
+    // console.log(diningList);
 
     const resp = await DiningList.updateOne(
         { _id: diningList._id },
-        { $push: { customers: { cname, email, phone, pax } } }
+        { $push: { customers: { cname, email, phone, pax, size } } }
     );
 
     res.send(JSON.stringify(resp));
@@ -193,7 +193,7 @@ export const updateMenu = async (req, res) => {
     const response = await Menu.updateOne(
         { "restaurant": rid, "menu.name": cuisine_name },
         { $set: { "menu.$.items": newMenuItems } })
-    console.log(response)
+    // console.log(response)
     res.send(JSON.stringify(response))
 }
 
@@ -203,7 +203,7 @@ export const addCuisine = async (req, res) => {
     const response = await Menu.updateOne(
         { "restaurant": rid },
         { $push: { menu: { 'name': cuisine, 'items': [] } } })
-    console.log(response)
+    // console.log(response)
 
     res.send(JSON.stringify(response))
 }
@@ -214,7 +214,7 @@ export const updateThumbnail = async (req, res) => {
     const response = await Restaurant.updateOne(
         { "_id": rid },
         { $set: { thumbnail_url: thumbnail_url } })
-    console.log(response)
+    // console.log(response)
 
     res.send(JSON.stringify(response))
 }
@@ -372,6 +372,7 @@ export const checkWaiting = async (req, res) => {
 
 export const addOccupiedTable = async (req, res) => {
     const { rid, pax } = req.body;
+    console.log(pax)
     const response = await Restaurant.findOne({ "_id": rid })
     let tableSize = response.total_tables.tableSize;
     let noOfTables = response.total_tables.noOfTables;
@@ -413,10 +414,14 @@ export const addOccupiedTable = async (req, res) => {
 }
 
 const deleteOccupiedTable = async (rid, tableSize) => {
+    console.log(rid,tableSize)
     const resp = await Restaurant.findOne({ '_id': rid })
     let noOfTables = resp.occupied_tables.noOfTables;
     const ocIndex = resp.occupied_tables.tableSize.indexOf(tableSize)
-    noOfTables[ocIndex] -= 1
+    if(noOfTables[ocIndex]>=1)
+    {
+        noOfTables[ocIndex] -= 1
+    }
     const resp2 = await Restaurant.updateOne({ '_id': rid },
         { $set: { 'occupied_tables': { 'tableSize': resp.occupied_tables.tableSize, 'noOfTables': noOfTables } } })
     if (resp2.modifiedCount == 1) {
@@ -435,4 +440,31 @@ export const deleteAll = async(req,res)=> {
     await Customer.deleteMany({})
     await WaitingList.deleteMany({})
     res.send("Success")
+}
+
+export const showAvailableTables = async(req,res)=>{
+    const {rid} = req.body;
+    const response = await Restaurant.findOne({'_id':rid});
+    let available_tables = []
+    let tableSize = response.total_tables.tableSize;
+    let noOfTables = response.total_tables.noOfTables;
+    for(var tabIndex in tableSize)
+    {
+        const ocIndex = response.occupied_tables.tableSize.indexOf(tableSize[tabIndex]);
+        if(ocIndex!=-1)
+        {
+            available_tables.push([tableSize[tabIndex],noOfTables[tabIndex]-response.occupied_tables.noOfTables[ocIndex]])
+        }
+        else
+        {
+            available_tables.push([tableSize[tabIndex],noOfTables[tabIndex]])
+        }
+    }
+    res.send(JSON.stringify(available_tables))
+}
+
+export const clearOccupied = async(req,res)=>{
+    const {rid} = req.body;
+    const resp = await Restaurant.updateOne({'_id':rid},{$set:{'occupied_tables':{'tableSize':[],'noOfTables':[]}}});
+    res.send(JSON.stringify(resp))
 }

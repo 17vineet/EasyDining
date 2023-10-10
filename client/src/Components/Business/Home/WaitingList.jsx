@@ -40,11 +40,11 @@ function WaitingList({ handleUpdate, updated }) {
   }
   const handlePaxChange = (event) => {
     setPax(event.target.value);
-    setFormData((prevValue)=>({
+    setFormData((prevValue) => ({
       ...prevValue,
-      pax:event.target.value
+      pax: parseInt(event.target.value)
     }))
-};
+  };
 
   async function handleDelete(index) {
     setIsLoading(true);
@@ -52,14 +52,20 @@ function WaitingList({ handleUpdate, updated }) {
     const updatedList = loe.filter((_, ind) => index != ind)
     setLoe(updatedList)
     setIsLoading(false);
-
   }
   async function handleDine(index) {
     setIsLoading(true);
-    handleDelete(index);
-    console.log(loe[index])
-    const resp = await API.post('/restaurant/addToDineIn', { rid: currentUser._id, cname: loe[index].name, pax: loe[index].pax, phone: loe[index].phone, email: loe[index].email });
-    handleUpdate();
+  
+    const resp2 = await API.post('/restaurant/addOccupied', { rid: currentUser._id, pax: parseInt(loe[index].pax) })
+    if (resp2.data.message === "Available") {
+      const resp = await API.post('/restaurant/addToDineIn', { rid: currentUser._id, cname: loe[index].name, pax: loe[index].pax, phone: loe[index].phone, email: loe[index].email, size: resp2.data.Size });
+      handleDelete(index);
+      handleUpdate();
+    }
+    else {
+      alert("No table is available right now\nKindly wait for some time")
+    }
+
     setIsLoading(false);
 
   }
@@ -83,27 +89,27 @@ function WaitingList({ handleUpdate, updated }) {
       <div className='form_input'  >
         <input type='text' name="name" placeholder='Enter name to reserve table' onChange={handleChange} value={formData.name}></input>
         {/* <input type='number' name="pax" placeholder='Enter number of persons' onChange={handleChange} value={formData.pax}></input> */}
-       <div>
-       <FormControl >
-          <InputLabel id="demo-simple-select-label">Pax</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={pax}
-            label="Pax"
-            onChange={handlePaxChange}
-            style={{width: '150px'}}
-            autoWidth={true}
-          >
-            {passengers.map((ele, ind) => {
-              return (<MenuItem  value={ind + 1} key={ind} >{ele}</MenuItem>)
-            })}
+        <div>
+          <FormControl >
+            <InputLabel id="demo-simple-select-label">Pax</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={pax}
+              label="Pax"
+              onChange={handlePaxChange}
+              style={{ width: '150px' }}
+              autoWidth={true}
+            >
+              {passengers.map((ele, ind) => {
+                return (<MenuItem value={ind + 1} key={ind} >{ele}</MenuItem>)
+              })}
 
-          </Select>
-        </FormControl>
-       </div>
+            </Select>
+          </FormControl>
+        </div>
         <input type='phone' name="phone" placeholder='Enter Phone' onChange={handleChange} value={formData.phone}></input>
-       <button onClick={handleClick} className='btn btn-primary add_btn'><AddIcon /></button>
+        <button onClick={handleClick} className='btn btn-primary add_btn'><AddIcon /></button>
       </div><br /><br /><br /><br />
       {
         loe.map((ele, index) => {

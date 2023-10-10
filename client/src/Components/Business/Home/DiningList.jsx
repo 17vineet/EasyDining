@@ -24,36 +24,27 @@ function DiningList({updated, handleUpdate}) {
     if (formData.name.trim().length != 0 &&formData.pax.trim().length!=0 && formData.phone.trim().length!=0) {
       setIsLoading(true);
       const resp=await API.post('/restaurant/addOccupied',{rid:currentUser._id,pax:formData.pax})
-      console.log(resp.data)
-      
-      if(resp.data.message==="Available")
-      {
-        
-        await API.post('/restaurant/insertDiningList', { rid: currentUser._id, name: formData.name,pax:formData.pax,phone:formData.phone,email:"", 'tableSize':resp.data.size })
+      if(resp.data.message==="Available"){
+        console.log(resp.data.Size)
+        await API.post('/restaurant/insertDiningList', { rid: currentUser._id, name: formData.name,pax:formData.pax,phone:formData.phone,email:"", size:resp.data.Size })
         setDine((prev) => [...prev, {name:formData.name,pax:formData.pax,phone:formData.phone,size:resp.data.Size}]);
-      setIsLoading(false);
-
+        setIsLoading(false);
+        handleUpdate() ; 
       }
-      else
-      {
+      else{
         setIsLoading(false);
         alert("Table of required size is not available right now")
         const reply = confirm("Would you like to add the customer in waiting list ");
-        if(reply)
-        {
+        if(reply){
           await API.post('/restaurant/insertWaitingList', { rid: currentUser._id, name: formData.name, pax: formData.pax, phone: formData.phone, email: '' });
-          handleUpdate() ; 
-        }
-        else
-        {
-          // nothing
+          handleUpdate() ;
         }
       }
       setFormData({
         name:'',
         pax:'',
         phone:'',
-        email:''
+        email:'',
       })
     }
     else {
@@ -74,6 +65,7 @@ function DiningList({updated, handleUpdate}) {
     setIsLoading(false);
     const updatedList = dine.filter((_, ind) => index != ind)
     setDine(updatedList)
+    handleUpdate();
     setIsLoading(false);
   }
   

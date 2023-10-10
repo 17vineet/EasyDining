@@ -23,7 +23,9 @@ import {
     saveTableChanges,
     checkWaiting,
     addOccupiedTable,
-    deleteAll
+    deleteAll,
+    showAvailableTables,
+    clearOccupied
 } from '../controller/restaurantController.js';
 
 const router = express.Router();
@@ -52,5 +54,8 @@ router.post('/changeTables',saveTableChanges);
 router.post('/checkWaiting',checkWaiting);
 router.post('/addOccupied',addOccupiedTable);
 router.post('/deleteAll',deleteAll);
+router.post('/availableTables',showAvailableTables);
+router.post('/clearOccupied',clearOccupied);
+
 
 export default router;

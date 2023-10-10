@@ -4,7 +4,7 @@ const restaurantSchema = new Schema({
     email: {
         type: String,
         unique: true,
-        index:true
+        index: true
     },
     password: {
         type: String
@@ -30,27 +30,27 @@ const restaurantSchema = new Schema({
     refresh_token: {
         type: String
     },
-    total_tables:{
-        type:Object
+    total_tables: {
+        type: Object
     },
-    occupied_tables:{
-        type:Object
+    occupied_tables: {
+        type: Object
     },
-    phone:{
-        type:Number,
+    phone: {
+        type: Number,
         unique: true,
-        index:true
+        index: true
     }
 });
 
 const customerSchema = new Schema({
-    name:{
-        type:String
+    name: {
+        type: String
     },
     email: {
         type: String,
-        unique:true,
-        index:true
+        unique: true,
+        index: true
     },
     password: {
         type: String
@@ -61,10 +61,10 @@ const customerSchema = new Schema({
     refresh_token: {
         type: String
     },
-    phone:{
-        type:Number,
+    phone: {
+        type: Number,
         unique: true,
-        index:true
+        index: true
     }
 });
 
@@ -102,13 +102,25 @@ const billSchema = new Schema({
     customer_id: {
         type: Array
     },
-    items_ordered:{
-        type:Array
+    items_ordered: {
+        type: Array
     },
-    bill_amt:{
-        type:Number
+    bill_amt: {
+        type: Number
     }
 });
+
+const CuisineSchema = new Schema({
+    name: {
+        type: String
+    }
+});
+
+const ItemSchema = new Schema({
+    name: {
+        type: String
+    }
+})
 
 export const Restaurant = model('restaurant', restaurantSchema);
 
@@ -120,4 +132,8 @@ export const DiningList = model('dining', diningListSchema);
 
 export const Menu = model('menu', menuSchema)
 
-export const Bill = model('bill',billSchema)
+export const Bill = model('bill', billSchema)
+
+export const Cuisine = model('cuisine', CuisineSchema)
+
+export const Item = model('item', ItemSchema)

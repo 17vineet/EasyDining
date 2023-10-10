@@ -6,6 +6,7 @@ import WaitingList from './WaitingList';
 import DiningList from './DiningList';
 import { useAuth } from '../../../contexts/AuthContext'
 import API from '../../../axios';
+import AvailableTable from './AvailableTable';
 
 const Home = () => {
 
@@ -45,8 +46,10 @@ const Home = () => {
             <button>Update Waiting time</button>
             <br />
             <br />
+          <AvailableTable updated={updated} handleUpdate={handleUpdate}/>
+
             <div>
-              <button onClick={() => {
+              <button className='btn btn-primary mt-4' onClick={() => {
                 navigate("/business/menu")
               }}>Update Menu</button>
             </div>
