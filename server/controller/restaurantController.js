@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { Restaurant, WaitingList, DiningList, Menu ,Customer,Bill, Cuisine, Item} from "../Database/models.js";
+import { Restaurant, WaitingList, DiningList, Menu, Customer, Bill, Cuisine } from "../Database/models.js";
 import { trusted } from 'mongoose';
 import { deleteAllImages } from '../Cloudinary/controller.js';
 
@@ -307,16 +307,6 @@ export const updateRestaurantDetails = async (req, res) => {
 
 }
 
-export const deleteCuisine = async (req, res) => {
-    const { rid, cuisine } = req.body;
-    const response = await Menu.findOneAndUpdate(
-        { "restaurant": rid },
-        { $pull: { 'menu': { 'name': cuisine } } },
-        { new: true })
-    console.log(response)
-
-    res.send(JSON.stringify(response))
-}
 
 export const updateTable = async (req, res) => {
     const { rid, total_tables } = req.body;
@@ -329,7 +319,7 @@ export const updateTable = async (req, res) => {
 
 export const checkWaiting = async (req, res) => {
     const { rid, pax } = req.body;
-    console.log("Checking for "+pax+" people")
+    console.log("Checking for " + pax + " people")
     const response = await Restaurant.findOne({ "_id": rid })
     let tableSize = response.total_tables.tableSize;
     let noOfTables = response.total_tables.noOfTables;
@@ -403,12 +393,11 @@ export const addOccupiedTable = async (req, res) => {
 }
 
 const deleteOccupiedTable = async (rid, tableSize) => {
-    console.log(rid,tableSize)
+    console.log(rid, tableSize)
     const resp = await Restaurant.findOne({ '_id': rid })
     let noOfTables = resp.occupied_tables.noOfTables;
     const ocIndex = resp.occupied_tables.tableSize.indexOf(tableSize)
-    if(noOfTables[ocIndex]>=1)
-    {
+    if (noOfTables[ocIndex] >= 1) {
         noOfTables[ocIndex] -= 1
     }
     const resp2 = await Restaurant.updateOne({ '_id': rid },
@@ -421,7 +410,7 @@ const deleteOccupiedTable = async (rid, tableSize) => {
     }
 }
 
-export const deleteAll = async(req,res)=> {
+export const deleteAll = async (req, res) => {
     await Restaurant.deleteMany({})
     await Menu.deleteMany({})
     await Bill.deleteMany({})
@@ -431,40 +420,61 @@ export const deleteAll = async(req,res)=> {
     res.send("Success")
 }
 
-export const showAvailableTables = async(req,res)=>{
-    const {rid} = req.body;
-    const response = await Restaurant.findOne({'_id':rid});
+export const showAvailableTables = async (req, res) => {
+    const { rid } = req.body;
+    const response = await Restaurant.findOne({ '_id': rid });
     let available_tables = []
     let tableSize = response.total_tables.tableSize;
     let noOfTables = response.total_tables.noOfTables;
-    for(var tabIndex in tableSize)
-    {
+    for (var tabIndex in tableSize) {
         const ocIndex = response.occupied_tables.tableSize.indexOf(tableSize[tabIndex]);
-        if(ocIndex!=-1)
-        {
-            available_tables.push([tableSize[tabIndex],noOfTables[tabIndex]-response.occupied_tables.noOfTables[ocIndex]])
+        if (ocIndex != -1) {
+            available_tables.push([tableSize[tabIndex], noOfTables[tabIndex] - response.occupied_tables.noOfTables[ocIndex]])
         }
-        else
-        {
-            available_tables.push([tableSize[tabIndex],noOfTables[tabIndex]])
+        else {
+            available_tables.push([tableSize[tabIndex], noOfTables[tabIndex]])
         }
     }
     res.send(JSON.stringify(available_tables))
 }
 
-export const clearOccupied = async(req,res)=>{
-    const {rid} = req.body;
-    const resp = await Restaurant.updateOne({'_id':rid},{$set:{'occupied_tables':{'tableSize':[],'noOfTables':[]}}});
+export const clearOccupied = async (req, res) => {
+    const { rid } = req.body;
+    const resp = await Restaurant.updateOne({ '_id': rid }, { $set: { 'occupied_tables': { 'tableSize': [], 'noOfTables': [] } } });
     res.send(JSON.stringify(resp))
 }
 
-export const addCuisine = async(req,res)=>{
-    const {rid,cuisineId,cuisineName} = req.body;
+export const addCuisine = async (req, res) => {
+    const { rid, cuisineId, cuisineName } = req.body;
     const resp2 = await Menu.findOne()
-    const resp = await Menu.findOneAndUpdate({'restaurant':rid},
-    {
-        $push:{'menu':{'name':cuisineName,'cid':cuisineId,items:[]}}   
-    },{new:true})
+    const resp = await Menu.findOneAndUpdate({ 'restaurant': rid },
+        {
+            $push: { 'menu': { 'name': cuisineName, 'cid': cuisineId, items: [] } }
+        }, { new: true })
     console.log(resp)
     res.send(resp)
+}
+
+export const deleteCuisine = async (req, res) => {
+    const { rid, cuisine } = req.body;
+    const response = await Menu.findOneAndUpdate(
+        { "restaurant": rid },
+        { $pull: { 'menu': { 'name': cuisine } } },
+        { new: true })
+    console.log(response)
+
+    res.send(JSON.stringify(response))
+}
+
+export const addItem = async (req, res) => {
+    const { rid, cuisineName, itemName, itemDesc, itemPrice } = req.body;
+    const response = await Menu.findOneAndUpdate({ 'restaurant': rid, "menu.name": cuisineName },
+        { $push: { "menu.$.items": { "itemName": itemName, "Price": itemPrice, "itemDesc": itemDesc } } },
+        { new: true })
+}
+
+export const getItems = async (req, res) => {
+    const { rid, cuisineName } = req.body;
+    const response = await Menu.findOne({ 'restaurant': rid, "menu.name": cuisineName })
+    res.send(JSON.stringify(response))
 }

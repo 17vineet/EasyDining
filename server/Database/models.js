@@ -113,14 +113,11 @@ const billSchema = new Schema({
 const CuisineSchema = new Schema({
     name: {
         type: String
+    },
+    items:{
+        type:Array
     }
 });
-
-const ItemSchema = new Schema({
-    name: {
-        type: String
-    }
-})
 
 export const Restaurant = model('restaurant', restaurantSchema);
 
@@ -135,5 +132,3 @@ export const Menu = model('menu', menuSchema)
 export const Bill = model('bill', billSchema)
 
 export const Cuisine = model('cuisine', CuisineSchema)
-
-export const Item = model('item', ItemSchema)

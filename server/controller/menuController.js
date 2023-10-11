@@ -1,6 +1,6 @@
 import { trusted } from 'mongoose';
 import jwt from 'jsonwebtoken';
-import { Restaurant, WaitingList, DiningList, Menu, Customer, Bill, Cuisine, Item } from "../Database/models.js";
+import { Restaurant, WaitingList, DiningList, Menu, Customer, Bill, Cuisine} from "../Database/models.js";
 
 
 export const getCuisines = async (req, res) => {
@@ -24,23 +24,37 @@ export const addCuisine = async (req, res) => {
     }
 }
 
-
-export const getItems = async (req, res) => {
-    const response = await Item.find({});
-    res.send(JSON.stringify(response))
+export const addItem = async (req, res) => {
+    const { item,cuisineName } = req.body;
+    const response = await Cuisine.findOne({'name':cuisineName,"items.itemName":item})
+    if(response==null)
+    {
+        const resp = await Cuisine.findOneAndUpdate({ 'name': cuisineName },
+        {$push:{items:{'itemName':item}}})
+        if(resp)
+        {
+            res.send(JSON.stringify(resp))
+        }
+        else
+        {
+            res.send("Cuisine not found")
+        }
+    }
+    else
+    {
+        res.send(JSON.stringify("Item not added"))
+    }
 }
 
-export const addItem = async (req, res) => {
-    const { item } = req.body;
-    const resp = await Item.findOne({ 'name': item })
-    if (resp != null) {
-        res.send("This cuisine already exists")
-        return
-    }
-    else {
-        const data = new Item({ 'name': item })
-        const response = await data.save()
+export const getItemsByCuisine = async(req,res)=>{
+    const {cuisineName} = req.body;
+    const response = await Cuisine.findOne({'name':cuisineName})
+    if(response!=null)
+    {
         res.send(JSON.stringify(response))
-        console.log(response)
+    }
+    else
+    {
+        res.send(JSON.stringify("Cuisine not found"))
     }
 }

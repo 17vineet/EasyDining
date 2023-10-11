@@ -24,7 +24,10 @@ import {
     addOccupiedTable,
     deleteAll,
     showAvailableTables,
-    clearOccupied,addCuisine
+    clearOccupied,
+    addCuisine,
+    addItem,
+    getItems
 } from '../controller/restaurantController.js';
 
 const router = express.Router();
@@ -55,6 +58,8 @@ router.post('/deleteAll',deleteAll);
 router.post('/availableTables',showAvailableTables);
 router.post('/clearOccupied',clearOccupied);
 router.post('/addNewCuisine',addCuisine);
+router.post('/addItem',addItem);
+router.post('/getItems',getItems);
 
 
 export default router;

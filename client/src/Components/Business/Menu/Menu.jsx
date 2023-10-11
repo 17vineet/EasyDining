@@ -9,16 +9,20 @@ const Menu = () => {
   const [cuisines, setCuisines] = useState([])
   const [items, setItems] = useState([]);
   const [cuisineModel, setCuisineModel] = useState(null)
+  const [updated, setUpdated] = useState(false) ;
   const { currentUser } = useAuth();
   const [menu, setMenu] = useState([])
 
   useEffect(() => {
     fetchData();
-  }, [items])
+  }, [updated])
   const fetchData = async () => {
     const resp = await API.post("restaurant/getRestaurantMenu", { rid: currentUser._id });
     setMenu(resp.data.menu);
     setCuisines(resp.data.menu.map((ele) => ele.name));
+  }
+  const handleUpdate=()=>{
+    setUpdated(!updated);
   }
   const openCuisineModel = (elem, index) => {
     setCuisineModel(elem)
@@ -63,7 +67,13 @@ const Menu = () => {
         </div><br />
         <div className="container">
           {
-            cuisineModel != null && <CuisineModel name={cuisineModel} items={items} updateCuisineModel={updateCuisineModel} />
+            cuisineModel != null && 
+              <CuisineModel 
+                name={cuisineModel} 
+                items={items} 
+                updateCuisineModel={updateCuisineModel} 
+                handleUpdate={handleUpdate}
+              />
           }
           <div className='cuisine_container'>
             {
