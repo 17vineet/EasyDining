@@ -6,6 +6,7 @@ import Delete from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import Loading from '../../Loading/Loading';
 import { useAuth } from '../../../contexts/AuthContext';
+import TakeOrderModal from './TakeOrderModal/TakeOrderModal';
 
 function DiningList({updated, handleUpdate}) {
   // const [name, setName] = useState('')
@@ -17,7 +18,8 @@ function DiningList({updated, handleUpdate}) {
     size:''
   })
   const [dine, setDine] = useState([]);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [takeOrderModal,setTakeOrderModal]=useState(null);
   const { currentUser } = useAuth();
 
   async function handleClick() {
@@ -68,7 +70,12 @@ function DiningList({updated, handleUpdate}) {
     handleUpdate();
     setIsLoading(false);
   }
-  
+  const openTakeOrderModal=(phone)=>{
+    setTakeOrderModal(phone)
+  }
+  const closeTakeOrderModal=(newState)=>{
+    setTakeOrderModal(null);
+  }
   useEffect(() => {
     const fetchDiningList = async () => {
       const resp = await API.post('/restaurant/getDiningList', { rid: currentUser._id });
@@ -90,6 +97,7 @@ function DiningList({updated, handleUpdate}) {
   return (
     < >
       {isLoading && <Loading />}
+      {takeOrderModal!=null && <TakeOrderModal phone={takeOrderModal} closeTakeOrderModal={closeTakeOrderModal}/>}
       <h2>Dining List</h2>
       <div   >
         <input type='text' placeholder='Enter name to reserve table' onChange={handleChange} value={formData.name} name='name'></input>
@@ -106,6 +114,10 @@ function DiningList({updated, handleUpdate}) {
                 <div className="Customer_name">{ele.pax}</div>
                 <div className="Customer_name">{ele.phone}</div>
                 <div className="Customer_name">{ele.size}</div>
+               <button className='btn btn-primary'>View Order</button>
+                <button className='btn btn-primary' onClick={()=>{
+                  openTakeOrderModal(ele.phone)
+                }}>Take Order</button>
                 <button className='btn btn-primary delete_btn' onClick={() => {
                   handleDelete(index)
                 }} > <Delete /> </button>

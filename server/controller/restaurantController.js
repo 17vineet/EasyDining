@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { Restaurant, WaitingList, DiningList, Menu, Customer, Bill, Cuisine } from "../Database/models.js";
+import { Restaurant, WaitingList, DiningList, Menu, Customer, Bill, Cuisine, Order } from "../Database/models.js";
 import { trusted } from 'mongoose';
 import { deleteAllImages } from '../Cloudinary/controller.js';
 
@@ -477,4 +477,23 @@ export const getItems = async (req, res) => {
     const { rid, cuisineName } = req.body;
     const response = await Menu.findOne({ 'restaurant': rid, "menu.name": cuisineName })
     res.send(JSON.stringify(response))
+}
+
+export const placeOrder = async(req,res)=>{
+    const {rid,phone,order} = req.body;
+    const response = Order.findOne({'restaurant':rid,"customers.$.phone":phone})
+    if(response)
+    {
+        console.log("Adding order to existing customer")
+        console.log(response)
+        res.send(response)
+    }
+    else
+    {
+        console.log("New Customer")
+        const resp2 = Order.updateOne({'restaurant':rid},
+        {$push:{'customers':{'phone':phone,'order':order}}})
+        console.log(resp2)
+        res.send(JSON.stringify(resp2))
+    }
 }
