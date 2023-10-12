@@ -68,10 +68,12 @@ export const signUpRestaurant = async (req, res) => {
     const data1 = new WaitingList({ restaurant: result._id });
     const data2 = new DiningList({ restaurant: result._id });
     const data3 = new Menu({ restaurant: result._id })
+    const data4 = new Order({ 'restaurant': result._id, 'customers': [] })
 
     await data1.save();
     await data2.save();
     await data3.save();
+    await data4.save();
 
     delete result._doc.password;
     delete result._doc.refresh_token;
@@ -479,21 +481,40 @@ export const getItems = async (req, res) => {
     res.send(JSON.stringify(response))
 }
 
-export const placeOrder = async(req,res)=>{
-    const {rid,phone,order} = req.body;
-    const response = Order.findOne({'restaurant':rid,"customers.$.phone":phone})
-    if(response)
-    {
-        console.log("Adding order to existing customer")
-        console.log(response)
-        res.send(response)
+export const placeOrder = async (req, res) => {
+    const { rid, phone, order } = req.body;
+    const response = await Order.findOne({ 'restaurant': rid, "customer": phone })
+    if (response != null) {
+        let orders = response.order;
+        for (var i of order) {
+            orders.push(i)
+        }
+        const resp2 = await Order.findOneAndUpdate({ 'restaurant': rid, "customer": phone },
+            { $set: { 'order': orders } })
+        res.send(resp2)
     }
-    else
-    {
-        console.log("New Customer")
-        const resp2 = Order.updateOne({'restaurant':rid},
-        {$push:{'customers':{'phone':phone,'order':order}}})
-        console.log(resp2)
-        res.send(JSON.stringify(resp2))
+    else {
+        const data = new Order({ 'restaurant': rid, 'customer': phone, 'order': order })
+        await data.save()
+        res.send(JSON.stringify("Created new order"))
     }
+}
+
+export const generateBill = async (req, res) => {
+    const { rid, phone } = req.body;
+    const resp = await Order.findOne({ 'restaurant': rid, 'customer': phone })
+    let arr = [...resp._doc.order];
+    console.log(arr)
+    let bill = []
+    for (var i of arr) {
+        const exists = bill.some(b => b.name === i.name && b.price === i.price);
+
+        if (exists) {
+
+        }
+        else {
+            bill.push(i)
+        }
+    }
+    res.send(JSON.stringify(resp))
 }

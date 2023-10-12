@@ -29,13 +29,7 @@
     z-index: 5;
 }
 
-.editTableCapacity{
-    
-}
 
-.editNumberOfTable{
-   
-}
 
 .editTable{
     display: flex;
@@ -45,10 +39,3 @@
     margin: 5px;
 }
 
-.editTablesTable{
-    border: 1px solid black;
-    margin:20px
-}
-.editTablesTable td,th{
-    border: 1px solid black;
-}

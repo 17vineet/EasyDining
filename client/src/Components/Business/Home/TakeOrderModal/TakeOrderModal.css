@@ -10,17 +10,15 @@
     align-items: center;
     z-index: 4;
 }
-.closeBtn{
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
+.closeModalBtn{
+    align-self: self-end;
 }
 .closeBtn:hover{
    cursor: pointer;  
 }
 .orderModalContent {
-    height: 470px;
-    width: 400px;
+    height: 600px;
+    width: 800px;
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
@@ -29,4 +27,22 @@
     display: flex;
     flex-direction: column;
     z-index: 5;
+}
+.CuisineHolder{
+    display: flex;
+    flex-wrap: wrap;
+    gap:10px;
+    margin: 5px;
+}
+.cuisines{
+    border: 1px solid black;
+    border-radius: 2px;
+    padding: 10px;
+}
+table{
+    border: 1px solid black;
+    
+}
+table td,table tr{
+    border: 1px solid black;
 }

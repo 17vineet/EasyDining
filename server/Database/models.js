@@ -96,17 +96,14 @@ const menuSchema = new Schema({
 });
 
 const billSchema = new Schema({
-    restaurant_id: {
+    restaurant: {
         type: String
     },
-    customer_id: {
+    customer: {
         type: Array
     },
-    items_ordered: {
+    order: {
         type: Array
-    },
-    bill_amt: {
-        type: Number
     }
 });
 
@@ -114,17 +111,20 @@ const CuisineSchema = new Schema({
     name: {
         type: String
     },
-    items:{
-        type:Array
+    items: {
+        type: Array
     }
 });
 
 const OrderSchema = new Schema({
-    'restaurant':{
-        type:String
+    'restaurant': {
+        type: String
     },
-    'customers':{
-        type:Array
+    'customer': {
+        type: String
+    },
+    'order': {
+        type: Array
     }
 })
 
@@ -142,4 +142,4 @@ export const Bill = model('bill', billSchema)
 
 export const Cuisine = model('cuisine', CuisineSchema)
 
-export const Order = model('order',OrderSchema)
+export const Order = model('order', OrderSchema)

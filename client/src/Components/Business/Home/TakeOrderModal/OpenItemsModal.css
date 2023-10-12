@@ -1,0 +1,60 @@
+.itemModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 4;
+}
+.closeModalBtn{
+    align-self: self-end;
+}
+.closeBtn:hover{
+   cursor: pointer;  
+}
+.itemModalContent {
+    height: 600px;
+    width: 800px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    z-index: 5;
+}
+.showItem{
+    display: flex;
+    gap: 1rem;
+    justify-content: space-evenly;
+    align-items: center;
+    
+}
+.quantity{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:10px;  
+}
+.quantity>h5{
+    border: 1px solid black;
+    border-radius: 2px;
+    padding: 10px 15px;
+}
+
+.custom-disabled {
+    color: #000; /* Dark text color */
+    border-color: #000; /* Dark border color */
+  }
+  
+.ordered_items{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}

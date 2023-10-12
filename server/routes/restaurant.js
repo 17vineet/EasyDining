@@ -28,7 +28,8 @@ import {
     addCuisine,
     addItem,
     getItems,
-    placeOrder
+    placeOrder,
+    generateBill
 } from '../controller/restaurantController.js';
 
 const router = express.Router();
@@ -62,6 +63,7 @@ router.post('/addNewCuisine',addCuisine);
 router.post('/addItem',addItem);
 router.post('/getItems',getItems);
 router.post('/placeOrder',placeOrder);
+router.post('/generateBill',generateBill);
 
 
 export default router;

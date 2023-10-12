@@ -88,12 +88,12 @@
     border-radius: 5px;
 }
 
-.diningList div {
+.diningList>div {
     display: flex;
     flex-direction: row;
 }
 
-.diningList div input{
+.diningList>div input{
     margin: 10px;
     border-radius: 5px;
 }
