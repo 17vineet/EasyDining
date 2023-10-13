@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Loading from '../../Loading/Loading';
 import { useAuth } from '../../../contexts/AuthContext';
 import TakeOrderModal from './TakeOrderModal/TakeOrderModal';
+import ViewOrderModal from './ViewOrderModal/ViewOrderModal';
 
 function DiningList({updated, handleUpdate}) {
   // const [name, setName] = useState('')
@@ -20,6 +21,7 @@ function DiningList({updated, handleUpdate}) {
   const [dine, setDine] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [takeOrderModal,setTakeOrderModal]=useState(null);
+  const [orderViewModal,setOrderViewModal]=useState(null);
   const { currentUser } = useAuth();
 
   async function handleClick() {
@@ -70,12 +72,20 @@ function DiningList({updated, handleUpdate}) {
     handleUpdate();
     setIsLoading(false);
   }
+
   const openTakeOrderModal=(phone)=>{
     setTakeOrderModal(phone)
   }
   const closeTakeOrderModal=(newState)=>{
     setTakeOrderModal(null);
   }
+  const openViewOrderModal=(phone)=>{
+    setOrderViewModal(phone)
+  }
+  const closeViewOrderModal=(newState)=>{
+    setOrderViewModal(null);
+  }
+
   useEffect(() => {
     const fetchDiningList = async () => {
       const resp = await API.post('/restaurant/getDiningList', { rid: currentUser._id });
@@ -97,16 +107,22 @@ function DiningList({updated, handleUpdate}) {
   return (
     < >
       {isLoading && <Loading />}
+
       {takeOrderModal!=null && <TakeOrderModal phone={takeOrderModal} closeTakeOrderModal={closeTakeOrderModal}/>}
+      {orderViewModal!=null && <ViewOrderModal phone={orderViewModal} closeViewOrderModal={closeViewOrderModal}/>}
+
       <h2>Dining List</h2>
+
       <div   >
         <input type='text' placeholder='Enter name to reserve table' onChange={handleChange} value={formData.name} name='name'></input>
         <input type='number' placeholder='Enter number of persons' onChange={handleChange} value={formData.pax} name='pax'></input>
         <input type='tel' placeholder='Enter Mobile number' onChange={handleChange} value={formData.phone} name='phone'></input>
         <button onClick={handleClick} className='btn btn-primary add_btn'><AddIcon /></button>
       </div><br/><br/><br/>
+
       {
         dine.map((ele, index) => {
+
           return (
             <>
               <div className='element' key={index}>
@@ -114,15 +130,21 @@ function DiningList({updated, handleUpdate}) {
                 <div className="Customer_name">{ele.pax}</div>
                 <div className="Customer_name">{ele.phone}</div>
                 <div className="Customer_name">{ele.size}</div>
-               <button className='btn btn-primary'>View Order</button>
+
+               <button className='btn btn-primary' onClick={()=>{
+                  openViewOrderModal(ele.phone)}}>
+                  View Order</button>
+
                 <button className='btn btn-primary' onClick={()=>{
                   openTakeOrderModal(ele.phone)
                 }}>Take Order</button>
+
                 <button className='btn btn-primary delete_btn' onClick={() => {
                   handleDelete(index)
                 }} > <Delete /> </button>
               </div>
             </>)
+
         })}</>)
 }
 export default DiningList;

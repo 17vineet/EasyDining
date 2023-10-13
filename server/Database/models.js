@@ -96,14 +96,14 @@ const menuSchema = new Schema({
 });
 
 const billSchema = new Schema({
-    restaurant: {
+    orderId: {
         type: String
-    },
-    customer: {
-        type: Array
     },
     order: {
         type: Array
+    },
+    billAmt : {
+        type:Number
     }
 });
 

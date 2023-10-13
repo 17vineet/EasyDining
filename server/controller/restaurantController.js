@@ -490,7 +490,7 @@ export const placeOrder = async (req, res) => {
             orders.push(i)
         }
         const resp2 = await Order.findOneAndUpdate({ 'restaurant': rid, "customer": phone },
-            { $set: { 'order': orders } })
+            { $set: { 'order': orders } },{new:true})
         res.send(resp2)
     }
     else {
@@ -500,28 +500,39 @@ export const placeOrder = async (req, res) => {
     }
 }
 
+export const viewOrder = async (req, res) => {
+    const { rid, phone } = req.body;
+    const response = await Order.findOne({ 'restaurant': rid, "customer": phone })
+    if (response != null) {
+        res.send(response)
+    }
+    else {
+        res.send(JSON.stringify({ "message": "Order Not Found" }))
+    }
+}
+
 export const generateBill = async (req, res) => {
     const { rid, phone } = req.body;
-    const resp = await Order.findOne({ 'restaurant': rid, 'customer': phone })
+    const resp = await Order.findOne({ 'restaurant': rid, "customer":phone })
     let arr = [...resp._doc.order];
-    console.log(arr)
     let bill = []
-    let found = false
-    for(var i of arr)
-    {
-        for(var j of bill)
-        {
-            if(j['name']==i['name'] && j['price']==i['price'])
-            {
+    let totalAmt = 0
+    for (var i of arr) {
+        let found = false
+        totalAmt += parseInt(i['price'] * i['qty'])
+        for (var j of bill) {
+            if (j['name'] === i['name'] && j['price'] === i['price']) {
                 j['qty'] += i['qty']
                 found = true;
                 break;
             }
         }
-        if(found==false)
-        {
+        if (found == false) {
             bill.push(i);
         }
     }
+    // const billData = new Bill({ 'orderId':orderId, 'order': bill, 'billAmt': totalAmt })
+    console.log(bill)
+    console.log(resp)
     res.send(JSON.stringify(resp))
 }
