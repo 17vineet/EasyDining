@@ -506,14 +506,21 @@ export const generateBill = async (req, res) => {
     let arr = [...resp._doc.order];
     console.log(arr)
     let bill = []
-    for (var i of arr) {
-        const exists = bill.some(b => b.name === i.name && b.price === i.price);
-
-        if (exists) {
-
+    let found = false
+    for(var i of arr)
+    {
+        for(var j of bill)
+        {
+            if(j['name']==i['name'] && j['price']==i['price'])
+            {
+                j['qty'] += i['qty']
+                found = true;
+                break;
+            }
         }
-        else {
-            bill.push(i)
+        if(found==false)
+        {
+            bill.push(i);
         }
     }
     res.send(JSON.stringify(resp))

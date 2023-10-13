@@ -1,6 +1,5 @@
 import React,{useState,useEffect} from 'react'
 import API from '../../../../axios';
-import { useAuth } from '../../../../contexts/AuthContext';
 import "./OpenItemsModal.css";
 import { TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -11,7 +10,6 @@ const OpenItemsModal = (prop) => {
     const cuisine_name = prop.name;
     const [items, setItems] = useState(prop.items) ;
     const [quantity, setQuantity] = useState([]) ; 
-    const { currentUser } = useAuth();
     
     useEffect(() => {
         setItems((prev) => prev.map((ele, ind) => ({ ...ele, id: ind })));
@@ -29,7 +27,7 @@ const OpenItemsModal = (prop) => {
         prop.updateItemModal(null);
         let orderedItems = [] ; 
         items.map((ele, ind)=>{
-             if(quantity[ind]>0)  orderedItems.push({name: ele.Name, quantity: quantity[ind]})
+            if(quantity[ind]>0)  orderedItems.push({name: ele.Name, quantity: quantity[ind], price: ele.Price})
         })
         prop.handleOrder(orderedItems)
     }
