@@ -519,10 +519,10 @@ export const generateBill = async (req, res) => {
     let totalAmt = 0
     for (var i of arr) {
         let found = false
-        totalAmt += parseInt(i['price'] * i['qty'])
+        totalAmt += parseInt(i['price'] * i['quantity'])
         for (var j of bill) {
             if (j['name'] === i['name'] && j['price'] === i['price']) {
-                j['qty'] += i['qty']
+                j['quantity'] += i['quantity']
                 found = true;
                 break;
             }
@@ -533,6 +533,10 @@ export const generateBill = async (req, res) => {
     }
     // const billData = new Bill({ 'orderId':orderId, 'order': bill, 'billAmt': totalAmt })
     console.log(bill)
-    console.log(resp)
-    res.send(JSON.stringify(resp))
+    console.log(resp._id)
+    const billData = new Bill({'rid':rid,'customer':phone,'orderId':resp._id,'bill':bill,'billAmt':totalAmt})
+    await billData.save();
+    const resp2 = await Order.deleteOne({"_id":resp._id})
+    console.log(resp2)
+    res.send(JSON.stringify("Bill generated"))
 }

@@ -88,7 +88,6 @@ const TakeOrderModal = ({ phone, closeTakeOrderModal }) => {
     const placeOrder=async()=>{
         const resp=await API.post("/restaurant/placeOrder",{rid:currentUser._id, phone:phone, order:order});
         setOrder([]) ;
-        console.log(resp.data);
     }
     return (
         <div className="orderModal">
@@ -165,7 +164,13 @@ const TakeOrderModal = ({ phone, closeTakeOrderModal }) => {
                         })
                     }
                 </table>
-                <button className="btn btn-primary" onClick={placeOrder}>Place Order</button>
+                <button 
+                    className="btn btn-primary" 
+                    onClick={placeOrder}
+                    disabled={!order.length}
+                >
+                    Place Order
+                </button>
             </div>
         </div>
     );

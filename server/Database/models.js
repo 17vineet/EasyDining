@@ -96,10 +96,16 @@ const menuSchema = new Schema({
 });
 
 const billSchema = new Schema({
+    rid:{
+        type:String
+    },
+    customer:{
+        type:Number
+    },
     orderId: {
         type: String
     },
-    order: {
+    bill: {
         type: Array
     },
     billAmt : {

@@ -14,10 +14,20 @@ const ViewOrderModal = ({phone, closeViewOrderModal}) => {
       const resp = await API.post("/restaurant/viewOrder",{
         rid:currentUser._id,phone:phone
       })
-      setItems(resp.data.order)
+      if(resp.data.message === "Order Not Found"){
+        setItems([]) ;
+      }
+      else{
+        setItems(resp.data.order)
+      }
     }
     fetchData();
   },[])
+
+  const handleCheckOut = async ()=> {
+    const resp = await API.post("/restaurant/generateBill",{rid:currentUser._id,phone:phone})
+    setItems([]) ;
+  }
   
   return (
     <div className="viewOrderModal">
@@ -33,7 +43,7 @@ const ViewOrderModal = ({phone, closeViewOrderModal}) => {
             {items.map((ele,ind)=>{
               return (
               <>
-                <tr>
+                <tr key={ind}>
                   <td>{ele.name}</td>
                   <td>{ele.quantity}</td>
                   <td>{ele.price*ele.quantity}</td>
@@ -42,7 +52,13 @@ const ViewOrderModal = ({phone, closeViewOrderModal}) => {
               )
             })}
           </table>
-            
+            <button 
+              className='btn btn-secondary' 
+              onClick={handleCheckOut}
+              disabled={!items.length}
+            >
+              CheckOut
+            </button>
       </div>
     </div>
   )

@@ -10,7 +10,6 @@ import TakeOrderModal from './TakeOrderModal/TakeOrderModal';
 import ViewOrderModal from './ViewOrderModal/ViewOrderModal';
 
 function DiningList({updated, handleUpdate}) {
-  // const [name, setName] = useState('')
   const [formData,setFormData]=useState({
     name:'',
     pax:'',
