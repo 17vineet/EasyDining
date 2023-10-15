@@ -38,3 +38,10 @@
     }
   }
   
+  @media print {
+    body {
+        -webkit-print-color-adjust: exact; /* For Webkit browsers */
+        print-color-adjust: exact; /* For non-Webkit browsers */
+        background-color: transparent; /* Make the background transparent */
+    }
+}

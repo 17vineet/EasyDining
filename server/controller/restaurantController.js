@@ -542,8 +542,10 @@ export const generateBill = async (req, res) => {
 export const viewBill = async (req, res) => {
     const { orderId } = req.body;
     const resp = await Bill.findOne({ 'orderId': orderId })
+    console.log(resp)
     if(resp)
     {
+        resp._doc['message'] = 'Success'
         res.send(JSON.stringify(resp))
     }
     else
