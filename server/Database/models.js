@@ -96,11 +96,11 @@ const menuSchema = new Schema({
 });
 
 const billSchema = new Schema({
-    rid:{
-        type:String
+    rid: {
+        type: String
     },
-    customer:{
-        type:Number
+    customer: {
+        type: Number
     },
     orderId: {
         type: String
@@ -108,8 +108,14 @@ const billSchema = new Schema({
     bill: {
         type: Array
     },
-    billAmt : {
-        type:Number
+    billAmt: {
+        type: Number
+    },
+    billDate: {
+        type: String
+    },
+    billTime: {
+        type: String
     }
 });
 

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import CloseIcon from '@mui/icons-material/Close';
+import { useNavigate } from 'react-router-dom';
 
 import API from '../../../../axios';
 import './ViewOrderModal.css'
@@ -8,6 +9,7 @@ import { useAuth } from '../../../../contexts/AuthContext';
 const ViewOrderModal = ({phone, closeViewOrderModal}) => {
   const [items,setItems]=useState([])
   const {currentUser} = useAuth() ;
+  const navigate = useNavigate() ;
 
   useEffect(()=>{
     const fetchData=async()=>{
@@ -26,6 +28,7 @@ const ViewOrderModal = ({phone, closeViewOrderModal}) => {
 
   const handleCheckOut = async ()=> {
     const resp = await API.post("/restaurant/generateBill",{rid:currentUser._id,phone:phone})
+    navigate(`/business/bill/${resp.data.orderId}`) ;
     setItems([]) ;
   }
   

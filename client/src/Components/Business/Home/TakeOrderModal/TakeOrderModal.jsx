@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import CloseIcon from '@mui/icons-material/Close';
-import { TextField, Stack, Autocomplete } from '@mui/material';
+import { TextField, Stack, Autocomplete, Alert } from '@mui/material';
 import './TakeOrderModal.css'
 import API from '../../../../axios';
 import { useAuth } from '../../../../contexts/AuthContext';
@@ -18,6 +18,9 @@ const TakeOrderModal = ({ phone, closeTakeOrderModal }) => {
     const [order, setOrder] = useState([]);
     const [input,setInput]=useState('');
     const [selectedItem, setSelectedItem] = useState(null);
+    const [orderTotal,setOrderTotal]=useState(0);
+    const [orderPlaced, setOrderPlaced] = useState(false) ; 
+
     useEffect(() => {
         fetchData();
     }, [updated, itemsModal])
@@ -49,20 +52,33 @@ const TakeOrderModal = ({ phone, closeTakeOrderModal }) => {
 
     const handleOrder = (orderedItems) => {
         let arr = [...order];
-        orderedItems.map((ele) => arr.push(ele))
+        let total=orderTotal;
+        orderedItems.map((ele) =>{
+            total+=parseInt(ele.price*ele.quantity) ;
+            arr.push(ele) ;
+        })
+        setOrderTotal(total);
         setOrder(arr);
     }
     const removeItem = (ind) => {
         let data = [...order];
         data[ind].quantity -= 1;
+        let total=parseInt(orderTotal);
+        total-=parseInt(data[ind].price);
+        setOrderTotal(total);
         if (data[ind].quantity <= 0) {
             data.splice(ind, 1);
         }
+      
+       
         setOrder(data);
     }
     const addItem = (index) => {
         let data = [...order];
         data[index].quantity += 1;
+        let total=parseInt(orderTotal);
+        total+=parseInt(data[index].price);
+        setOrderTotal(total);
         setOrder(data);
     }
     const handleAutocompleteChange = (event,value) => {
@@ -76,17 +92,21 @@ const TakeOrderModal = ({ phone, closeTakeOrderModal }) => {
 
     const addNewItem = () => {
         if (selectedItem) {
-            console.log(selectedItem);
              let data = [...order];
             const item = selectedItem.split(' ') ; 
             data.push({ name: item[2],quantity:1, price: items[parseInt(item[0][0])-1].price });
+            let total=parseInt(orderTotal);
+            total+= parseInt(items[parseInt(item[0][0])-1].price);
+            setOrderTotal(total);
             setOrder(data);
             setSelectedItem(null);
-          setInput('');
+            setInput('');
         }
     }
     const placeOrder=async()=>{
         const resp=await API.post("/restaurant/placeOrder",{rid:currentUser._id, phone:phone, order:order});
+        setOrderTotal(0) ;
+        setOrderPlaced(true) ; 
         setOrder([]) ;
     }
     return (
@@ -157,20 +177,30 @@ const TakeOrderModal = ({ phone, closeTakeOrderModal }) => {
                                         </td>
                                         <td>
                                             {parseInt(ele.quantity) * parseInt(ele.price)}
+                                            
                                         </td>
                                     </tr>
                                 </>
                             )
                         })
                     }
+                    {
+                        orderTotal>0 && <tr>
+                        <td>Grand Total </td>
+                        <td colSpan={2}>{orderTotal}</td>
+                    </tr>
+                    }
                 </table>
-                <button 
-                    className="btn btn-primary" 
-                    onClick={placeOrder}
-                    disabled={!order.length}
-                >
-                    Place Order
-                </button>
+               {
+                orderTotal>0 &&  <button 
+                className="btn btn-primary m-4" 
+                onClick={placeOrder}
+                disabled={!order.length}
+            >
+                Place Order
+            </button> 
+               }<br />
+                {orderPlaced && <Alert severity='success' sx={{maxWidth: '100', display: 'flex' , alignItems: 'center'}}>Order placed successfully</Alert>}
             </div>
         </div>
     );

@@ -531,18 +531,23 @@ export const generateBill = async (req, res) => {
             bill.push(i);
         }
     }
-    // const billData = new Bill({ 'orderId':orderId, 'order': bill, 'billAmt': totalAmt })
-    // console.log(bill)
-    // console.log(resp._id)
-    const billData = new Bill({ 'rid': rid, 'customer': phone, 'orderId': resp._id, 'bill': bill, 'billAmt': totalAmt })
+    
+    const today = new Date()
+    const billData = new Bill({ 'rid': rid, 'customer': phone, 'orderId': resp._id, 'bill': bill, 'billAmt': totalAmt, 'billDate':today.toLocaleDateString(), 'billTime':today.toLocaleTimeString() })
     await billData.save();
-    const resp2 = await Order.deleteOne({ "_id": resp._id })
-    // console.log(resp2)
-    res.send("Bill generated")
+    await Order.deleteOne({ "_id": resp._id })
+    res.send(JSON.stringify({ "orderId": resp._id }))
 }
 
-export const viewBill = async(req,res)=>{
-    const {orderId} = req.body;
-    const resp = await Bill.findOne({'orderId':orderId})
-    res.send(JSON.stringify(resp));
+export const viewBill = async (req, res) => {
+    const { orderId } = req.body;
+    const resp = await Bill.findOne({ 'orderId': orderId })
+    if(resp)
+    {
+        res.send(JSON.stringify(resp))
+    }
+    else
+    {
+        res.send(JSON.stringify({'message':'Bill Not Found'}));
+    }
 }

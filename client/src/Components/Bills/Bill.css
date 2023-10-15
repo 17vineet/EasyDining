@@ -1,0 +1,40 @@
+.billBackground{
+    background-color: aliceblue;
+    width: 100vh;
+    height: 100vh;
+    color: black;
+}
+
+.billDiv{
+    /* background-color: antiquewhite; */
+    padding: 20px;
+}
+
+.billTable{
+    width: 100%;
+    border-collapse: collapse;
+    /* margin: 20px; */
+}
+
+.grandTotalRow{
+    background-color:rgb(198, 92, 92);
+}
+
+.itemRow:nth-child(even){
+    background-color: rgb(166, 166, 166);
+}
+
+.billTable td,th{
+    border: 1.5px solid black;
+}
+
+.grandTotal{
+    background-color:cadetblue;
+}
+@media print {
+    /* Hide the print button when printing */
+    .print-button {
+      display: none;
+    }
+  }
+  
