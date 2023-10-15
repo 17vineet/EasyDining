@@ -490,7 +490,7 @@ export const placeOrder = async (req, res) => {
             orders.push(i)
         }
         const resp2 = await Order.findOneAndUpdate({ 'restaurant': rid, "customer": phone },
-            { $set: { 'order': orders } },{new:true})
+            { $set: { 'order': orders } }, { new: true })
         res.send(resp2)
     }
     else {
@@ -513,7 +513,7 @@ export const viewOrder = async (req, res) => {
 
 export const generateBill = async (req, res) => {
     const { rid, phone } = req.body;
-    const resp = await Order.findOne({ 'restaurant': rid, "customer":phone })
+    const resp = await Order.findOne({ 'restaurant': rid, "customer": phone })
     let arr = [...resp._doc.order];
     let bill = []
     let totalAmt = 0
@@ -532,11 +532,17 @@ export const generateBill = async (req, res) => {
         }
     }
     // const billData = new Bill({ 'orderId':orderId, 'order': bill, 'billAmt': totalAmt })
-    console.log(bill)
-    console.log(resp._id)
-    const billData = new Bill({'rid':rid,'customer':phone,'orderId':resp._id,'bill':bill,'billAmt':totalAmt})
+    // console.log(bill)
+    // console.log(resp._id)
+    const billData = new Bill({ 'rid': rid, 'customer': phone, 'orderId': resp._id, 'bill': bill, 'billAmt': totalAmt })
     await billData.save();
-    const resp2 = await Order.deleteOne({"_id":resp._id})
-    console.log(resp2)
-    res.send(JSON.stringify("Bill generated"))
+    const resp2 = await Order.deleteOne({ "_id": resp._id })
+    // console.log(resp2)
+    res.send("Bill generated")
+}
+
+export const viewBill = async(req,res)=>{
+    const {orderId} = req.body;
+    const resp = await Bill.findOne({'orderId':orderId})
+    res.send(JSON.stringify(resp));
 }
