@@ -33,7 +33,7 @@
 }
 @media print {
     /* Hide the print button when printing */
-    .print-button {
+    .print-download {
       display: none;
     }
   }

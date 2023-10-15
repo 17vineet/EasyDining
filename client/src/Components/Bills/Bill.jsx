@@ -73,7 +73,7 @@ const Bill = () => {
           </table>
         </div>
       </div>
-      <div className="print-button">
+      <div className="print-download">
       <button type="button" onClick={handlePrint}  >Print Bill</button>
         <button onClick={handleDownloadPDF}>Download PDF</button>
     
