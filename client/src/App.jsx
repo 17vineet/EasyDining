@@ -39,13 +39,14 @@ export const App = () => {
             <Route path='/home' element={<CustomerHome />} />
             <Route path='/restaurantdetails/:rid' element={<RestaurantPage />} />
             <Route path='/profile' element={<CustomerProfile />} />
+            <Route path='/customer/bill/:oid' element={<Bill />} />
           </Route>
 
           <Route element={<RequireAuth userType='restaurant' />}>
             <Route path='/business/home' element={<BusinessHome />} />
             <Route path='/business/menu' element={<Menu />} />
             <Route path='/business/profile' element={<RestaurantProfile />} />
-            <Route path='/business/bill/:oid' element={<Bill />} />
+            <Route path='/restaurant/bill/:oid' element={<Bill />} />
           </Route>
         </Route>
 

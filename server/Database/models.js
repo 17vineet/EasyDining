@@ -40,6 +40,9 @@ const restaurantSchema = new Schema({
         type: Number,
         unique: true,
         index: true
+    },
+    rating: {
+        type: Array
     }
 });
 

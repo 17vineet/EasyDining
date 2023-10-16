@@ -8,7 +8,7 @@ import OpenItemsModal from './OpenItemsModal';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
-const TakeOrderModal = ({ phone, closeTakeOrderModal }) => {
+const TakeOrderModal = ({ phone, closeTakeOrderModal, id }) => {
     const [cuisines, setCuisines] = useState([])
     const [items, setItems] = useState([]);
     const [updated, setUpdated] = useState(false);
@@ -25,7 +25,7 @@ const TakeOrderModal = ({ phone, closeTakeOrderModal }) => {
         fetchData();
     }, [updated, itemsModal])
     const fetchData = async () => {
-        const resp = await API.post("restaurant/getRestaurantMenu", { rid: currentUser._id });
+        const resp = await API.post("restaurant/getRestaurantMenu", { rid: id || currentUser._id });
         setMenu(resp.data.menu);
         let arr = [];
         resp.data.menu.map((ele) => {
@@ -104,7 +104,7 @@ const TakeOrderModal = ({ phone, closeTakeOrderModal }) => {
         }
     }
     const placeOrder=async()=>{
-        const resp=await API.post("/restaurant/placeOrder",{rid:currentUser._id, phone:phone, order:order});
+        const resp=await API.post("/restaurant/placeOrder",{rid:id || currentUser._id , phone:phone, order:order});
         setOrderTotal(0) ;
         setOrderPlaced(true) ; 
         setOrder([]) ;

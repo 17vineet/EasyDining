@@ -167,11 +167,18 @@ export const removeDiningCustomer = async (req, res) => {
 
 export const addToDineIn = async (req, res) => {
     const { rid, cname, email, phone, pax, size } = req.body;
+    console.log(rid)
 
-    const diningList = await DiningList.findOne({ restaurant: rid });
+    var diningList = await DiningList.findOne({ restaurant: rid });
+    if (diningList == null) {
+        const data = new DiningList({ 'restaurant': rid, 'customers': [] })
+        await data.save()
+        diningList = await DiningList.findOne({ restaurant: rid });
+
+    }
 
     // console.log(diningList);
-
+    console.log(diningList);
     const resp = await DiningList.updateOne(
         { _id: diningList._id },
         { $push: { customers: { cname, email, phone, pax, size } } }
@@ -405,9 +412,11 @@ const deleteOccupiedTable = async (rid, tableSize) => {
     const resp2 = await Restaurant.updateOne({ '_id': rid },
         { $set: { 'occupied_tables': { 'tableSize': resp.occupied_tables.tableSize, 'noOfTables': noOfTables } } })
     if (resp2.modifiedCount == 1) {
+        console.log("Deleted Occupied Table")
         return "Deleted Occupied Table"
     }
     else {
+        console.log("Could not delete table")
         return "Failed to delete Occupied table"
     }
 }
@@ -512,7 +521,7 @@ export const viewOrder = async (req, res) => {
 }
 
 export const generateBill = async (req, res) => {
-    const { rid, phone } = req.body;
+    const { rid, phone, tableSize } = req.body;
     const resp = await Order.findOne({ 'restaurant': rid, "customer": phone })
     let arr = [...resp._doc.order];
     let bill = []
@@ -531,11 +540,16 @@ export const generateBill = async (req, res) => {
             bill.push(i);
         }
     }
-    
+
     const today = new Date()
-    const billData = new Bill({ 'rid': rid, 'customer': phone, 'orderId': resp._id, 'bill': bill, 'billAmt': totalAmt, 'billDate':today.toLocaleDateString(), 'billTime':today.toLocaleTimeString() })
+    const billData = new Bill({ 'rid': rid, 'customer': phone, 'orderId': resp._id, 'bill': bill, 'billAmt': totalAmt, 'billDate': today.toLocaleDateString(), 'billTime': today.toLocaleTimeString() })
     await billData.save();
     await Order.deleteOne({ "_id": resp._id })
+
+    const resp3 = await DiningList.updateOne({ restaurant: rid },
+        { $pull: { customers: { phone: phone } } })
+    const resp4 = await deleteOccupiedTable(rid, tableSize);
+    console.log(resp4)
     res.send(JSON.stringify({ "orderId": resp._id }))
 }
 
@@ -543,13 +557,33 @@ export const viewBill = async (req, res) => {
     const { orderId } = req.body;
     const resp = await Bill.findOne({ 'orderId': orderId })
     console.log(resp)
-    if(resp)
-    {
+    if (resp) {
         resp._doc['message'] = 'Success'
         res.send(JSON.stringify(resp))
     }
+    else {
+        res.send(JSON.stringify({ 'message': 'Bill Not Found' }));
+    }
+}
+
+export const getRestaurantBills = async (req, res) => {
+    const { rid } = req.body;
+    const resp = await Bill.findMany({ 'restaurant': rid })
+    console.log(resp)
+    res.send(JSON.stringify(resp))
+}
+
+export const addRating = async (req, res) => {
+    const {rid,rating} = req.body;
+    console.log(rid,rating)
+    const resp = await Restaurant.updateOne({'_id':rid},
+    {$push:{'rating':rating}})
+    if(resp.modifiedCount==1)
+    {
+        res.send(JSON.stringify({'message':'Rating added successfully'}))
+    }
     else
     {
-        res.send(JSON.stringify({'message':'Bill Not Found'}));
+        res.send(JSON.stringify({'message':'Rating Failed'}))
     }
 }

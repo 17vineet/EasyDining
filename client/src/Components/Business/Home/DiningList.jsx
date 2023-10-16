@@ -131,7 +131,7 @@ function DiningList({updated, handleUpdate}) {
                 <div className="Customer_name">{ele.size}</div>
 
                <button className='btn btn-primary' onClick={()=>{
-                  openViewOrderModal(ele.phone)}}>
+                  openViewOrderModal(ele.phone)}} tableSize={ele.size}>
                   View Order</button>
 
                 <button className='btn btn-primary' onClick={()=>{

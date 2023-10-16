@@ -1,7 +1,7 @@
 .billBackground{
     background-color: aliceblue;
     width: 100vh;
-    height: 100vh;
+    /* height: 100vh; */
     color: black;
 }
 

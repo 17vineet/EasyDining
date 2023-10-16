@@ -8,7 +8,10 @@ import {
     insertWaitingList,
     cancelReservation,
     updateCustomerDetails,
-    deleteAccount
+    deleteAccount,
+    getCustomerBills,
+    checkDining,
+    checkWaiting
 } from '../controller/customerController.js';
 
 const router = express.Router();
@@ -20,5 +23,8 @@ router.post('/insertWaitingList', auth, insertWaitingList);
 router.post('/cancelReservation', auth, cancelReservation);
 router.post('/updateDetails', updateCustomerDetails);
 router.post('/deleteAccount',deleteAccount);
+router.post('/getBills',getCustomerBills);
+router.post('/checkDining',checkDining);
+router.post('/checkWaiting',checkWaiting);
 
 export default router;

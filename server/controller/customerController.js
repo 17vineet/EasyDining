@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-import { Customer, WaitingList, Restaurant } from "../Database/models.js";
+import { Customer, WaitingList, Restaurant, DiningList } from "../Database/models.js";
 
 
 function containsOnlyNumbers(inputStr) {
@@ -81,7 +81,7 @@ export const getAllRestaurants = async (req, res) => {
 }
 
 export const insertWaitingList = async (req, res) => {
-    const { rid, name, email, phone ,pax} = req.body;
+    const { rid, name, email, phone, pax } = req.body;
 
     const customersList = await WaitingList.findOne({ restaurant: rid });
 
@@ -94,7 +94,7 @@ export const insertWaitingList = async (req, res) => {
 
     const resp = await WaitingList.updateOne(
         { _id: customersList._id },
-        { $push: { customers: { cname: name, phone, email,pax } } }
+        { $push: { customers: { cname: name, phone, email, pax } } }
     );
 
     if (resp) {
@@ -187,4 +187,36 @@ export const deleteAccount = async (req, res) => {
     else {
         res.send(JSON.stringify({ 'message': 'Failure' }))
     }
+}
+
+export const getCustomerBills = async (req, res) => {
+    const { phone } = req.body;
+    const response = await Bill.findMany({ 'customer': phone })
+    res.send(JSON.stringify(response))
+}
+
+export const checkWaiting = async (req, res) => {
+    const { rid, phone } = req.body;
+    const resp = await WaitingList.findOne({ 'restaurant': rid })
+    const customers = resp._doc.customers;
+    for (var c of customers) {
+        if (c['phone'] === phone) {
+            res.send(JSON.stringify({ "waiting": true }))
+            return
+        }
+    }
+    res.send(JSON.stringify({ "waiting": false }))
+}
+
+export const checkDining = async (req, res) => {
+    const { rid, phone } = req.body;
+    const resp = await DiningList.findOne({ 'restaurant': rid })
+    const customers = resp._doc.customers;
+    for (var c of customers) {
+        if (c['phone'] === phone) {
+            res.send(JSON.stringify({ "dining": true }))
+            return
+        }
+    }
+    res.send(JSON.stringify({ "dining": false }))
 }

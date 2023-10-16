@@ -4,12 +4,14 @@ import Missing from '../Missing';
 import API from '../../axios'
 import html2pdf from 'html2pdf.js';
 import './Bill.css'
-
+import {useAuth} from '../../contexts/AuthContext' ;
+import Ratings from './Ratings';
 
 const Bill = () => {
   const { oid } = useParams();
   const [resp, setResp] = useState({});
   const [bill, setBill] = useState([]);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,12 +79,12 @@ const Bill = () => {
           <div className="print-download">
             <button type="button" onClick={handlePrint}  >Print Bill</button>
             <button onClick={handleDownloadPDF}>Download PDF</button>
-
           </div>
         </div>
       }
+      { currentUser.userType=='customer' && <Ratings rid={resp.rid} /> }
     </>
   )
 }
-
 export default Bill
+
