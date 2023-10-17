@@ -11,7 +11,8 @@ import {
     deleteAccount,
     getCustomerBills,
     checkDining,
-    checkWaiting
+    checkWaiting,
+    getVisitedRestaurants
 } from '../controller/customerController.js';
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.post('/deleteAccount',deleteAccount);
 router.post('/getBills',getCustomerBills);
 router.post('/checkDining',checkDining);
 router.post('/checkWaiting',checkWaiting);
+router.post('/getVisited',getVisitedRestaurants);
 
 export default router;

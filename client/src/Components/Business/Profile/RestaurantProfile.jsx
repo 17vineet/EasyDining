@@ -15,6 +15,7 @@ import NameModel from './NameModel';
 import TableModal from './TableModal';
 import API from '../../../axios';
 import Loading from '../../Loading/Loading';
+import VisitedCustomer from './VisitedCustomer';
 
 
 const RestaurantProfile = () => {
@@ -213,6 +214,7 @@ const RestaurantProfile = () => {
             </div>
           </div>
         </div>
+        <VisitedCustomer/>
       </div>
     </>
   )

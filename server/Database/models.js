@@ -99,6 +99,9 @@ const menuSchema = new Schema({
 });
 
 const billSchema = new Schema({
+    restaurant_name:{
+        type:String
+    },
     rid: {
         type: String
     },

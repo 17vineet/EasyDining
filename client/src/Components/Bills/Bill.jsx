@@ -4,7 +4,7 @@ import Missing from '../Missing';
 import API from '../../axios'
 import html2pdf from 'html2pdf.js';
 import './Bill.css'
-import {useAuth} from '../../contexts/AuthContext' ;
+import { useAuth } from '../../contexts/AuthContext';
 import Ratings from './Ratings';
 
 const Bill = () => {
@@ -40,11 +40,12 @@ const Bill = () => {
         <div>
           <div className='billBackground' id="bill-content">
             {/* <h2>EasyDining</h2> */}
+            <h2>{resp.restaurant_name}</h2>
             <h4>Phone : {resp.customer}</h4>
-            <h4>Bill No : {resp.orderId}</h4>
-            <h4>Restaurant : {resp.rid}</h4>
             <h4>Date : {resp.billDate}</h4>
             <h4>Time of bill : {resp.billTime}</h4>
+            <h6>Bill No : {resp.orderId}</h6>
+            <h6>Restaurant ID : {resp.rid}</h6>
 
             <div className='billDiv'>
               <table className='billTable'>
@@ -82,7 +83,7 @@ const Bill = () => {
           </div>
         </div>
       }
-      { currentUser.userType=='customer' && <Ratings rid={resp.rid} /> }
+      {currentUser.userType == 'customer' && <Ratings rid={resp.rid} />}
     </>
   )
 }

@@ -542,7 +542,8 @@ export const generateBill = async (req, res) => {
     }
 
     const today = new Date()
-    const billData = new Bill({ 'rid': rid, 'customer': phone, 'orderId': resp._id, 'bill': bill, 'billAmt': totalAmt, 'billDate': today.toLocaleDateString(), 'billTime': today.toLocaleTimeString() })
+    const resp5 = await Restaurant.findOne({ '_id': rid })
+    const billData = new Bill({ 'restaurant_name': resp5._doc.name, 'rid': rid, 'customer': phone, 'orderId': resp._id, 'bill': bill, 'billAmt': totalAmt, 'billDate': today.toLocaleDateString(), 'billTime': today.toLocaleTimeString() })
     await billData.save();
     await Order.deleteOne({ "_id": resp._id })
 
@@ -568,22 +569,20 @@ export const viewBill = async (req, res) => {
 
 export const getRestaurantBills = async (req, res) => {
     const { rid } = req.body;
-    const resp = await Bill.findMany({ 'restaurant': rid })
+    const resp = await Bill.find({ 'rid': rid })
     console.log(resp)
     res.send(JSON.stringify(resp))
 }
 
 export const addRating = async (req, res) => {
-    const {rid,rating} = req.body;
-    console.log(rid,rating)
-    const resp = await Restaurant.updateOne({'_id':rid},
-    {$push:{'rating':rating}})
-    if(resp.modifiedCount==1)
-    {
-        res.send(JSON.stringify({'message':'Rating added successfully'}))
+    const { rid, rating } = req.body;
+    console.log(rid, rating)
+    const resp = await Restaurant.updateOne({ '_id': rid },
+        { $push: { 'rating': rating } })
+    if (resp.modifiedCount == 1) {
+        res.send(JSON.stringify({ 'message': 'Rating added successfully' }))
     }
-    else
-    {
-        res.send(JSON.stringify({'message':'Rating Failed'}))
+    else {
+        res.send(JSON.stringify({ 'message': 'Rating Failed' }))
     }
 }

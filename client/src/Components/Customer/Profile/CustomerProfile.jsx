@@ -7,6 +7,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import './CustomerProfile.css'
 import NameModel from './NameModel';
 import API from '../../../axios';
+import VisitedRestaurant from './VisitedRestaurant';
 
 const CustomerProfile = () => {
   const { currentUser, setCurrentUser, setAuth } = useAuth();
@@ -60,6 +61,7 @@ const CustomerProfile = () => {
 
           </div>
         </div>
+        <VisitedRestaurant/>
       </div>
     </>
   )

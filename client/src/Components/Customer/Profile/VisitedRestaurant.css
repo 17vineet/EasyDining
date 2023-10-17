@@ -1,0 +1,26 @@
+*{
+    box-sizing: border-box;
+}
+.visited_div{
+    margin:10px;
+    /* width: 100%; */
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 5px;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 10px;
+    flex-direction: column;
+}
+.visited_div img{
+    border-radius: 5px;
+}
+.visited_restaurant_list{
+    border: 1px solid lightgray;
+    padding: 10px;
+    border-radius: 5px;
+    width: 80%;
+    display: flex;
+    justify-content: space-evenly;
+}

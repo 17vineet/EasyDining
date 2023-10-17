@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-import { Customer, WaitingList, Restaurant, DiningList } from "../Database/models.js";
+import { Customer, WaitingList, Restaurant, DiningList, Bill } from "../Database/models.js";
 
 
 function containsOnlyNumbers(inputStr) {
@@ -219,4 +219,11 @@ export const checkDining = async (req, res) => {
         }
     }
     res.send(JSON.stringify({ "dining": false }))
+}
+
+export const getVisitedRestaurants = async (req, res) => {
+    const { phone } = req.body;
+    const resp = await Bill.find({ 'customer': phone });
+    console.log(resp)
+    res.send(JSON.stringify(resp))
 }

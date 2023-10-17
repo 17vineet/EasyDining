@@ -186,8 +186,8 @@ const TakeOrderModal = ({ phone, closeTakeOrderModal, id }) => {
                     }
                     {
                         orderTotal>0 && <tr>
-                        <td>Grand Total </td>
-                        <td colSpan={2}>{orderTotal}</td>
+                        <td colSpan={2}>Grand Total </td>
+                        <td>{orderTotal}</td>
                     </tr>
                     }
                 </table>
