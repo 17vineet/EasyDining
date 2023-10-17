@@ -4,8 +4,8 @@ import { Box, InputLabel, MenuItem, FormControl } from '@mui/material';
 import Select from '@mui/material/Select';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/joy/Button';
-
-
+import TakeOrderModal from '../../Business/Home/TakeOrderModal/TakeOrderModal' ;
+import ViewOrderModal from '../../Business/Home/ViewOrderModal/ViewOrderModal';
 import Menu from '../Menu/Menu'
 import './RestaurantPage.css'
 import API from '../../../axios'
@@ -23,6 +23,10 @@ const RestaurantPage = () => {
     const [pax, setPax] = useState('');
     const [checking, setChecking] = useState(false);
     const axiosPrivate = useAxiosPrivate();
+    const [hasReserved,setHasReserved]=useState(false);
+    const [isDined,setIsDined]=useState(false);
+    const [takeOrderModal,setTakeOrderModal]=useState(false);
+    const [viewOrderModal,setViewOrderModal]=useState(false);
     const [restaurantImgModel, setrestaurantImgModel] = useState({
         open: false,
         index: undefined
@@ -54,7 +58,11 @@ const RestaurantPage = () => {
     const fetchData = async () => {
         const details = await API.post('/restaurant/restaurantInfo', { rid })
         const resp = await API.post('/restaurant/getRestaurantMenu', { rid })
+        const resp2 = await API.post('/customer/checkDining', {phone: currentUser.phone, rid})
+        const resp3 = await API.post('/customer/checkWaiting', {phone: currentUser.phone, rid})
 
+        setIsDined(resp2.data.dining) ;
+        setHasReserved(resp2.data.dining || resp3.data.waiting) ;
         setDetails(details.data)
         setImg_urls(details.data.images_urls)
         setMenu(resp.data)
@@ -82,13 +90,42 @@ const RestaurantPage = () => {
     const handlePaxChange = (event) => {
         setPax(event.target.value);
     };
+    
+    const handleReserve = async () => {
+        const resp = await axiosPrivate.post('/customer/insertWaitingList', { rid, name: currentUser.name, email: currentUser.email, phone: currentUser.phone, pax: pax })
+        alert(resp.data.message)
+        setHasReserved(true) ;
+    }
+    
+    const placeOrder=async()=>{
+        setTakeOrderModal(true);
+        if(hasReserved){
+            setIsDined(true);
+        }
 
+    }
+    const viewOrder=()=>{
+        setViewOrderModal(true);
+    }
+    
+    const closeTakeOrderModal=(newstate)=>{
+        setTakeOrderModal(newstate);
+    }
+    const closeViewOrderModal=(newstate)=>{
+        setViewOrderModal(newstate)
+    }
     return (
         <>
 
             {menuModel && <Menu updateMenuModel={updateMenuModel} menu={restmenu} />}
             {
                 restaurantImgModel.open && <RestaurantImageModel updateImageModel={updateImageModel} img_urls={img_urls} imgmodel={restaurantImgModel} />
+            }
+            {
+                takeOrderModal && <TakeOrderModal phone={currentUser.phone} closeTakeOrderModal={closeTakeOrderModal} id={rid}/>
+            }
+            {
+                viewOrderModal && <ViewOrderModal phone={currentUser.phone} closeViewOrderModal={closeViewOrderModal} id={rid}/>
             }
             <div>
                 <div className="main">
@@ -126,7 +163,7 @@ const RestaurantPage = () => {
 
                             </div>
                         </div>
-                        <div className="content2">
+                        {!hasReserved  && <div className="content2">
                             <Box sx={{ minWidth: 120 }}>
                                 <FormControl>
                                     <InputLabel id="demo-simple-select-label">Pax</InputLabel>
@@ -142,10 +179,7 @@ const RestaurantPage = () => {
                                         })}
 
                                     </Select>
-                                    <button onClick={async () => {
-                                        const resp = await axiosPrivate.post('/customer/insertWaitingList', { rid, name: currentUser.name, email: currentUser.email, phone: currentUser.phone, pax: pax })
-                                        alert(resp.data.message)
-                                    }} className='btn btn-primary m-2'>Reserve Table For Free</button>
+                                    <button onClick={handleReserve} className='btn btn-primary m-2'>Reserve Table For Free</button>
                                 </FormControl>
                                 <div>
                                     <Button loading={checking} onClick={handleCheckWaiting} loadingPosition="end" endDecorator={<SendIcon />}>
@@ -159,11 +193,16 @@ const RestaurantPage = () => {
                                     alert(resp.data.message)
                                 }} className='btn btn-primary m-2'>Cancel Reservation</button>
                             </div>
-                            <div>
-                                <button onClick={HandleViewMenu} className='btn btn-primary m-2'>View Menu</button>
-                            </div>
-
+                        </div> }
+                        <div>
+                            <button onClick={HandleViewMenu} className='btn btn-primary m-2'>View Menu</button>
                         </div>
+                        {isDined && 
+                            <div>
+                                <button onClick={placeOrder}>Place Order</button>
+                                <button onClick={viewOrder}>View Order</button>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import API from '../axios' ; 
-import {useAuth} from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const useLogout = ()=> {
     const {setAuth, setCurrentUser} = useAuth() ; 
