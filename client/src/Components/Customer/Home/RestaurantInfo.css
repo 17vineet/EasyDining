@@ -1,7 +1,7 @@
 .rest_image img{
    width: 100%;
    height: 100%;
-   transition: all 1s ease-in-out;
+   transition: all 0.3s ease-in-out;
 }
 .close_btn_div{
   display: flex;
@@ -13,5 +13,5 @@
 }
 .rest_image img:hover{
     transform: scale(1.1);
-    
+    cursor: pointer;
  }
