@@ -75,7 +75,16 @@ export const signUpCustomer = async (req, res) => {
 }
 
 export const getAllRestaurants = async (req, res) => {
-    const data = await Restaurant.find();
+    const {city} = req.body;
+    console.log(city);
+    let data = null ; 
+    if(city!="null"){
+        data = await Restaurant.find({'city':city});
+        console.log(data)
+    }
+    else{
+        data = await Restaurant.find({});
+    }
     const result = JSON.stringify(data);
     res.send(result);
 }

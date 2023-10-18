@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Typography, Input, Grid, Hidden, CircularProgress } from '@mui/material';
-import {Alert} from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 import DoneIcon from '@mui/icons-material/Done';
 import jwtDecode from 'jwt-decode';
 import { Link, useNavigate } from 'react-router-dom';
-
+import Autocomplete from '@mui/material/Autocomplete';
 import { useAuth } from '../../contexts/AuthContext';
 import API from "../../axios";
 const SignUp = () => {
@@ -14,19 +14,20 @@ const SignUp = () => {
         name: '',
         location_url: '',
         sitting_capacity: '',
-        range: '',
-        phone:'',
+        range: range[0],
+        phone: '',
         thumbnail_url: '',
         numberOfTables: '',
+        city: city[0]
     });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { currentUser, setCurrentUser ,setAuth} = useAuth();
+    const { currentUser, setCurrentUser, setAuth } = useAuth();
     const [selectedFile, setSelectedFile] = useState(null);
-    const [uploadingImages, setUploadingImages] = useState({spinner: false, tick: false}) ;
-    const [uploadingThumbnail, setUploadingThumbnail] = useState({spinner: false, tick: false}) ;
+    const [selectedFile1, setSelectedFile1] = useState(null);
+    const [uploadingImages, setUploadingImages] = useState({ spinner: false, tick: false });
+    const [uploadingThumbnail, setUploadingThumbnail] = useState({ spinner: false, tick: false });
     const navigate = useNavigate();
-
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -34,11 +35,12 @@ const SignUp = () => {
     };
     const handleFileChangeforMultipleUpload = (event) => {
         const file = event.target.files;
-        setSelectedFile(file);
+        setSelectedFile1(file);
     };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        console.log(name, value)
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
@@ -47,37 +49,37 @@ const SignUp = () => {
     const uploadThumbnail = async (e) => {
         e.preventDefault();
         if (selectedFile) {
-            setUploadingThumbnail({spinner: true, tick: false}) ; 
+            setUploadingThumbnail({ spinner: true, tick: false });
             const formData = new FormData();
             formData.append('images', selectedFile);
-            const result=await API.post("/cloudinary/thumbnail",formData)
-            setFormData((prev)=>({
+            const result = await API.post("/cloudinary/thumbnail", formData)
+            setFormData((prev) => ({
                 ...prev,
-                thumbnail_url:result.data.img_urls[0]
+                thumbnail_url: result.data.img_urls[0]
             }))
-            setUploadingThumbnail({spinner: false, tick: true}) ; 
+            setUploadingThumbnail({ spinner: false, tick: true });
         }
-        else{
+        else {
             alert('Please select an image for thumbnail !!!')
         }
     };
 
     const uploadImages = async (e) => {
         e.preventDefault();
-        if (selectedFile) {
-            setUploadingImages({spinner: true, tick: false}) ; 
+        if (selectedFile1) {
+            setUploadingImages({ spinner: true, tick: false });
             const formData = new FormData();
-            for (let i = 0; i < selectedFile.length; i++) {
-                formData.append('images', selectedFile[i]);
-              }
-            const result=await API.post("/cloudinary/images",formData)
-            setFormData((prev)=>({
+            for (let i = 0; i < selectedFile1.length; i++) {
+                formData.append('images', selectedFile1[i]);
+            }
+            const result = await API.post("/cloudinary/images", formData)
+            setFormData((prev) => ({
                 ...prev,
-                images_urls:result.data.img_urls
+                images_urls: result.data.img_urls
             }))
-            setUploadingImages({spinner: false, tick: true}) ; 
+            setUploadingImages({ spinner: false, tick: true });
         }
-        else{
+        else {
             alert('Please select some images !!!')
         }
     };
@@ -85,14 +87,19 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const resp=await API.post("/restaurant/signup",formData)
-            const decodedToken = jwtDecode(resp.data.accessToken) ;
-            setCurrentUser(decodedToken) ;
-            setAuth(resp.data.accessToken) ;
+            console.log(formData);
+            if (!selectedFile || !selectedFile1) {
+                alert("Please fill out all the fields");
+                return;
+            }
+            const resp = await API.post("/restaurant/signup", formData)
+            const decodedToken = jwtDecode(resp.data.accessToken);
+            setCurrentUser(decodedToken);
+            setAuth(resp.data.accessToken);
             setLoading(false);
             navigate('/business/home');
         } catch (error) {
-            setError(error.response.data) ;
+            setError(error.response.data);
         }
     };
 
@@ -108,7 +115,7 @@ const SignUp = () => {
                 Restaurant Details
             </Typography>
             {error && <Alert variant='danger'>{error}</Alert>}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} >
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <TextField
@@ -120,6 +127,7 @@ const SignUp = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
+                            required
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -132,6 +140,8 @@ const SignUp = () => {
                             name="password"
                             value={formData.password}
                             onChange={handleInputChange}
+                            required
+
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -143,6 +153,8 @@ const SignUp = () => {
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
+                            required
+
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -154,6 +166,8 @@ const SignUp = () => {
                             name="location_url"
                             value={formData.location_url}
                             onChange={handleInputChange}
+                            required
+
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -162,20 +176,25 @@ const SignUp = () => {
                             variant="outlined"
                             fullWidth
                             margin="normal"
+                            type='number'
                             name="sitting_capacity"
                             value={formData.sitting_capacity}
                             onChange={handleInputChange}
+                            required
+
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <TextField
-                            label="Range"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            name="range"
+                        <Autocomplete
+                            disablePortal
+                            options={range}
+                            renderInput={(params) =>
+                                <TextField {...params} label="Range" name='range' required />
+                            }
                             value={formData.range}
-                            onChange={handleInputChange}
+                            onChange={(event, newValue) => {
+                                setFormData({ ...formData, range: newValue })
+                            }}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -187,32 +206,23 @@ const SignUp = () => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
+                            required
                         />
                     </Grid>
-                    {/* <Grid item xs={12}>
-                        <TextField
-                            label="Number of Tables"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            name="numberOfTables"
-                            value={formData.numberOfTables}
-                            onChange={handleInputChange}
+                    <Grid item xs={12} sm={6}>
+                        <Autocomplete
+                            name="city"
+                            disablePortal
+                            options={city}
+                            value={formData.city}
+                            onChange={(event, newValue) => {
+                                setFormData({ ...formData, city: newValue });
+                            }}
+                            renderInput={(params) => (
+                                <TextField {...params} label="City" required />
+                            )}
                         />
-                    </Grid> */}
-                    {/* <Grid item xs={12}>
-                        <label htmlFor=""> Menu  </label>
-                        <Textarea
-                            minRows={2}
-                            label="Menu"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            name="menu"
-                            value={formData.menu}
-                            onChange={handleInputChange}
-                        />
-                    </Grid> */}
+                    </Grid>
                     <Grid item xs={12}>
                         Thumbnail &nbsp;
                         <form method='post' id="upload-thumbnail-form" >
@@ -225,12 +235,13 @@ const SignUp = () => {
                                     type="file"
                                     name="images"
                                     onChange={handleFileChange}
+                                    required
                                 />
                             </Button>
                             {
-                                uploadingThumbnail.spinner ? <CircularProgress /> 
+                                uploadingThumbnail.spinner ? <CircularProgress />
                                     : uploadingThumbnail.tick ? <DoneIcon />
-                                    : <Button onClick={uploadThumbnail}>Upload</Button>
+                                        : <Button onClick={uploadThumbnail}>Upload</Button>
                             }
                         </form>
                     </Grid>
@@ -247,12 +258,13 @@ const SignUp = () => {
                                     name="images"
                                     onChange={handleFileChangeforMultipleUpload}
                                     multiple
+                                    required
                                 />
                             </Button>
                             {
-                                uploadingImages.spinner ? <CircularProgress /> 
-                                    : uploadingImages.tick ?  <DoneIcon />
-                                    : <Button onClick={uploadImages}>Upload</Button>
+                                uploadingImages.spinner ? <CircularProgress />
+                                    : uploadingImages.tick ? <DoneIcon />
+                                        : <Button onClick={uploadImages}>Upload</Button>
                             }
                         </form>
                     </Grid>
@@ -273,3 +285,102 @@ const SignUp = () => {
 };
 
 export default SignUp;
+
+const city = [
+    "Mumbai",
+    "Delhi",
+    "Bangalore",
+    "Chennai",
+    "Kolkata",
+    "Hyderabad",
+    "Pune",
+    "Ahmedabad",
+    "Vadodara",
+    "Rajkot",
+    // "Meerut",
+    // "Kalyan-Dombivali",
+    // "Faridabad",
+    // "Varanasi",
+    // "Srinagar",
+    // "Aurangabad",
+    // "Dhanbad",
+    // "Amritsar",
+    // "Navi Mumbai",
+    // "Allahabad",
+    // "Ranchi",
+    // "Haora",
+    // "Gwalior",
+    // "Jabalpur",
+    // "Vijayawada",
+    // "Jodhpur",
+    // "Madurai",
+    // "Raipur",
+    // "Kota",
+    // "Guwahati",
+    // "Chandrapur",
+    // "Hubli-Dharwad",
+    // "Bareilly",
+    // "Moradabad",
+    // "Mysore",
+    // "Gurgaon",
+    // "Aligarh",
+    // "Jalandhar",
+    // "Tiruchirappalli",
+    // "Bhubaneswar",
+    // "Salem",
+    // "Mira-Bhayandar",
+    // "Warangal",
+    // "Guntur",
+    // "Bhiwandi",
+    // "Saharanpur",
+    // "Gorakhpur",
+    // "Bikaner",
+    // "Amravati",
+    // "Noida",
+    // "Jamshedpur",
+    // "Bhilai",
+    // "Cuttack",
+    // "Firozpur",
+    // "Kochi",
+    // "Nellore",
+    // "Bhavnagar",
+    // "Dehradun",
+    // "Durgapur",
+    // "Asansol",
+    // "Rourkela",
+    // "Nanded",
+    // "Kolhapur",
+    // "Ajmer",
+    // "Akola",
+    // "Gulbarga",
+    // "Jamnagar",
+    // "Ujjain",
+    // "Loni",
+    // "Siliguri",
+    // "Jhansi",
+    // "Ulhasnagar",
+    // "Nellore",
+    // "Jammu",
+    // "Sangli",
+    // "Mirzapur",
+    // "Darbhanga",
+    // "Dewas",
+    // "Kurnool",
+    // "Ichalkaranji",
+    // "Karnal",
+    // "Bathinda",
+    // "Shahjahanpur",
+    // "Satara",
+    // "Bijapur",
+    // "Rampur",
+    // "Shimoga",
+    // "Chandrapur",
+    // "Junagadh",
+];
+
+const range = [
+    'Budget Friendly',
+    'Medium',
+    'Premium',
+    'Super Premium'
+]

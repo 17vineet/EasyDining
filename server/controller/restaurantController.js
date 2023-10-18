@@ -8,6 +8,53 @@ function containsOnlyNumbers(inputStr) {
     return /^[0-9]+$/.test(inputStr);
 }
 
+
+export const signUpRestaurant = async (req, res) => {
+    console.log(req.body)
+    try {
+        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] } });
+        var result = await data.save();
+    }
+    catch (e) {
+        console.log(e)
+        if (e?.keyValue?.email != undefined) {
+            res.status(409).send(`An account already exists corresponding to this email id`)
+            return
+        }
+        else if (e?.keyValue?.phone != undefined) {
+            res.status(409).send(`An account already exists corresponding to this phone number`)
+            return
+        }
+        else {
+            res.status(409).send(`Something went wrong`)
+            return
+        }
+    }
+    
+    const data1 = new WaitingList({ restaurant: result._id });
+    const data2 = new DiningList({ restaurant: result._id });
+    const data3 = new Menu({ restaurant: result._id })
+    const data4 = new Order({ 'restaurant': result._id, 'customers': [] })
+    
+    await data1.save();
+    await data2.save();
+    await data3.save();
+    await data4.save();
+    
+    delete result._doc.password;
+    delete result._doc.refresh_token;
+    
+    // creating JWT
+    const accessToken = jwt.sign({ ...result._doc, userType: 'restaurant' }, 'test', { expiresIn: '30s' });
+    const refreshToken = jwt.sign({ ...result._doc, userType: 'restaurant' }, 'test', { expiresIn: '1d' });
+    
+    // saving the refreshToken with the current user in DB
+    await Restaurant.findByIdAndUpdate(result._id, { ...result._doc, refresh_token: refreshToken }, { new: true });
+    
+    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    res.status(200).send({ accessToken });
+}
+
 export const signInRestaurant = async (req, res) => {
     let data = null;
     const { emailpass, password } = req.body;
@@ -42,51 +89,6 @@ export const signInRestaurant = async (req, res) => {
     else {
         res.status(404).send("User account not found")
     }
-}
-
-export const signUpRestaurant = async (req, res) => {
-    try {
-        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] } });
-        var result = await data.save();
-    }
-    catch (e) {
-        console.log(e)
-        if (e?.keyValue?.email != undefined) {
-            res.status(409).send(`An account already exists corresponding to this email id`)
-            return
-        }
-        else if (e?.keyValue?.phone != undefined) {
-            res.status(409).send(`An account already exists corresponding to this phone number`)
-            return
-        }
-        else {
-            res.status(409).send(`Something went wrong`)
-            return
-        }
-    }
-
-    const data1 = new WaitingList({ restaurant: result._id });
-    const data2 = new DiningList({ restaurant: result._id });
-    const data3 = new Menu({ restaurant: result._id })
-    const data4 = new Order({ 'restaurant': result._id, 'customers': [] })
-
-    await data1.save();
-    await data2.save();
-    await data3.save();
-    await data4.save();
-
-    delete result._doc.password;
-    delete result._doc.refresh_token;
-
-    // creating JWT
-    const accessToken = jwt.sign({ ...result._doc, userType: 'restaurant' }, 'test', { expiresIn: '30s' });
-    const refreshToken = jwt.sign({ ...result._doc, userType: 'restaurant' }, 'test', { expiresIn: '1d' });
-
-    // saving the refreshToken with the current user in DB
-    await Restaurant.findByIdAndUpdate(result._id, { ...result._doc, refresh_token: refreshToken }, { new: true });
-
-    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-    res.status(200).send({ accessToken });
 }
 
 export const getRestaurantInfo = async (req, res) => {

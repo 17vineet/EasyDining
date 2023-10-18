@@ -41,6 +41,9 @@ const restaurantSchema = new Schema({
         unique: true,
         index: true
     },
+    city:{
+        type:String
+    },
     rating: {
         type: Array
     }

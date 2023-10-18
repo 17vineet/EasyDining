@@ -28,6 +28,7 @@ const TakeOrderModal = ({ phone, closeTakeOrderModal, id }) => {
         const resp = await API.post("restaurant/getRestaurantMenu", { rid: id || currentUser._id });
         setMenu(resp.data.menu);
         let arr = [];
+        
         resp.data.menu.map((ele) => {
             ele.items.map((item) => {
                 arr.push({ name: item.Name, price: item.Price });

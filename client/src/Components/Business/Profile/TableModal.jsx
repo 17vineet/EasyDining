@@ -55,7 +55,7 @@ const TableModal = ({ closeTableModel }) => {
     const handleSaveTable = async () => {
         const resp = await API.post('/restaurant/changeTables', { '_id': currentUser._id, 'tables': tablelist })
         if (resp.data.message === 'Success') {
-            alert("Tables Updated Successfully")
+           
             setCurrentUser({ ...currentUser, total_tables: tablelist });
             setSuccess(true) ; 
         }

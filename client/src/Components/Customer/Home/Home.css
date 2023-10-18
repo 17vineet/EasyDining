@@ -1,13 +1,9 @@
 .main {
-    background-color: antiquewhite;
-    height: 100hv;
-    min-height: 100vh;
     padding: 20px;
     display: grid;
 }
 
 .background {
-    background-color: aquamarine;
     min-height: inherit;
     border-radius: 5px;
     padding: 10px 10px 10px 10px;
@@ -20,14 +16,16 @@
     height: 10%;
 }
 .content{
-    background-color: blueviolet;
-    height: 90%;
-    border-radius: 0px 0px 5px 5px;
+ 
+    /* height: 90%; */
+    min-height: 100vh;
     padding: 15px 20px 20px 15px;
+    background-color: #eee;
+    border-radius: 10px;
 }
 
 .outside{
-    background-color: brown;
+
     display: grid;
 }
 .mycard{
@@ -43,12 +41,14 @@
 } */
 .rest_content{
     background-color: white;
-    height: 300px;
+    /* height: 300px; */
+   height: 300px;
     width: 300px;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
-    padding: 5px;
+    /* padding: 5px; */
+    /* border: 1px solid black; */
 }
 .rest_image{
     height: 90%;
@@ -68,4 +68,5 @@
     flex-wrap: wrap;
     align-items: center;
     gap:1rem;
+
 }

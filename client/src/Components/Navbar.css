@@ -1,3 +1,28 @@
 .Logo:hover{
     cursor: pointer;
 }
+*{
+    max-width: 100vw;
+    box-sizing: border-box;
+}
+.navbar{
+    box-sizing: border-box;
+    width: 100vw;
+    max-width: 100vw;
+    height: 80px;
+    background-color: #2196f3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    overflow: hidden;
+}
+
+.Logo>h3{
+    color: white;
+}
+.search{
+    display: flex;
+    align-items: center;
+    background-color: white;
+}
