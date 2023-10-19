@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import { AppBar, Box, Toolbar, Typography, Button, IconButton } from "@mui/material"
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Profile from './Profile'
 import "./Navbar.css"
 import { useAuth } from "../contexts/AuthContext";
@@ -13,15 +13,16 @@ import jwtDecode from "jwt-decode";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const location = useLocation() ; 
   const { currentUser, setCurrentUser, setAuth } = useAuth();
   const [cityValue, setCityValue] = React.useState(currentUser?.last_city);
-  const [inputCityValue, setInputCityValue] = React.useState('');
+  const [inputCityValue, setInputCityValue] = React.useState(currentUser?.last_city)
 
   useEffect(()=>{
-    setCityValue(currentUser?.last_city) ;
-    setInputCityValue(currentUser?.last_city) ;
-  }, [location])
+    if(currentUser){
+      setCityValue(currentUser?.last_city)
+      setInputCityValue(currentUser?.last_city)
+    }
+  }, [currentUser])
 
 
   const handleClick = async (e) => {
@@ -49,7 +50,6 @@ const Navbar = () => {
   const handleLastCity = async(city)=>{
     const resp = await API.post("/customer/lastCity",{'_id':currentUser._id,'city':city});
     const decodedToken = jwtDecode(resp.data.accessToken);
-    console.log(decodedToken)
     setCurrentUser(decodedToken);
     setAuth(resp.data.accessToken) ;
     navigate(`/home?city=${city}`);

@@ -241,10 +241,12 @@ export const setLastCity = async(req,res)=>{
     const {_id,city} = req.body;
     
     const data = await Customer.findOneAndUpdate({'_id':_id},
-    {'last_city':city})
+    {'last_city':city}, {new: true}) ;
 
     const accessToken = jwt.sign({ ...data._doc, userType: 'customer' }, 'test', { expiresIn: '30s' });
     const refreshToken = jwt.sign({ ...data._doc, userType: 'customer' }, 'test', { expiresIn: '1d' });
+
+    await Customer.findByIdAndUpdate(data._id, { ...data._doc, refresh_token: refreshToken }, { new: true })
 
     res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     res.status(200).send({ accessToken });

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import {Card, CardHeader, CardMedia } from '@mui/material';
+import { Card, CardHeader, CardMedia, Grid, Paper } from '@mui/material';
 import { useAuth } from '../../../contexts/AuthContext'
 import './Home.css'
 import RestaurantInfo from './RestaurantInfo';
 import API from '../../../axios';
+import RestaurantCard from './RestaurantCard/RestaurantCard';
+
 const Home = () => {
 
   const [restaurants, setRestaurants] = useState([]);
@@ -47,7 +49,7 @@ const Home = () => {
         {/* This is the background div */}
 
         <div className="content">
-          <h2>Restaurant you may like</h2>
+          <h2>Restaurants you may like</h2>
           <div className="restaurant_display" >
             {restaurants.map((elem, index) => (
               <div key={index} onClick={() => {
@@ -57,29 +59,29 @@ const Home = () => {
               </div>
             ))}
           </div>
-          <h2>Top Restaurants in your city</h2>
-          <div className='restaurant_display'>
-            {restaurants.map((elem, index) => (
-              <div key={index} onClick={() => {
-                navigate(`/restaurantdetails/${elem.id}`)
-              }}>
-                <Card sx={{ maxWidth: 345 }} className='restaurant_card'>
-                  <CardMedia
-                    component="img"
-                    height="194"
-                    width="194"
-                    image={elem.thumbnail_url}
-                    // alt="Paella dish"
-                  />
-                  <CardHeader
-                    title={elem.name}
-                    subheader={elem.city}
-                  />
-                </Card>
-                {/* <RestaurantInfo name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} /> */}
+          {
+            currentUser.last_city &&
+            <>
+              <h2>Top Restaurants in {currentUser?.last_city}</h2>
+              <div className='restaurant_display'>
+                {/* {restaurants.map((elem, index) => {
+                  return (
+                    <>
+                      <RestaurantCard key={index} name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} />
+                    </>
+                  ) */}
+                  {/* <RestaurantInfo name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} /> */ }
+                {/* })} */}
+                <Grid container columnSpacing={3}>
+                  {restaurants.map((elem, index) => (
+                    <Grid item sm={6} md={4} lg={3} key={index}>
+                      <RestaurantCard key={index} name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} />
+                    </Grid>
+                  ))}
+                </Grid>
               </div>
-            ))}
-          </div>
+            </>
+          }
         </div>
       </div>
     </div>

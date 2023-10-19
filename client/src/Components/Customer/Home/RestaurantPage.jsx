@@ -153,7 +153,7 @@ const RestaurantPage = () => {
                                     img_urls.map((ele, index) => {
 
                                         return (
-                                            <img src={ele} height={200} width={200} style={{ 'margin': '10px', 'borderRadius': '10px' }} onClick={() => {
+                                            <img key={index} src={ele} height={200} width={200} style={{ 'margin': '10px', 'borderRadius': '10px' }} onClick={() => {
                                                 openRestaurantImageModel(index)
                                             }} className='restaurant_images' />
                                         )
