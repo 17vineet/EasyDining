@@ -31,7 +31,7 @@ const CustomerSignIn = () => {
         navigate(from, {replace: true});
       }
       else{
-        const from = location.state?.from?.pathname || '/home' ;
+        const from = location.state?.from?.pathname || `/home?city=${decodedToken.last_city}` ;
         navigate(from, {replace: true});
 
       }

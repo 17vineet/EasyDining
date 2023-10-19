@@ -41,7 +41,7 @@ const CustomerSignUp = () => {
       const decodedToken = jwtDecode(resp.data.accessToken) ;
       setCurrentUser(decodedToken) ;
       setAuth(resp.data.accessToken) ;
-      navigate('/home') ;
+      navigate(`/home?city=${decodedToken.last_city}`) ;
     } catch (error) {
       setError(error.response.data) ;
     }

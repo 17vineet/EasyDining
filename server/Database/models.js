@@ -41,8 +41,8 @@ const restaurantSchema = new Schema({
         unique: true,
         index: true
     },
-    city:{
-        type:String
+    city: {
+        type: String
     },
     rating: {
         type: Array
@@ -71,6 +71,9 @@ const customerSchema = new Schema({
         type: Number,
         unique: true,
         index: true
+    },
+    last_city: {
+        type: String
     }
 });
 
@@ -102,8 +105,8 @@ const menuSchema = new Schema({
 });
 
 const billSchema = new Schema({
-    restaurant_name:{
-        type:String
+    restaurant_name: {
+        type: String
     },
     rid: {
         type: String

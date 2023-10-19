@@ -12,7 +12,8 @@ import {
     getCustomerBills,
     checkDining,
     checkWaiting,
-    getVisitedRestaurants
+    getVisitedRestaurants,
+    setLastCity
 } from '../controller/customerController.js';
 
 const router = express.Router();
@@ -28,5 +29,6 @@ router.post('/getBills',getCustomerBills);
 router.post('/checkDining',checkDining);
 router.post('/checkWaiting',checkWaiting);
 router.post('/getVisited',getVisitedRestaurants);
+router.post('/lastCity',setLastCity);
 
 export default router;

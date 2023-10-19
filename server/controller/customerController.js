@@ -46,7 +46,7 @@ export const signUpCustomer = async (req, res) => {
     const { name, email, password, visited, phone } = req.body;
     try {
         // const data = new Customer({ name, email, password, visited_restaurant:visited, phone, refresh_token: "" });
-        const data = new Customer({ ...req.body });
+        const data = new Customer({ ...req.body, 'last_city': null });
         var result = await data.save();
     }
     catch (e) {
@@ -75,14 +75,14 @@ export const signUpCustomer = async (req, res) => {
 }
 
 export const getAllRestaurants = async (req, res) => {
-    const {city} = req.body;
+    const { city } = req.body;
     console.log(city);
-    let data = null ; 
-    if(city!="null"){
-        data = await Restaurant.find({'city':city});
+    let data = null;
+    if (city != "null") {
+        data = await Restaurant.find({ 'city': city });
         console.log(data)
     }
-    else{
+    else {
         data = await Restaurant.find({});
     }
     const result = JSON.stringify(data);
@@ -235,4 +235,18 @@ export const getVisitedRestaurants = async (req, res) => {
     const resp = await Bill.find({ 'customer': phone });
     console.log(resp)
     res.send(JSON.stringify(resp))
+}
+
+export const setLastCity = async(req,res)=>{
+    const {_id,city} = req.body;
+    
+    const data = await Customer.findOneAndUpdate({'_id':_id},
+    {'last_city':city})
+
+    const accessToken = jwt.sign({ ...data._doc, userType: 'customer' }, 'test', { expiresIn: '30s' });
+    const refreshToken = jwt.sign({ ...data._doc, userType: 'customer' }, 'test', { expiresIn: '1d' });
+
+    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    res.status(200).send({ accessToken });
+    
 }

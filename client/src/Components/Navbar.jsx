@@ -1,19 +1,27 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { AppBar, Box, Toolbar, Typography, Button, IconButton } from "@mui/material"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Profile from './Profile'
 import "./Navbar.css"
 import { useAuth } from "../contexts/AuthContext";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import SearchIcon from '@mui/icons-material/Search';
+import API from '../axios' ;
+import jwtDecode from "jwt-decode";
 
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
-  const [cityValue, setCityValue] = React.useState(city[0]);
+  const location = useLocation() ; 
+  const { currentUser, setCurrentUser, setAuth } = useAuth();
+  const [cityValue, setCityValue] = React.useState(currentUser?.last_city);
   const [inputCityValue, setInputCityValue] = React.useState('');
+
+  useEffect(()=>{
+    setCityValue(currentUser?.last_city) ;
+    setInputCityValue(currentUser?.last_city) ;
+  }, [location])
 
 
   const handleClick = async (e) => {
@@ -38,6 +46,15 @@ const Navbar = () => {
     navigate(`/home?city=${cityValue}`);
   }
 
+  const handleLastCity = async(city)=>{
+    const resp = await API.post("/customer/lastCity",{'_id':currentUser._id,'city':city});
+    const decodedToken = jwtDecode(resp.data.accessToken);
+    console.log(decodedToken)
+    setCurrentUser(decodedToken);
+    setAuth(resp.data.accessToken) ;
+    navigate(`/home?city=${city}`);
+  }
+
   return (
     <div className="navbar">
       <div className="Logo m-2" onClick={handleHomeClick}><h3>EasyDining</h3></div>
@@ -49,6 +66,7 @@ const Navbar = () => {
               value={cityValue}
               onChange={(event, newValue) => {
                 setCityValue(newValue);
+                handleLastCity(newValue);
               }}
               inputValue={inputCityValue}
               onInputChange={(event, newInputValue) => {
