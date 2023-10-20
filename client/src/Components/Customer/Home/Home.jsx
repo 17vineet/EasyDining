@@ -6,6 +6,7 @@ import './Home.css'
 import RestaurantInfo from './RestaurantInfo';
 import API from '../../../axios';
 import RestaurantCard from './RestaurantCard/RestaurantCard';
+import axios from 'axios';
 
 const Home = () => {
 
@@ -21,8 +22,10 @@ const Home = () => {
     const getAllRestaurants = async () => {
       try {
         const city = searchParams.get('city');
-        const response = await API.post("/customer/allRestaurants", { city });
+        // const response = await API.post("/customer/allRestaurants", { city });
+        const response = await axios.post("http://127.0.0.1:5000/ml/getCities", { city });
         const data = response.data;
+        console.log(data)
         const newRestaurants = Object.keys(data).map(key => {
           return {
             name: data[key].name,
