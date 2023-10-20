@@ -9,9 +9,10 @@ import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import API from '../../../../axios';
-import { Grid } from '@mui/material';
+import { Stack, Paper, Divider } from '@mui/material';
+
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -23,6 +24,14 @@ const ExpandMore = styled((props) => {
         duration: theme.transitions.duration.shortest,
     }),
 }));
+
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
 
 const RestaurantCard = ({ name, thumbnail_url, city, id }) => {
     const [expanded, setExpanded] = useState(false);
@@ -43,7 +52,7 @@ const RestaurantCard = ({ name, thumbnail_url, city, id }) => {
     }, [])
 
     return (
-        <Card sx={{ maxWidth: 345 , ":hover": { 'border': '1px solid grey' } ,"borderRadius":"7px"}}>
+        <Card sx={{ maxWidth: 345, ":hover": { 'border': '1px solid grey' }, "borderRadius": "7px" }}>
             <CardMedia
                 component="img"
                 height="194"
@@ -52,7 +61,7 @@ const RestaurantCard = ({ name, thumbnail_url, city, id }) => {
                 onClick={() => {
                     navigate(`/restaurantdetails/${id}`)
                 }}
-                sx={{"transition":"transform 0.4s", ":hover": { 'cursor': 'pointer', 'transform': 'scale(1.1)' } }}
+                sx={{ "transition": "transform 0.4s", ":hover": { 'cursor': 'pointer', 'transform': 'scale(1.1)' } }}
             />
             <CardActions disableSpacing sx={{ padding: 0 }}>
                 <CardHeader
@@ -63,27 +72,36 @@ const RestaurantCard = ({ name, thumbnail_url, city, id }) => {
                     }}
                     sx={{ ":hover": { 'cursor': 'pointer' } }}
                 />
-                <ExpandMore
-                    expand={expanded}
-                    onClick={handleExpandClick}
-                    aria-expanded={expanded}
-                    aria-label="show more"
-                >
-                    <ExpandMoreIcon />
-                </ExpandMore>
+                {
+                    cuisines.length > 0 &&
+                    <ExpandMore
+                        expand={expanded}
+                        onClick={handleExpandClick}
+                        aria-expanded={expanded}
+                        aria-label="show more"
+                    >
+                        <ExpandMoreIcon />
+                    </ExpandMore>
+                }
             </CardActions>
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                    <Typography>Cuisines:</Typography>
-                    <Grid container spacing={2}>
-                        {cuisines.map((ele, ind) => {
-                            return (
-                                <Grid item>{ele.name}</Grid>
-                            )
-                        })}
-                    </Grid>
-                </CardContent>
-            </Collapse>
+            {
+                cuisines.length > 0 &&
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <CardContent>
+                        <Typography>Cuisines:</Typography>
+                        <Stack 
+                            direction='row' 
+                            spacing={2} 
+                            divider={<Divider orientation="vertical" flexItem color='black' />}>
+                            {cuisines.map((ele, ind) => {
+                                return (
+                                    <span>{ele.name}</span>
+                                )
+                            })}
+                        </Stack>
+                    </CardContent>
+                </Collapse>
+            }
         </Card>
     );
 }

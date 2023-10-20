@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Box, InputLabel, MenuItem, FormControl, List, ListItemText, Divider, ListItem } from '@mui/material';
+import { Box, InputLabel, MenuItem, FormControl, List, ListItemText, Divider, ListItem, Typography } from '@mui/material';
 import Select from '@mui/material/Select';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/joy/Button';
@@ -153,22 +153,6 @@ const RestaurantPage = () => {
                                 <h6>City : {restdetails.city}</h6>
                                 <h6>Rating : {restdetails.ratingCount === 0 ? 'No ratings yet' : restdetails.rating}</h6>
                             </div>
-                            {/* <List sx={style} component="nav">
-                                <ListItem>
-                                    <ListItemText Primary={restdetails.sitting_capacity} />
-                                </ListItem>
-                                <Divider />
-                                <ListItem divider>
-                                    <ListItemText primary={restdetails.location_url} />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText primary={restdetails.range} />
-                                </ListItem>
-                                <Divider light />
-                                <ListItem>
-                                    <ListItemText primary={restdetails.phone} />
-                                </ListItem>
-                            </List> */}
                         </div>
                         <div className='restaurantImgHolder'>
                             <div className='imageHolderLeft'>

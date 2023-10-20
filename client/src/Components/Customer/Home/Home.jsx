@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { Card, CardHeader, CardMedia, Grid, Paper } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import { useAuth } from '../../../contexts/AuthContext'
 import './Home.css'
 import RestaurantInfo from './RestaurantInfo';
@@ -22,10 +22,9 @@ const Home = () => {
     const getAllRestaurants = async () => {
       try {
         const city = searchParams.get('city');
-        // const response = await API.post("/customer/allRestaurants", { city });
-        const response = await axios.post("http://127.0.0.1:4000/customer/allRestaurants", { city });
+        const response = await API.post("/customer/allRestaurants", { city });
+        // const response = await axios.post("http://127.0.0.1:4000/customer/allRestaurants", { city });
         const data = response.data;
-        console.log(data)
         const newRestaurants = Object.keys(data).map(key => {
           return {
             name: data[key].name,
@@ -49,12 +48,11 @@ const Home = () => {
   return (
     <div className="main">
       <div className="background">
-        {/* This is the background div */}
 
         <div className="content">
           <h2>Restaurants you may like</h2>
           <div className="restaurant_display" >
-            <Grid container columnSpacing={3}>
+            <Grid container columnSpacing={3} rowSpacing={3}>
               {restaurants.map((elem, index) => (
                 <Grid item sm={6} md={4} lg={3} key={index}>
                   <RestaurantCard key={index} name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} />
@@ -66,15 +64,15 @@ const Home = () => {
             currentUser.last_city &&
             <>
               <h2>Top Restaurants in {currentUser?.last_city}</h2>
-              <div className='restaurant_display'>
-                <Grid container columnSpacing={3}>
+              <Box className='restaurant_display'>
+                <Grid container columnSpacing={3} rowSpacing={3}>
                   {restaurants.map((elem, index) => (
                     <Grid item sm={6} md={4} lg={3} key={index}>
                       <RestaurantCard key={index} name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} />
                     </Grid>
                   ))}
                 </Grid>
-              </div>
+              </Box>
             </>
           }
         </div>
