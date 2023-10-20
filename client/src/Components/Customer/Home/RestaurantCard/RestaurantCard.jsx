@@ -43,16 +43,16 @@ const RestaurantCard = ({ name, thumbnail_url, city, id }) => {
     }, [])
 
     return (
-        <Card sx={{ maxWidth: 345 }}>
+        <Card sx={{ maxWidth: 345 , ":hover": { 'border': '1px solid grey' } ,"borderRadius":"7px"}}>
             <CardMedia
                 component="img"
                 height="194"
                 image={thumbnail_url}
-                alt="Paella dish"
+                // alt="Paella dish"
                 onClick={() => {
                     navigate(`/restaurantdetails/${id}`)
                 }}
-                sx={{ ":hover": { 'cursor': 'pointer' } }}
+                sx={{"transition":"transform 0.4s", ":hover": { 'cursor': 'pointer', 'transform': 'scale(1.1)' } }}
             />
             <CardActions disableSpacing sx={{ padding: 0 }}>
                 <CardHeader

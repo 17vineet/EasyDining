@@ -1,6 +1,7 @@
 .main {
     padding: 20px;
     display: grid;
+    background: linear-gradient( to bottom, #2196f3, #c2daed);;
 }
 
 .background {

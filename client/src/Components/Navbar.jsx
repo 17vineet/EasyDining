@@ -57,7 +57,7 @@ const Navbar = () => {
 
   return (
     <div className="navbar">
-      <div className="Logo m-2" onClick={handleHomeClick}><h3>EasyDining</h3></div>
+      <div className="Logo" onClick={handleHomeClick}><h3>EasyDining</h3></div>
       <div className="search">
         {
           currentUser?.userType === 'customer' &&

@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import StarIcon from '@mui/icons-material/Star';
 import API from '../../axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 const labels = {
   1: 'Useless',
@@ -21,10 +22,11 @@ export default function Ratings({rid}) {
   const [value, setValue] = React.useState(2);
   const [hover, setHover] = React.useState(-1);
   const navigate = useNavigate() ; 
+  const {currentUser} = useAuth() ; 
   const submitReview = async () => {
     const resp=await API.post("/restaurant/addRating",{rid,rating:value})
     alert(resp.data.message) ;
-    navigate('/home') ; 
+    navigate(`/home?city=${currentUser.last_city}`) ; 
   }
 
   return (

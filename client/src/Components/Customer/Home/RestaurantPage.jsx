@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Box, InputLabel, MenuItem, FormControl } from '@mui/material';
+import { Box, InputLabel, MenuItem, FormControl, List, ListItemText, Divider, ListItem } from '@mui/material';
 import Select from '@mui/material/Select';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/joy/Button';
-import TakeOrderModal from '../../Business/Home/TakeOrderModal/TakeOrderModal' ;
+import TakeOrderModal from '../../Business/Home/TakeOrderModal/TakeOrderModal';
 import ViewOrderModal from '../../Business/Home/ViewOrderModal/ViewOrderModal';
 import Menu from '../Menu/Menu'
 import './RestaurantPage.css'
@@ -23,10 +23,10 @@ const RestaurantPage = () => {
     const [pax, setPax] = useState('');
     const [checking, setChecking] = useState(false);
     const axiosPrivate = useAxiosPrivate();
-    const [hasReserved,setHasReserved]=useState(false);
-    const [isDined,setIsDined]=useState(false);
-    const [takeOrderModal,setTakeOrderModal]=useState(false);
-    const [viewOrderModal,setViewOrderModal]=useState(false);
+    const [hasReserved, setHasReserved] = useState(false);
+    const [isDined, setIsDined] = useState(false);
+    const [takeOrderModal, setTakeOrderModal] = useState(false);
+    const [viewOrderModal, setViewOrderModal] = useState(false);
     const [restaurantImgModel, setrestaurantImgModel] = useState({
         open: false,
         index: undefined
@@ -58,11 +58,11 @@ const RestaurantPage = () => {
     const fetchData = async () => {
         const details = await API.post('/restaurant/restaurantInfo', { rid })
         const resp = await API.post('/restaurant/getRestaurantMenu', { rid })
-        const resp2 = await API.post('/customer/checkDining', {phone: currentUser.phone, rid})
-        const resp3 = await API.post('/customer/checkWaiting', {phone: currentUser.phone, rid})
+        const resp2 = await API.post('/customer/checkDining', { phone: currentUser.phone, rid })
+        const resp3 = await API.post('/customer/checkWaiting', { phone: currentUser.phone, rid })
 
-        setIsDined(resp2.data.dining) ;
-        setHasReserved(resp2.data.dining || resp3.data.waiting) ;
+        setIsDined(resp2.data.dining);
+        setHasReserved(resp2.data.dining || resp3.data.waiting);
         setDetails(details.data)
         setImg_urls(details.data.images_urls)
         setMenu(resp.data)
@@ -90,30 +90,37 @@ const RestaurantPage = () => {
     const handlePaxChange = (event) => {
         setPax(event.target.value);
     };
-    
+
     const handleReserve = async () => {
         const resp = await axiosPrivate.post('/customer/insertWaitingList', { rid, name: currentUser.name, email: currentUser.email, phone: currentUser.phone, pax: pax })
         alert(resp.data.message)
-        setHasReserved(true) ;
+        setHasReserved(true);
     }
-    
-    const placeOrder=async()=>{
+
+    const placeOrder = async () => {
         setTakeOrderModal(true);
-        if(hasReserved){
+        if (hasReserved) {
             setIsDined(true);
         }
 
     }
-    const viewOrder=()=>{
+    const viewOrder = () => {
         setViewOrderModal(true);
     }
-    
-    const closeTakeOrderModal=(newstate)=>{
+
+    const closeTakeOrderModal = (newstate) => {
         setTakeOrderModal(newstate);
     }
-    const closeViewOrderModal=(newstate)=>{
+    const closeViewOrderModal = (newstate) => {
         setViewOrderModal(newstate)
     }
+
+    const style = {
+        width: '100%',
+        maxWidth: 360,
+        bgcolor: 'background.paper',
+    };
+
     return (
         <>
 
@@ -122,27 +129,46 @@ const RestaurantPage = () => {
                 restaurantImgModel.open && <RestaurantImageModel updateImageModel={updateImageModel} img_urls={img_urls} imgmodel={restaurantImgModel} />
             }
             {
-                takeOrderModal && <TakeOrderModal phone={currentUser.phone} closeTakeOrderModal={closeTakeOrderModal} id={rid}/>
+                takeOrderModal && <TakeOrderModal phone={currentUser.phone} closeTakeOrderModal={closeTakeOrderModal} id={rid} />
             }
             {
-                viewOrderModal && <ViewOrderModal phone={currentUser.phone} closeViewOrderModal={closeViewOrderModal} id={rid}/>
+                viewOrderModal && <ViewOrderModal phone={currentUser.phone} closeViewOrderModal={closeViewOrderModal} id={rid} />
             }
             <div>
                 <div className="main">
                     <div className="background">
-                        <div className="content1">
-                            <div className="content1_left">
-                                <div className="thumbnail_pic">
+                        <div className="customer_content1">
+                            <div className="customer_content1_left">
+                                <div className="customer_thumbnail_pic ">
                                     <img src={restdetails.thumbnail_url} className="thumbnail_img" />
                                     <div className="thumbnail_img">Black</div>
                                 </div>
                             </div>
-                            <div className="content1_right">
+                            <div className="customer_content1_right">
                                 <h2>{restdetails.name}</h2>
-                                <h6>{restdetails.sitting_capacity}</h6>
-                                <h6>{restdetails.location_url}</h6>
-                                <h6>{restdetails.range}</h6>
+                                <h6>Sitting Capacity : {restdetails.sitting_capacity}</h6>
+                                <h6>Location : {restdetails.location_url}</h6>
+                                <h6>Price Range : {restdetails.range}</h6>
+                                <h6>Contact : {restdetails.phone}</h6>
+                                <h6>City : {restdetails.city}</h6>
+                                <h6>Rating : {restdetails.ratingCount === 0 ? 'No ratings yet' : restdetails.rating}</h6>
                             </div>
+                            {/* <List sx={style} component="nav">
+                                <ListItem>
+                                    <ListItemText Primary={restdetails.sitting_capacity} />
+                                </ListItem>
+                                <Divider />
+                                <ListItem divider>
+                                    <ListItemText primary={restdetails.location_url} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary={restdetails.range} />
+                                </ListItem>
+                                <Divider light />
+                                <ListItem>
+                                    <ListItemText primary={restdetails.phone} />
+                                </ListItem>
+                            </List> */}
                         </div>
                         <div className='restaurantImgHolder'>
                             <div className='imageHolderLeft'>
@@ -163,7 +189,7 @@ const RestaurantPage = () => {
 
                             </div>
                         </div>
-                        {!hasReserved  && <div className="content2">
+                        {!hasReserved && <div className="content2">
                             <Box sx={{ minWidth: 120 }}>
                                 <FormControl>
                                     <InputLabel id="demo-simple-select-label">Pax</InputLabel>
@@ -193,11 +219,11 @@ const RestaurantPage = () => {
                                     alert(resp.data.message)
                                 }} className='btn btn-primary m-2'>Cancel Reservation</button>
                             </div>
-                        </div> }
+                        </div>}
                         <div>
                             <button onClick={HandleViewMenu} className='btn btn-primary m-2'>View Menu</button>
                         </div>
-                        {isDined && 
+                        {isDined &&
                             <div>
                                 <button onClick={placeOrder}>Place Order</button>
                                 <button onClick={viewOrder}>View Order</button>

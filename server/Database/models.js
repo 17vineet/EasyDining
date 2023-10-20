@@ -45,7 +45,10 @@ const restaurantSchema = new Schema({
         type: String
     },
     rating: {
-        type: Array
+        type: Number
+    },
+    ratingCount: {
+        type: Number
     }
 });
 

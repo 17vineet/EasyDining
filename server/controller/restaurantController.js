@@ -12,7 +12,7 @@ function containsOnlyNumbers(inputStr) {
 export const signUpRestaurant = async (req, res) => {
     console.log(req.body)
     try {
-        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] } });
+        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating':0 , 'ratingCount':0});
         var result = await data.save();
     }
     catch (e) {
@@ -30,27 +30,27 @@ export const signUpRestaurant = async (req, res) => {
             return
         }
     }
-    
+
     const data1 = new WaitingList({ restaurant: result._id });
     const data2 = new DiningList({ restaurant: result._id });
     const data3 = new Menu({ restaurant: result._id })
     const data4 = new Order({ 'restaurant': result._id, 'customers': [] })
-    
+
     await data1.save();
     await data2.save();
     await data3.save();
     await data4.save();
-    
+
     delete result._doc.password;
     delete result._doc.refresh_token;
-    
+
     // creating JWT
     const accessToken = jwt.sign({ ...result._doc, userType: 'restaurant' }, 'test', { expiresIn: '30s' });
     const refreshToken = jwt.sign({ ...result._doc, userType: 'restaurant' }, 'test', { expiresIn: '1d' });
-    
+
     // saving the refreshToken with the current user in DB
     await Restaurant.findByIdAndUpdate(result._id, { ...result._doc, refresh_token: refreshToken }, { new: true });
-    
+
     res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     res.status(200).send({ accessToken });
 }
@@ -579,9 +579,20 @@ export const getRestaurantBills = async (req, res) => {
 export const addRating = async (req, res) => {
     const { rid, rating } = req.body;
     console.log(rid, rating)
-    const resp = await Restaurant.updateOne({ '_id': rid },
-        { $push: { 'rating': rating } })
-    if (resp.modifiedCount == 1) {
+    const resp = await Restaurant.findOne({ '_id': rid })
+    let currrating = resp.rating
+    let ratingCount = resp.ratingCount;
+
+    console.log(currrating)
+    console.log(ratingCount)
+
+    currrating = ((parseInt(currrating) * parseInt(ratingCount)) + parseInt(rating)) / parseInt(ratingCount + 1);
+    console.log(currrating)
+
+    const resp2 = await Restaurant.updateOne({ '_id': rid },
+        { $set: { 'rating': currrating, 'ratingCount': ratingCount + 1 } })
+
+    if (resp2.modifiedCount == 1) {
         res.send(JSON.stringify({ 'message': 'Rating added successfully' }))
     }
     else {
