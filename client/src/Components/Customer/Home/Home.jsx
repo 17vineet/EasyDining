@@ -22,8 +22,8 @@ const Home = () => {
     const getAllRestaurants = async () => {
       try {
         const city = searchParams.get('city');
-        const response = await API.post("/customer/allRestaurants", { city });
-        // const response = await axios.post("http://127.0.0.1:4000/customer/allRestaurants", { city });
+        // const response = await API.post("/customer/allRestaurants", { city });
+        const response = await axios.post("http://127.0.0.1:4000/customer/allRestaurants", { 'city':city });
         const data = response.data;
         const newRestaurants = Object.keys(data).map(key => {
           return {

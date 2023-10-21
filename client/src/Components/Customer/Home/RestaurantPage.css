@@ -49,53 +49,126 @@
 }
 
 .customer_content1_right {
-    /* background-color: rgb(71, 201, 201); */
     width: 50%;
     padding: 10px;
 }
 
-.content2 {
-    /* background-color: rgb(118, 199, 107); */
-    padding: 20px 10px;
+.customer_content2 {
+    margin: 10px 0px 0px 0px;
+    display: flex;
+    /* padding: 15px; */
+    gap: 15px;
+    border-radius: 5px;
 }
 
-.restaurantImgHolder {
-    display: flex;
+.customer_content2_left {
+    width: 70%;
+    background-color: aliceblue;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.menu_display{
     align-items: center;
     justify-content: center;
-    gap: 20px;
-    background-color: aqua;
+    display: flex;
+    background-color:#2196f3;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 15px;
+}
+
+.customer_content2_right {
+    width: 30%;
+    background-color: aliceblue;
+    border-radius: 5px;
+}
+
+.customer_restaurantImgHolder {
+    padding: 10px;
+    background-color: #eee;
     max-height: 300px;
-    overflow: hidden;
+    border-radius: 0px 0px 5px 5px;
 }
 
-.restaurantImgHolder img {
-    border-radius: 10px;
-    padding: 10px;
+.customer_img_holder {
+    border-radius: 5px;
+    display: flex;
+    height: 280px;
 }
 
-.imageHolderLeft {
+.customer_imageHolderLeft {
     width: 40%;
-    background-color: #cac9c9;
+    background-color: #eee;
     align-items: center;
     justify-content: center;
     display: flex;
-    padding: 10px;
+    border-radius: 5px 0px 0px 5px;
+    height: 100%;
+    /* overflow: hidden; */
 }
 
-.imageHolderRight {
+.customer_imageHolderLeft div {
+    border-radius: 5px;
+    /* background-color: aqua; */
+    /* padding: 5px; */
+    overflow: hidden;
+    max-height: 280px;
+}
+
+.customer_imageHolderRight {
     display: flex;
     width: 60%;
     flex-wrap: wrap;
     overflow: auto;
-    max-height: 400px;
+    max-height: 300px;
     justify-content: start;
     align-items: center;
+    background-color: #eee;
 }
-
-
 
 .restaurant_images:hover {
     cursor: pointer;
     opacity: 0.8;
+    box-shadow: 0 0 10px rgb(69, 64, 64);
+}
+
+.check_waiting_form {
+    display: flex;
+}
+
+.Cuisine_container {
+    border: 2px solid black;
+    margin: 5px;
+    border-radius: 10px;
+}
+
+.Cuisine_container h2 {
+    background-color: rgb(121, 173, 193);
+    border-radius: 8px 8px 0px 0px;
+    padding-left: 5px;
+}
+
+.item_container {
+    background-color: rgb(245, 232, 216);
+    display: flex;
+    margin: 5px;
+}
+
+.item_container div {
+    width: 33%;
+    padding-left: 5px;
+}
+
+.item_container_title {
+    display: flex;
+    background-color: rgb(205, 242, 255);
+    margin: 5px;
+    padding-left: 5px;
+}
+
+.item_container_title div {
+    width: 33%;
+    /* padding-left: 5px; */
 }

@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+
 .Logo{
     width: auto;
     height: fit-content;
     overflow: hidden;
+    font-family: 'Satisfy';
 }
 
 .Logo:hover{
@@ -21,8 +24,9 @@
     overflow: hidden;
 }
 
-.Logo h3{
+.Logo h2{
     color: white;
+    font-weight: bold;
 }
 
 .search{

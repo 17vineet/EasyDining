@@ -17,8 +17,7 @@ const RestaurantPage = () => {
     const { rid } = useParams();
     const { currentUser } = useAuth();
     const [restdetails, setDetails] = useState({})
-    const [restmenu, setMenu] = useState({})
-    const [menuModel, setMenuModel] = useState(false);
+    const [restmenu, setMenu] = useState([])
     const [img_urls, setImg_urls] = useState([])
     const [pax, setPax] = useState('');
     const [checking, setChecking] = useState(false);
@@ -65,15 +64,9 @@ const RestaurantPage = () => {
         setHasReserved(resp2.data.dining || resp3.data.waiting);
         setDetails(details.data)
         setImg_urls(details.data.images_urls)
-        setMenu(resp.data)
+        setMenu(resp.data.menu)
     }
 
-    const HandleViewMenu = () => {
-        setMenuModel(true);
-    }
-    const updateMenuModel = (newstate) => {
-        setMenuModel(newstate)
-    }
     const openRestaurantImageModel = (ind) => {
         setrestaurantImgModel({
             open: true,
@@ -92,9 +85,14 @@ const RestaurantPage = () => {
     };
 
     const handleReserve = async () => {
-        const resp = await axiosPrivate.post('/customer/insertWaitingList', { rid, name: currentUser.name, email: currentUser.email, phone: currentUser.phone, pax: pax })
-        alert(resp.data.message)
-        setHasReserved(true);
+        if (pax.length != 0) {
+            const resp = await axiosPrivate.post('/customer/insertWaitingList', { rid, name: currentUser.name, email: currentUser.email, phone: currentUser.phone, pax: pax })
+            alert(resp.data.message)
+            setHasReserved(true);
+        }
+        else {
+            alert('Kindly select the number of persons')
+        }
     }
 
     const placeOrder = async () => {
@@ -111,20 +109,13 @@ const RestaurantPage = () => {
     const closeTakeOrderModal = (newstate) => {
         setTakeOrderModal(newstate);
     }
+
     const closeViewOrderModal = (newstate) => {
         setViewOrderModal(newstate)
     }
 
-    const style = {
-        width: '100%',
-        maxWidth: 360,
-        bgcolor: 'background.paper',
-    };
-
     return (
         <>
-
-            {menuModel && <Menu updateMenuModel={updateMenuModel} menu={restmenu} />}
             {
                 restaurantImgModel.open && <RestaurantImageModel updateImageModel={updateImageModel} img_urls={img_urls} imgmodel={restaurantImgModel} />
             }
@@ -154,58 +145,97 @@ const RestaurantPage = () => {
                                 <h6>Rating : {restdetails.ratingCount === 0 ? 'No ratings yet' : restdetails.rating}</h6>
                             </div>
                         </div>
-                        <div className='restaurantImgHolder'>
-                            <div className='imageHolderLeft'>
-                                <img src={img_urls[0]} height={420} width={400} />
-                            </div>
-                            <div className='imageHolderRight'>
-                                {
-                                    img_urls.map((ele, index) => {
+                        {
+                            img_urls.length > 0 &&
+                            <div className='customer_restaurantImgHolder'>
+                                <div className='customer_img_holder'>
 
-                                        return (
-                                            <img key={index} src={ele} height={200} width={200} style={{ 'margin': '10px', 'borderRadius': '10px' }} onClick={() => {
-                                                openRestaurantImageModel(index)
-                                            }} className='restaurant_images' />
-                                        )
+                                    <div className='customer_imageHolderLeft'>
+                                        <div>
+                                            <img src={img_urls[0]} height={420} width={400} />
+                                        </div>
+                                    </div>
+                                    <div className='customer_imageHolderRight'>
+                                        {
+                                            img_urls.map((ele, index) => {
 
-                                    })
-                                }
+                                                return (
+                                                    <img key={index} src={ele} height={200} width={200} style={{ 'margin': '10px', 'borderRadius': '10px' }} onClick={() => {
+                                                        openRestaurantImageModel(index)
+                                                    }} className='restaurant_images' />
+                                                )
 
-                            </div>
-                        </div>
-                        {!hasReserved && <div className="content2">
-                            <Box sx={{ minWidth: 120 }}>
-                                <FormControl>
-                                    <InputLabel id="demo-simple-select-label">Pax</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        value={pax}
-                                        label="Pax"
-                                        onChange={handlePaxChange}
-                                    >
-                                        {passengers.map((ele, ind) => {
-                                            return (<MenuItem value={ind + 1} key={ind} >{ele}</MenuItem>)
-                                        })}
+                                            })
+                                        }
 
-                                    </Select>
-                                    <button onClick={handleReserve} className='btn btn-primary m-2'>Reserve Table For Free</button>
-                                </FormControl>
-                                <div>
-                                    <Button loading={checking} onClick={handleCheckWaiting} loadingPosition="end" endDecorator={<SendIcon />}>
-                                        Check waiting
-                                    </Button>
+                                    </div>
                                 </div>
-                            </Box>
-                            <div>
-                                <button onClick={async () => {
-                                    const resp = await axiosPrivate.post('/customer/cancelReservation', { rid, email: currentUser.email })
-                                    alert(resp.data.message)
-                                }} className='btn btn-primary m-2'>Cancel Reservation</button>
+
                             </div>
-                        </div>}
-                        <div>
-                            <button onClick={HandleViewMenu} className='btn btn-primary m-2'>View Menu</button>
+                        }
+                        <div className='customer_content2'>
+                            <div className='customer_content2_left'>
+                                <h2 className='menu_display'>Menu Display</h2>
+                                {restmenu.map((ele, ind) => {
+                                    return (
+                                        <div className='Cuisine_container' key={ind}>
+                                            <h2>{ele.name}</h2>
+                                            <div className='item_container_title'>
+                                                <div><b>Item Name</b></div>
+                                                <div><b>Price</b></div>
+                                                <div><b>Description</b></div>
+                                            </div>
+                                            {ele.items.map((elem, index) => {
+                                                return (
+                                                    <div className='item_container'>
+                                                        <div>{elem.Name} </div>
+                                                        <div>{elem.Price}</div>
+                                                        <div>{elem.Description}</div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                            {!hasReserved && <div className="customer_content2_right">
+                                <Box sx={{ minWidth: 120 }}>
+                                    <FormControl className='check_waiting_form' style={{ margin: '10px' }}>
+                                        <InputLabel id="demo-simple-select-label">No. of Persons</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={pax}
+                                            label="Pax"
+                                            onChange={handlePaxChange}
+                                        >
+                                            {passengers.map((ele, ind) => {
+                                                return (<MenuItem value={ind + 1} key={ind} >{ele}</MenuItem>)
+                                            })}
+
+                                        </Select>
+                                        <Button onClick={handleReserve} className='btn btn-primary my-2'>Reserve Table For Free</Button>
+                                    </FormControl>
+                                    <div>
+                                        <Button className='mx-2 btn btn-primary' loading={checking} onClick={handleCheckWaiting} loadingPosition="end" endDecorator={<SendIcon />}>
+                                            Check waiting
+                                        </Button>
+                                    </div>
+
+                                </Box>
+
+                            </div>}
+                            {
+                                hasReserved && !isDined &&
+                                <div className='customer_content2_right'>
+                                    <button onClick={async () => {
+                                        const resp = await axiosPrivate.post('/customer/cancelReservation', { rid, email: currentUser.email })
+                                        alert(resp.data.message)
+                                        setHasReserved(false)
+                                        setPax('')
+                                    }} className='btn btn-primary m-2'>Cancel Reservation</button>
+                                </div>
+                            }
                         </div>
                         {isDined &&
                             <div>

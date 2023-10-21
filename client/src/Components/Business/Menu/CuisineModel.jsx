@@ -45,11 +45,16 @@ const CuisineModel = (prop) => {
     }
 
     const handleNewCuisineSave = () => {
-        let _items = items;
-        _items.push(formData)
-        setItems(_items);
-        setShowAddForm(false);
-        setFormData({ Name: '', Price: '', Description: '' })
+        if(formData.Name.length!=0 && formData.Price.length!=0){
+            let _items = items
+            _items.push(formData)
+            setItems(_items);
+            setShowAddForm(false);
+            setFormData({ Name: '', Price: '', Description: '' })
+        }
+        else{
+            alert('Enter proper Name and Price for your item');
+        }
 
     }
 
