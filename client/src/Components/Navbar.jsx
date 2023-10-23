@@ -57,32 +57,42 @@ const Navbar = () => {
 
   return (
     <div className="navbar">
-      <div className="Logo" onClick={handleHomeClick}><h2>EasyDining</h2></div>
+      <div className="Logo" onClick={handleHomeClick}><h3>EasyDining</h3></div>
       <div className="search">
         {
           currentUser?.userType === 'customer' &&
           <>
-            <Autocomplete
-              value={cityValue}
-              onChange={(event, newValue) => {
-                setCityValue(newValue);
-                handleLastCity(newValue);
-              }}
-              inputValue={inputCityValue}
-              onInputChange={(event, newInputValue) => {
-                setInputCityValue(newInputValue);
-              }}
-              options={city}
-              sx={{ width: 200 }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  placeholder="Enter City"
-                  className="no-border-on-focus" // Apply the CSS class here
-                />)
-              }
-            />
-            <button className="btn"> <SearchIcon onClick={handleSearch}> Search </SearchIcon></button>
+            <div className="city_search">
+              <Autocomplete
+                value={cityValue}
+                onChange={(event, newValue) => {
+                  setCityValue(newValue);
+                  handleLastCity(newValue);
+                }}
+                inputValue={inputCityValue}
+                onInputChange={(event, newInputValue) => {
+                  setInputCityValue(newInputValue);
+                }}
+                options={city}
+                sx={{ width: 200, border: "none" }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Enter City"
+                    className="no-border-on-focus" // Apply the CSS class here
+                  />)
+                }
+              />
+            </div>
+
+            <div className="rest_search">
+              <div>
+                <input type="text" placeholder="Search for restaurant or cuisines"/>
+              </div>
+              <div>
+                <button className=" search_btn"> <SearchIcon onClick={handleSearch} />Search </button>
+              </div>
+            </div>
           </>
         }
       </div>

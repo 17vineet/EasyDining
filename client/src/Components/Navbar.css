@@ -1,10 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
-
 .Logo{
     width: auto;
     height: fit-content;
     overflow: hidden;
-    font-family: 'Satisfy';
 }
 
 .Logo:hover{
@@ -16,7 +13,8 @@
     width: 100vw;
     max-width: 100vw;
     height: 80px;
-    background-color: #2196f3;
+    /* background-color: #2196f3; */
+    background-color: #fff;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -24,14 +22,46 @@
     overflow: hidden;
 }
 
-.Logo h2{
-    color: white;
-    font-weight: bold;
+.Logo h3{
+    /* color: white; */
+    color: rgb(254,70,19);
 }
 
 .search{
     display: flex;
     align-items: center;
-    background-color:aliceblue;
+    /* background-color:aliceblue; */
+    gap:20px;
+    padding: 0 2px;
     border-radius: 7px;
+}
+.search_btn{
+    background: linear-gradient(to right, #ff8000, #fa4616);
+    color: white;
+    height: 100%;
+    border: none;
+    outline: none;
+    padding: 15px;
+}
+.search_btn:hover{
+    cursor: pointer;
+    background: linear-gradient(to right, #ff8000, #fa4616);
+
+    
+}
+.city_search{
+    background-color: white;
+    border-radius: 5px;
+}
+.rest_search{
+    display: flex;
+
+}
+.rest_search>div>input{
+    width: 300px;
+    padding: 16px;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    border: 1px solid lightgray;
+
 }

@@ -7,7 +7,7 @@ import RestaurantInfo from './RestaurantInfo';
 import API from '../../../axios';
 import RestaurantCard from './RestaurantCard/RestaurantCard';
 import axios from 'axios';
-
+import Offers from './Offers';
 const Home = () => {
 
   const [restaurants, setRestaurants] = useState([]);
@@ -47,6 +47,7 @@ const Home = () => {
 
   return (
     <div className="main">
+          <Offers/>
       <div className="background">
 
         <div className="content">

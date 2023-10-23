@@ -1,14 +1,14 @@
 .main {
-    padding: 20px;
+    /* padding: 20px; */
     display: grid;
-    /* background: linear-gradient( to bottom, #c2daed, #2196f3);; */
-    background-color: rgb(222, 217, 217);
+    background-color: #eee;
+    /* background: linear-gradient( to bottom, #2196f3, #c2daed);; */
 }
 
 .background {
     min-height: inherit;
     border-radius: 5px;
-    padding: 10px 10px 10px 10px;
+    padding: 10px 50px;
     display: inline-block;
     height: 100%;
 }

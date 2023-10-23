@@ -237,11 +237,11 @@ export const getVisitedRestaurants = async (req, res) => {
     res.send(JSON.stringify(resp))
 }
 
-export const setLastCity = async(req,res)=>{
-    const {_id,city} = req.body;
-    
-    const data = await Customer.findOneAndUpdate({'_id':_id},
-    {'last_city':city}, {new: true}) ;
+export const setLastCity = async (req, res) => {
+    const { _id, city } = req.body;
+
+    const data = await Customer.findOneAndUpdate({ '_id': _id },
+        { 'last_city': city }, { new: true });
 
     const accessToken = jwt.sign({ ...data._doc, userType: 'customer' }, 'test', { expiresIn: '30s' });
     const refreshToken = jwt.sign({ ...data._doc, userType: 'customer' }, 'test', { expiresIn: '1d' });
@@ -250,5 +250,12 @@ export const setLastCity = async(req,res)=>{
 
     res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     res.status(200).send({ accessToken });
-    
+
+}
+
+export const getCustomerSearchList = async (req,res) => {
+    const {city} = req.body;
+    let searchList = []
+    const resp1 = Restaurant.find({'city':city})
+    console.log(resp1)
 }

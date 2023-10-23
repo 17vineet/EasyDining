@@ -1,7 +1,7 @@
 .main {
     /* background-color: rgb(191, 115, 248); */
     min-height: 100vh;
-    padding: 10px;
+    /* padding: 10px; */
     /* overflow:scroll; */
     display: grid;
     height: auto
