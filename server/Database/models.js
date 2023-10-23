@@ -49,6 +49,9 @@ const restaurantSchema = new Schema({
     },
     ratingCount: {
         type: Number
+    },
+    accepting: {
+        type: Boolean
     }
 });
 
@@ -154,6 +157,13 @@ const OrderSchema = new Schema({
         type: Array
     }
 })
+
+const ItemSchema = new Schema({
+    'name':{
+        type:String
+    }
+})
+
 
 export const Restaurant = model('restaurant', restaurantSchema);
 

@@ -47,9 +47,8 @@ const Home = () => {
 
   return (
     <div className="main">
-          <Offers/>
+      <Offers/>
       <div className="background">
-
         <div className="content">
           <h2>Restaurants you may like</h2>
           <div className="restaurant_display" >
@@ -77,6 +76,32 @@ const Home = () => {
             </>
           }
         </div>
+        <div>
+        <div>
+          <h4 className='ms-3'> Why Book a Restaurant With EazyDiner</h4>
+          <div className='benefits_holder'>
+            <div className='benefits_card'>
+              <div><img src="./discount.svg" height={40}/></div>
+              <div><h5>Deals</h5>
+              Get deals upto 50% with every meal
+              </div>
+            </div>
+            <div className='benefits_card'>
+              <div><img src="./quick.svg" height={40}/></div>
+              <div><h5>Quick Booking</h5>
+              Instant booking in 18 seconds
+              </div>
+            </div>
+            <div className='benefits_card'>
+              <div><img src="./freecancellation.svg" height={35}/></div>
+              <div><h5>Free Cancellation</h5>
+              Change in plan? we got you covered
+              </div>
+            </div>
+          </div>
+        </div>
+
+          </div>
       </div>
     </div>
   )

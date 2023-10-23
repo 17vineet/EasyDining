@@ -10,12 +10,13 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import './RestaurantProfile.css'
 import { useNavigate } from "react-router-dom";
 // import AddIcon from "@material-ui/icons/Add";
-import { TextField, Fab } from '@mui/material';
+import { FormControlLabel, Switch, FormGroup } from '@mui/material';
 import NameModel from './NameModel';
 import TableModal from './TableModal';
 import API from '../../../axios';
 import Loading from '../../Loading/Loading';
 import VisitedCustomer from './VisitedCustomer';
+import jwtDecode from 'jwt-decode';
 
 
 const RestaurantProfile = () => {
@@ -23,11 +24,12 @@ const RestaurantProfile = () => {
 
   const navigate = useNavigate();
   const { currentUser, setCurrentUser, setAuth } = useAuth();
-  const [models, setModel] = useState({ name: false, email: false, phone: false ,table:false});
+  const [models, setModel] = useState({ name: false, email: false, phone: false, table: false });
   const [img_urls, setImg_urls] = useState([])
   const [thumbnail, setThumbnail] = useState(currentUser.thumbnail_url)
   const [selectedFile, setSelectedFile] = useState(null)
   const [uploadingImages, setUploadingImages] = useState({ spinner: false, tick: false });
+  const [accepting, setAccepting] = useState(false) ;
 
   const [loading, setLoading] = useState(false)
 
@@ -44,6 +46,7 @@ const RestaurantProfile = () => {
   });
   useEffect(() => {
     setImg_urls(currentUser.images_urls)
+    setAccepting(currentUser.accepting)
   }, []);
 
   const handleImgChange = (ind) => {
@@ -81,7 +84,7 @@ const RestaurantProfile = () => {
 
   };
 
- 
+
   const deleteRestaurantImage = async (url, index) => {
     const ans = confirm("Are you sure you want to delete the Image");
     if (ans) {
@@ -135,13 +138,27 @@ const RestaurantProfile = () => {
     setCurrentUser({ ...currentUser, thumbnail_url: result.data.img_urls[0] })
   };
 
+  const handleAccept = async (e)=> {
+      let password=prompt("Enter your password");
+      const resp = await API.post('/restaurant/handleAccept',{rid:currentUser._id,password:password,accepting: e.target.checked}) ;
+      if(resp.data.message){
+        alert("Incorrect password")
+      }
+      else{
+        const decodedToken = jwtDecode(resp.data.accessToken);
+        setCurrentUser(decodedToken);
+        setAuth(resp.data.accessToken) ;
+        setAccepting(!accepting) ;
+      }
+  }
+
   return (
     <>
       {loading && <Loading />}
       {models.name && <NameModel closeNameModel={(newstate) => setModel({ ...models, name: newstate })} />}
       {models.phone && <PhoneEmailModel editField="phone" closePEmodel={(newstate) => setModel({ ...models, phone: newstate })} />}
       {models.email && <PhoneEmailModel editField="email" closePEmodel={(newstate) => setModel({ ...models, email: newstate })} />}
-      {models.table && <TableModal closeTableModel={(newstate)=>setModel({...models,table:newstate})}/>}
+      {models.table && <TableModal closeTableModel={(newstate) => setModel({ ...models, table: newstate })} />}
 
       <div className="backdrop">
         <div className="RestaurantDetailsHolder">
@@ -160,7 +177,11 @@ const RestaurantProfile = () => {
           <div className="RestaurantDetails">
             <ul >
               <li>{currentUser.name} &nbsp;&nbsp;
-                <EditIcon onClick={() => setModel({ ...models, name: true })} style={{ fontSize: '15px' }} htmlColor='red' />
+                <EditIcon onClick={() => setModel({ ...models, name: true })} style={{ fontSize: '15px' }} htmlColor='red' /> 
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <FormGroup>
+                  <FormControlLabel control={<Switch checked={accepting} onChange={handleAccept} />} />
+                </FormGroup>
               </li>
               <li>
                 <LocalPhoneIcon /> &nbsp;&nbsp;{currentUser.phone} &nbsp;&nbsp;
@@ -172,9 +193,9 @@ const RestaurantProfile = () => {
               </li>
             </ul>
             <button className='btn btn-danger m-2' onClick={handelDeleteAccount}>Delete Account</button>
-            <button className='btn btn-primary m-2' onClick={()=>{
-                  setModel({...models,table:true})
-                }}>Update Table</button>
+            <button className='btn btn-primary m-2' onClick={() => {
+              setModel({ ...models, table: true })
+            }}>Update Table</button>
           </div>
         </div>
         <div className="content2">
@@ -202,7 +223,7 @@ const RestaurantProfile = () => {
                   })
                 }
               </div>
-              
+
               <div>
                 <Button component="label" className='m-2' variant="contained" startIcon={<CloudUploadIcon />}>
                   Upload file
@@ -214,7 +235,7 @@ const RestaurantProfile = () => {
             </div>
           </div>
         </div>
-        <VisitedCustomer/>
+        <VisitedCustomer />
       </div>
     </>
   )

@@ -13,7 +13,8 @@ import {
     checkDining,
     checkWaiting,
     getVisitedRestaurants,
-    setLastCity
+    setLastCity,
+    getCustomerSearchList
 } from '../controller/customerController.js';
 
 const router = express.Router();
@@ -30,5 +31,6 @@ router.post('/checkDining',checkDining);
 router.post('/checkWaiting',checkWaiting);
 router.post('/getVisited',getVisitedRestaurants);
 router.post('/lastCity',setLastCity);
+router.post('/searchBarItems',getCustomerSearchList);
 
 export default router;

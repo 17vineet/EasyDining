@@ -80,3 +80,21 @@
 .restaurant_card:hover{
     cursor: pointer;
 }
+.benefits_holder{
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    gap: 30px;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.benefits_card{
+    width: 350px;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding:25px 15px;
+    border-radius: 5px;
+    gap: 15px;
+    margin-bottom: 100px;
+}

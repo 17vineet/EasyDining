@@ -12,7 +12,7 @@ function containsOnlyNumbers(inputStr) {
 export const signUpRestaurant = async (req, res) => {
     console.log(req.body)
     try {
-        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating':0 , 'ratingCount':0});
+        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating':0 , 'ratingCount':0, 'accepting': false});
         var result = await data.save();
     }
     catch (e) {
@@ -484,6 +484,8 @@ export const addItem = async (req, res) => {
     const response = await Menu.findOneAndUpdate({ 'restaurant': rid, "menu.name": cuisineName },
         { $push: { "menu.$.items": { "itemName": itemName, "Price": itemPrice, "itemDesc": itemDesc } } },
         { new: true })
+    
+    
 }
 
 export const getItems = async (req, res) => {
@@ -597,5 +599,28 @@ export const addRating = async (req, res) => {
     }
     else {
         res.send(JSON.stringify({ 'message': 'Rating Failed' }))
+    }
+}
+
+export const changeAccepting = async (req, res)=> {
+    const {rid, accepting, password} = req.body ;
+    let resp = await Restaurant.findOneAndUpdate({'_id': rid, 'password': password}, {$set: { 'accepting': accepting } }, {new: true})
+    if(resp){
+        delete resp._doc.password;
+        delete resp._doc.refresh_token;
+    
+        // creating JWT
+        const accessToken = jwt.sign({ ...resp._doc, userType: 'restaurant' }, 'test', { expiresIn: '30s' });
+        const refreshToken = jwt.sign({ ...resp._doc, userType: 'restaurant' }, 'test', { expiresIn: '1d' });
+    
+        // saving the refreshToken with the current user in DB
+        await Restaurant.findByIdAndUpdate(resp._id, { ...resp._doc, refresh_token: refreshToken }, { new: true });
+    
+        res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+        res.status(200).send({ accessToken });
+        // res.send(JSON.stringify(resp));
+    }
+    else{
+        res.send({'message': 'Invalid credentials'}) ;
     }
 }

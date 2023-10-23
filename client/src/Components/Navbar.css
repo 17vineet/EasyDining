@@ -1,14 +1,14 @@
-.Logo{
+.Logo {
     width: auto;
     height: fit-content;
     overflow: hidden;
 }
 
-.Logo:hover{
+.Logo:hover {
     cursor: pointer;
 }
 
-.navbar{
+.navbar {
     box-sizing: border-box;
     width: 100vw;
     max-width: 100vw;
@@ -22,20 +22,21 @@
     overflow: hidden;
 }
 
-.Logo h3{
+.Logo h3 {
     /* color: white; */
-    color: rgb(254,70,19);
+    color: rgb(254, 70, 19);
 }
 
-.search{
+.search {
     display: flex;
     align-items: center;
     /* background-color:aliceblue; */
-    gap:20px;
+    gap: 20px;
     padding: 0 2px;
     border-radius: 7px;
 }
-.search_btn{
+
+.search_btn {
     background: linear-gradient(to right, #ff8000, #fa4616);
     color: white;
     height: 100%;
@@ -43,25 +44,59 @@
     outline: none;
     padding: 15px;
 }
-.search_btn:hover{
+
+.search_btn:hover {
     cursor: pointer;
     background: linear-gradient(to right, #ff8000, #fa4616);
 
-    
+
 }
-.city_search{
+
+.city_search {
     background-color: white;
     border-radius: 5px;
 }
-.rest_search{
+
+.rest_search {
     display: flex;
 
 }
-.rest_search>div>input{
+
+.rest_search>div>input {
     width: 300px;
     padding: 16px;
     border-radius: 5px 0 0 5px;
     outline: none;
     border: 1px solid lightgray;
 
+}
+
+#items {
+    list-style: none;
+    /* Remove the default list style */
+    background-color: #fff;
+    /* Set the background color */
+    border: 1px solid #ccc;
+    /* Add a border */
+    position: absolute;
+    /* Position it absolutely for proper display */
+    width: 200px;
+    /* Set a width */
+    margin: 0;
+    padding: 0;
+}
+
+#items option {
+    padding: 5px;
+    cursor: pointer;
+}
+
+#items option:hover {
+    background-color: #fa4616;
+}
+
+/* Style the selected option */
+#items option:checked {
+    background-color: #007bff;
+    color: #fff;
 }

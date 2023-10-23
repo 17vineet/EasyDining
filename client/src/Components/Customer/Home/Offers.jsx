@@ -10,7 +10,7 @@ const Offers = () => {
     </div>
     <div className="carousel-inner">
       <div className="carousel-item active">
-        <img src="../../../." className="d-block w-100" alt="..."/>
+        <img src="./c1.jpeg" className="d-block w-100" alt="..."/>
       </div>
       <div className="carousel-item">
         <img src="./c2.png" className="d-block w-100" alt="..."/>

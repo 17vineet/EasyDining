@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import { AppBar, Box, Toolbar, Typography, Button, IconButton } from "@mui/material"
 import { useNavigate } from "react-router-dom";
 import Profile from './Profile'
@@ -7,7 +7,7 @@ import { useAuth } from "../contexts/AuthContext";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import SearchIcon from '@mui/icons-material/Search';
-import API from '../axios' ;
+import API from '../axios';
 import jwtDecode from "jwt-decode";
 
 
@@ -16,12 +16,23 @@ const Navbar = () => {
   const { currentUser, setCurrentUser, setAuth } = useAuth();
   const [cityValue, setCityValue] = React.useState(currentUser?.last_city);
   const [inputCityValue, setInputCityValue] = React.useState(currentUser?.last_city)
+  const [input, setInput] = useState("");
+  const [searchItems, setSearchItems] = useState([]);
 
-  useEffect(()=>{
-    if(currentUser){
+  useEffect(() => {
+
+    const fetchSearchItems = async () => {
+      const resp = await API.post("/customer/searchBarItems", { city: cityValue })
+      console.log(resp.data);
+      setSearchItems(resp.data.list);
+    }
+
+    if (currentUser) {
       setCityValue(currentUser?.last_city)
       setInputCityValue(currentUser?.last_city)
+      fetchSearchItems();
     }
+
   }, [currentUser])
 
 
@@ -43,18 +54,26 @@ const Navbar = () => {
     }
   }
 
-  const handleSearch = () => {
-    navigate(`/home?city=${cityValue}`);
+  const handleSearch = (ele) => {
+    console.log("Hii")
+    if (ele.type === 'Restaurant') {
+      navigate(`/restaurantDetails/${ele.id}`)
+    }
   }
 
-  const handleLastCity = async(city)=>{
-    const resp = await API.post("/customer/lastCity",{'_id':currentUser._id,'city':city});
+  const handleLastCity = async (city) => {
+    const resp = await API.post("/customer/lastCity", { '_id': currentUser._id, 'city': city });
+    const resp2 = await API.post("/customer/searchBarItems", { city: cityValue })
     const decodedToken = jwtDecode(resp.data.accessToken);
+    setSearchItems(resp2.data.list);
     setCurrentUser(decodedToken);
-    setAuth(resp.data.accessToken) ;
+    setAuth(resp.data.accessToken);
     navigate(`/home?city=${city}`);
   }
 
+  const handleChange = async (e) => {
+    setInput(e.target.value);
+  }
   return (
     <div className="navbar">
       <div className="Logo" onClick={handleHomeClick}><h3>EasyDining</h3></div>
@@ -87,10 +106,29 @@ const Navbar = () => {
 
             <div className="rest_search">
               <div>
-                <input type="text" placeholder="Search for restaurant or cuisines"/>
+                <input type="text" list="items" id="searchItem" value={input} onChange={handleChange} placeholder="Search for restaurant or cuisines" />
+                <datalist id="items">
+
+                  {
+
+                    searchItems.map((ele, ind) => {
+                      return (
+                        <div onClick={() => {
+                          console.log("Hello")
+                          handleSearch(ele)
+                        }}>
+                          <option value={`${ele.name} (${ele.type})`} onClick={() => {
+                            console.log("Hello")
+                            handleSearch(ele)
+                          }} />
+                        </div>
+                      )
+                    })
+                  }
+                </datalist>
               </div>
               <div>
-                <button className=" search_btn"> <SearchIcon onClick={handleSearch} />Search </button>
+                <button className=" search_btn" onClick={handleSearch}> <SearchIcon />Search </button>
               </div>
             </div>
           </>

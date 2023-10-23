@@ -33,7 +33,8 @@ import {
     viewOrder,
     viewBill,
     getRestaurantBills,
-    addRating
+    addRating,
+    changeAccepting
 } from '../controller/restaurantController.js';
 
 const router = express.Router();
@@ -72,6 +73,7 @@ router.post('/generateBill',generateBill);
 router.post('/viewBill',viewBill);
 router.post('/getBills',getRestaurantBills);
 router.post('/addRating',addRating);
+router.post('/handleAccept', changeAccepting)
 
 
 export default router;

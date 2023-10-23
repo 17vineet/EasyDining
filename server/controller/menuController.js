@@ -37,7 +37,8 @@ export const addItem = async (req, res) => {
         }
         else
         {
-            res.send("Cuisine not found")
+            const data = new Cuisine({'name':cuisineName, 'items':[{'itemName':item}]})
+            res.send("Added new cuisine to database")
         }
     }
     else

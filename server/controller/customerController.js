@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-import { Customer, WaitingList, Restaurant, DiningList, Bill } from "../Database/models.js";
+import { Customer, WaitingList, Restaurant, DiningList, Bill, Cuisine } from "../Database/models.js";
 
 
 function containsOnlyNumbers(inputStr) {
@@ -253,9 +253,24 @@ export const setLastCity = async (req, res) => {
 
 }
 
-export const getCustomerSearchList = async (req,res) => {
-    const {city} = req.body;
+export const getCustomerSearchList = async (req, res) => {
+    const { city } = req.body;
+    console.log(city)
     let searchList = []
-    const resp1 = Restaurant.find({'city':city})
-    console.log(resp1)
+    const resp1 = await Restaurant.find({ 'city': city })
+
+    for (var r of resp1) {
+        searchList.push({ 'name': r.name, 'type': 'Restaurant', 'id':r._id })
+    }
+
+    const resp2 = await Cuisine.find({})
+    for (var c of resp2) {
+        searchList.push({ 'name': c.name, 'type': 'Cuisine' })
+        for (var i of c.items) {
+            searchList.push({ 'name': i.itemName, 'type': 'Dish' })
+        }
+    }
+
+    console.log(searchList)
+    res.send(JSON.stringify({'list':searchList}))
 }
