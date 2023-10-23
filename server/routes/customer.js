@@ -14,7 +14,8 @@ import {
     checkWaiting,
     getVisitedRestaurants,
     setLastCity,
-    getCustomerSearchList
+    getCustomerSearchList,
+    getAllMenu
 } from '../controller/customerController.js';
 
 const router = express.Router();
@@ -32,5 +33,6 @@ router.post('/checkWaiting',checkWaiting);
 router.post('/getVisited',getVisitedRestaurants);
 router.post('/lastCity',setLastCity);
 router.post('/searchBarItems',getCustomerSearchList);
+router.post('/allMenu',getAllMenu);
 
 export default router;

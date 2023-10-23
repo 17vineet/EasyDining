@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-import { Customer, WaitingList, Restaurant, DiningList, Bill, Cuisine } from "../Database/models.js";
+import { Customer, WaitingList, Restaurant, DiningList, Bill, Cuisine, Menu } from "../Database/models.js";
 
 
 function containsOnlyNumbers(inputStr) {
@@ -75,18 +75,9 @@ export const signUpCustomer = async (req, res) => {
 }
 
 export const getAllRestaurants = async (req, res) => {
-    const { city } = req.body;
-    console.log(city);
-    let data = null;
-    if (city != "null") {
-        data = await Restaurant.find({ 'city': city });
-        console.log(data)
-    }
-    else {
-        data = await Restaurant.find({});
-    }
-    const result = JSON.stringify(data);
-    res.send(result);
+    const response = await Restaurant.find({})
+    console.log(response)
+    res.send(response)
 }
 
 export const insertWaitingList = async (req, res) => {
@@ -260,7 +251,7 @@ export const getCustomerSearchList = async (req, res) => {
     const resp1 = await Restaurant.find({ 'city': city })
 
     for (var r of resp1) {
-        searchList.push({ 'name': r.name, 'type': 'Restaurant', 'id':r._id })
+        searchList.push({ 'name': r.name, 'type': 'Restaurant', 'id': r._id })
     }
 
     const resp2 = await Cuisine.find({})
@@ -272,5 +263,10 @@ export const getCustomerSearchList = async (req, res) => {
     }
 
     console.log(searchList)
-    res.send(JSON.stringify({'list':searchList}))
+    res.send(JSON.stringify({ 'list': searchList }))
+}
+
+export const getAllMenu = async(req,res)=>{
+    const resp = await Menu.find({})
+    res.send(JSON.stringify(resp))
 }
