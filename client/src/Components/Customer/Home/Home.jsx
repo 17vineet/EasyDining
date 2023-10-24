@@ -24,6 +24,8 @@ const Home = () => {
         const city = searchParams.get('city');
         // const response = await API.post("/customer/allRestaurants", { city });
         const response = await axios.post("http://127.0.0.1:3000/ml/getTopRestaurants", { 'city':city });
+        const resp=await axios.post("http://127.0.0.1:3000/ml/likedRestaurants",{cid:currentUser._id,city:city})
+        console.log(resp.data)
         const data = response.data.list;
         const newRestaurants = Object.keys(data).map(key => {
           return {

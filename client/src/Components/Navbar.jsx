@@ -85,10 +85,14 @@ const Navbar = () => {
 
       if(type=="Restaurant"){
         navigate(`/restaurantdetails/${id}`)
+        window.location.reload();
         setInput("")
       }
       else{
         navigate(`/search?type=${type}&value=${inputValue}`);
+        window.location.reload();
+        setInput("")
+
       }
       
       console.log(`Selected Type: ${type}`);

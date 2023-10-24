@@ -69,6 +69,7 @@ def post_endpoint2():
             d = dict()
             for title in df2_sorted:
                 d[title] = str(df[title][i])
+            del d['password']
             arr.append(d)
         # print(arr)
         return jsonify({'list':arr})
@@ -90,7 +91,7 @@ def post_endpoint3():
         if data.get('type')=='Cuisine':
             for m in resp:
                 for c in m['menu']:
-                    if c['name'].lower().find(data.get('search').lower())!=-1:
+                    if c['name'].lower().find(data.get('search','').lower())!=-1:
                         if m['restaurant'] not in rest_list:
                             rest_list.append(m['restaurant'])
                             break
@@ -98,7 +99,7 @@ def post_endpoint3():
             for m in resp:
                 for c in m['menu']:
                     for i in c['items']:
-                        if i['Name'].lower().find(data.get('search').lower())!=-1 or i['Description'].lower().find(data.get('search').lower())!=-1:
+                        if i['Name'].lower().find(data.get('search','').lower())!=-1 or i['Description'].lower().find(data.get('search','').lower())!=-1:
                             if m['restaurant'] not in rest_list:
                                 rest_list.append(m['restaurant'])
         # print(rest_list)
@@ -119,11 +120,37 @@ def post_endpoint3():
                 d = dict()
                 for title in df2_sorted:
                     d[title] = str(df[title][i])
+                del d['password']
                 arr.append(d)
             # print(arr)
             return jsonify({'list':arr})
         else:
             return jsonify({"error": "Failed to fetch data from the other API"})
+    else:
+        return jsonify({"error": "Failed to fetch data from the other API"})
+    
+@app.route('/ml/likedRestaurants', methods=['POST'])
+def post_endpoint4():
+    data = request.get_json()
+    response = requests.post('http://localhost:4000/customer/allRestaurants')
+    if response.status_code == 200:
+        resp = response.json()
+        df = pd.DataFrame(resp)
+        if data.get('city','')!='':
+            df2 = df[df['city']==data['city']]
+        else:
+            df2 = df
+        df2_sorted = df2.sort_values(by=['rating'],ascending=[False])
+        arr = []
+        for i in df2_sorted.index:
+            d = dict()
+            for title in df2_sorted:
+                d[title] = str(df[title][i])
+            del d['password']
+            arr.append(d)
+        # print(arr)
+        return jsonify({'list':arr})
+        # return arr
     else:
         return jsonify({"error": "Failed to fetch data from the other API"})
 
