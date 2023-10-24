@@ -5,10 +5,10 @@ import numpy as np
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-CORS(app)  # This enables CORS for your app
-# Define a route for the POST request
 
-CORS(app, resources={r"/ml/*": {"origins": "*"}})
+
+CORS(app, origins=["http://localhost:5173"])
+
 
 
 @app.route('/ml/getRestaurants', methods=['POST'])
@@ -51,6 +51,7 @@ def post_endpoint1():
     else:
         return jsonify({"error": "Failed to fetch data from the other API"})
     
+CORS(app, origins=["http://localhost:5173"])
 
 @app.route('/ml/getTopRestaurants', methods=['POST'])
 def post_endpoint2():
@@ -70,15 +71,18 @@ def post_endpoint2():
             for title in df2_sorted:
                 d[title] = str(df[title][i])
             arr.append(d)
-        print(arr)
+        # print(arr)
         return jsonify({'list':arr})
         # return arr
     else:
         return jsonify({"error": "Failed to fetch data from the other API"})
-    
+
+CORS(app, origins=["http://localhost:5173"])
+  
 @app.route('/ml/getRestaurantsBySearch', methods=['POST'])
 def post_endpoint3():
     data = request.get_json()
+    print(data)
     response = requests.post('http://localhost:4000/customer/allMenu')
     if response.status_code == 200:
         resp = response.json()
@@ -98,7 +102,7 @@ def post_endpoint3():
                         if i['Name'].lower().find(data.get('search').lower())!=-1 or i['Description'].lower().find(data.get('search').lower())!=-1:
                             if m['restaurant'] not in rest_list:
                                 rest_list.append(m['restaurant'])
-        print(rest_list)
+        # print(rest_list)
         response2 = requests.post('http://localhost:4000/customer/allRestaurants')
         if response2.status_code == 200:
             resp2 = response2.json()
@@ -117,7 +121,7 @@ def post_endpoint3():
                 for title in df2_sorted:
                     d[title] = str(df[title][i])
                 arr.append(d)
-            print(arr)
+            # print(arr)
             return jsonify({'list':arr})
         else:
             return jsonify({"error": "Failed to fetch data from the other API"})
@@ -125,4 +129,4 @@ def post_endpoint3():
         return jsonify({"error": "Failed to fetch data from the other API"})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)

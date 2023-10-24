@@ -34,7 +34,7 @@ const Navbar = () => {
     }
 
   }, [currentUser])
-
+ 
 
   const handleClick = async (e) => {
     const typeOfUser = e.target.id;
@@ -71,8 +71,29 @@ const Navbar = () => {
     navigate(`/home?city=${city}`);
   }
 
-  const handleChange = async (e) => {
-    setInput(e.target.value);
+  const handleChange = async (event) => {
+    setInput(event.target.value);
+    const inputValue = event.target.value;
+
+    // Find the selected option from the datalist
+    const selectedOption = Array.from(event.target.list.options).find((option) => option.value === inputValue);
+
+    // Extract additional data attributes from the selected option
+    if (selectedOption) {
+      const type = selectedOption.getAttribute('data-type');
+      const id = selectedOption.getAttribute('data-id');
+
+      if(type=="Restaurant"){
+        navigate(`/restaurantdetails/${id}`)
+        setInput("")
+      }
+      else{
+        navigate(`/search?type=${type}&value=${inputValue}`);
+      }
+      
+      console.log(`Selected Type: ${type}`);
+      console.log(`Selected Id: ${id}`);
+    } 
   }
   return (
     <div className="navbar">
@@ -103,25 +124,15 @@ const Navbar = () => {
                 }
               />
             </div>
-
             <div className="rest_search">
               <div>
                 <input type="text" list="items" id="searchItem" value={input} onChange={handleChange} placeholder="Search for restaurant or cuisines" />
                 <datalist id="items">
-
                   {
-
                     searchItems.map((ele, ind) => {
+                    
                       return (
-                        <div onClick={() => {
-                          console.log("Hello")
-                          handleSearch(ele)
-                        }}>
-                          <option value={`${ele.name} (${ele.type})`} onClick={() => {
-                            console.log("Hello")
-                            handleSearch(ele)
-                          }} />
-                        </div>
+                          <option value={`${ele.name}`} data-type={ele.type} data-id={ele?.id}>{ele.type}</option>
                       )
                     })
                   }

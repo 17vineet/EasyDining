@@ -5,6 +5,7 @@ import CustomerHome from './Components/Customer/Home/Home';
 import CustomerSignUp from './Components/Customer/SignUpCustomer';
 import CustomerProfile from './Components/Customer/Profile/CustomerProfile';
 import RestaurantPage from './Components/Customer/Home/RestaurantPage'
+import SearchByItems from './Components/Customer/SearchByItems/SearchByItems';
 
 import BusinessHome from './Components/Business/Home/Home';
 import BusinessSignUp from './Components/Business/SignUpBusiness';
@@ -12,7 +13,7 @@ import Menu from './Components/Business/Menu/Menu';
 import RestaurantProfile from './Components/Business/Profile/RestaurantProfile';
 import Bill from '../src/Components/Bills/Bill' ;
 
-import Signin from './Components/SignIn/SignIn';
+
 import SignIn from './Components/SignIn';
 import Navbar from './Components/Navbar';
 
@@ -40,6 +41,7 @@ export const App = () => {
             <Route path='/restaurantdetails/:rid' element={<RestaurantPage />} />
             <Route path='/profile' element={<CustomerProfile />} />
             <Route path='/customer/bill/:oid' element={<Bill />} />
+            <Route path='/search' element={<SearchByItems />} />
           </Route>
 
           <Route element={<RequireAuth userType='restaurant' />}>
