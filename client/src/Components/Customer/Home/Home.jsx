@@ -23,8 +23,8 @@ const Home = () => {
       try {
         const city = searchParams.get('city');
         // const response = await API.post("/customer/allRestaurants", { city });
-        const response = await axios.post("http://127.0.0.1:4000/customer/allRestaurants", { 'city':city });
-        const data = response.data;
+        const response = await axios.post("http://127.0.0.1:5000/ml/getTopRestaurants", { 'city':city });
+        const data = response.data.list;
         const newRestaurants = Object.keys(data).map(key => {
           return {
             name: data[key].name,
