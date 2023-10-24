@@ -10,8 +10,9 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Stack, Paper, Divider, Alert } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import API from '../../../../axios';
-import { Stack, Paper, Divider } from '@mui/material';
 
 
 const ExpandMore = styled((props) => {
@@ -31,11 +32,12 @@ const Item = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(1),
     textAlign: 'center',
     color: theme.palette.text.secondary,
-  }));
+}));
 
-const RestaurantCard = ({ name, thumbnail_url, city, id }) => {
+const RestaurantCard = ({ name, thumbnail_url, city, id, accepting }) => {
     const [expanded, setExpanded] = useState(false);
     const [cuisines, setCuisines] = useState([]);
+    const [open, setOpen] = useState(true);
     const navigate = useNavigate();
 
     const handleExpandClick = () => {
@@ -52,18 +54,41 @@ const RestaurantCard = ({ name, thumbnail_url, city, id }) => {
     }, [])
 
     return (
-        <Card sx={{ maxWidth: 345, ":hover": { 'border': '1px solid grey' }, "borderRadius": "7px" }}>
+        <Card sx={{ maxWidth: 345, ":hover": { 'border': '1px solid grey' }, "borderRadius": "7px", position: 'relative' }}>
+            {
+                accepting==='False' &&
+                <Paper
+                    elevation={2}
+                    style={{ backgroundColor: 'rgb(253,237,237)', position: 'absolute'}}
+                    sx={{ m: 1, p: 1 }}
+                    onClick={() => setOpen(prev => !prev)}
+                >
+                    {
+                        open ?
+                            <>
+                                <InfoOutlinedIcon
+                                    style={{ marginRight: 5, color: 'red' }}
+                                    color='red'
+                                />
+                                <span style={{ color: 'red' }}>Currently not booking tables</span>
+                            </>
+                            :
+                            <InfoOutlinedIcon
+                                style={{ color: 'red' }}
+                            />
+                    }
+                </Paper>
+            }
             <CardMedia
                 component="img"
                 height="194"
                 image={thumbnail_url}
-                // alt="Paella dish"
                 onClick={() => {
                     navigate(`/restaurantdetails/${id}`)
                 }}
-                sx={{ "transition": "transform 0.4s", ":hover": { 'cursor': 'pointer', 'transform': 'scale(1.1)' } }}
+                // sx={{ "transition": "transform 0.4s", ":hover": { 'cursor': 'pointer', 'transform': 'scale(1.1)' } }}
             />
-            <CardActions disableSpacing sx={{ padding: 0 }}>
+            <CardActions disableSpacing sx={{ padding: 0}}>
                 <CardHeader
                     title={name}
                     subheader={city}
@@ -71,6 +96,9 @@ const RestaurantCard = ({ name, thumbnail_url, city, id }) => {
                         navigate(`/restaurantdetails/${id}`)
                     }}
                     sx={{ ":hover": { 'cursor': 'pointer' } }}
+                    style={{
+                        opacity : accepting ==='False' ? 0.5 : 1
+                    }}
                 />
                 {
                     cuisines.length > 0 &&
@@ -89,9 +117,9 @@ const RestaurantCard = ({ name, thumbnail_url, city, id }) => {
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <CardContent>
                         <Typography>Cuisines:</Typography>
-                        <Stack 
-                            direction='row' 
-                            spacing={2} 
+                        <Stack
+                            direction='row'
+                            spacing={2}
                             divider={<Divider orientation="vertical" flexItem color='black' />}>
                             {cuisines.map((ele, ind) => {
                                 return (

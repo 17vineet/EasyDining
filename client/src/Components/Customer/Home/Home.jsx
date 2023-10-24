@@ -25,15 +25,14 @@ const Home = () => {
         // const response = await API.post("/customer/allRestaurants", { city });
         const response = await axios.post("http://127.0.0.1:3000/ml/getTopRestaurants", { 'city':city });
         const resp=await axios.post("http://127.0.0.1:3000/ml/likedRestaurants",{cid:currentUser._id,city:city})
-        console.log(resp.data)
         const data = response.data.list;
         const newRestaurants = Object.keys(data).map(key => {
           return {
             name: data[key].name,
             thumbnail_url: data[key].thumbnail_url,
             id: data[key]._id,
-            city: data[key].city
-
+            city: data[key].city,
+            accepting: data[key].accepting
           };
         });
         setRestaurants(newRestaurants);
@@ -55,11 +54,20 @@ const Home = () => {
           <h2>Restaurants you may like</h2>
           <div className="restaurant_display" >
             <Grid container columnSpacing={3} rowSpacing={3}>
-              {restaurants.map((elem, index) => (
-                <Grid item sm={6} md={4} lg={3} key={index}>
-                  <RestaurantCard key={index} name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} />
-                </Grid>
-              ))}
+              {
+                restaurants.map((elem, index) => (
+                  <Grid item sm={6} md={4} lg={3} key={index}>
+                    <RestaurantCard 
+                      key={index} 
+                      name={elem.name} 
+                      thumbnail_url={elem.thumbnail_url} 
+                      id={elem.id} 
+                      city={elem.city} 
+                      accepting={elem.accepting}
+                    />
+                  </Grid>
+                ))
+              }
             </Grid>
           </div>
           {
@@ -70,7 +78,7 @@ const Home = () => {
                 <Grid container columnSpacing={3} rowSpacing={3}>
                   {restaurants.map((elem, index) => (
                     <Grid item sm={6} md={4} lg={3} key={index}>
-                      <RestaurantCard key={index} name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} />
+                      <RestaurantCard key={index} name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} accepting={elem.accepting} />
                     </Grid>
                   ))}
                 </Grid>
