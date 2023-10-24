@@ -6,8 +6,7 @@ from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 
-
-CORS(app, origins=["http://localhost:5173"])
+CORS(app, origins="*")
 
 
 
@@ -51,7 +50,7 @@ def post_endpoint1():
     else:
         return jsonify({"error": "Failed to fetch data from the other API"})
     
-CORS(app, origins=["http://localhost:5173"])
+
 
 @app.route('/ml/getTopRestaurants', methods=['POST'])
 def post_endpoint2():
@@ -77,7 +76,7 @@ def post_endpoint2():
     else:
         return jsonify({"error": "Failed to fetch data from the other API"})
 
-CORS(app, origins=["http://localhost:5173"])
+
   
 @app.route('/ml/getRestaurantsBySearch', methods=['POST'])
 def post_endpoint3():
@@ -129,4 +128,4 @@ def post_endpoint3():
         return jsonify({"error": "Failed to fetch data from the other API"})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=3000)
