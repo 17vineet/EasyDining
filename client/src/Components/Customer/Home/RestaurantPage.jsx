@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import { Box, InputLabel, MenuItem, FormControl, List, ListItemText, Divider, ListItem, Typography } from '@mui/material';
 import Select from '@mui/material/Select';
 import SendIcon from '@mui/icons-material/Send';
@@ -16,6 +16,7 @@ import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 const RestaurantPage = () => {
     const { rid } = useParams();
     const { currentUser } = useAuth();
+    const location = useLocation() ;
     const [restdetails, setDetails] = useState({})
     const [restmenu, setMenu] = useState([])
     const [img_urls, setImg_urls] = useState([])
@@ -33,7 +34,7 @@ const RestaurantPage = () => {
 
     useEffect(() => {
         fetchData();
-    }, [])
+    }, [location])
 
     const handleCheckWaiting = async () => {
         setChecking(true);

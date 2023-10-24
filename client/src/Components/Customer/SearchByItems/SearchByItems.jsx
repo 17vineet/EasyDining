@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { Rating } from '@mui/material';
 import axios from 'axios';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -9,6 +9,8 @@ const SearchByItems = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [results,setResult]=useState([])
   const {currentUser} = useAuth() ;
+  const location = useLocation() ;
+
   useEffect(()=>{
     const type = searchParams.get('type') ;
     const value = searchParams.get('value') ;
@@ -19,7 +21,7 @@ const SearchByItems = () => {
       setResult(resp.data.list);
     }
     fetchData();
-  }, [])
+  }, [location])
   
   const handeleClick=(id)=>{
     navigate(`/restaurantDetails/${id}`)
@@ -27,7 +29,7 @@ const SearchByItems = () => {
   return (
     <div className='search_items'>
       {
-        results.map((ele,ind)=>{
+        results.length> 0 ? results.map((ele,ind)=>{
           return (
            <div className='search_result_card' key={ind}>
               <div><img src={ele.thumbnail_url} /></div>
@@ -40,12 +42,7 @@ const SearchByItems = () => {
                }}>See Details</button></div>
            </div>
           )
-        })
-      }
-      {
-        results.length<=0 && < div className='search_result_card'>
-          <h3>No Results Found</h3>
-        </div>
+        }) : <h3>No Results Found</h3>
       }
     </div>
 
