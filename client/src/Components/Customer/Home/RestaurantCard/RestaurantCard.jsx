@@ -13,6 +13,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Stack, Paper, Divider, Alert } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import API from '../../../../axios';
+import "./RestaurantCard.css"
 
 
 const ExpandMore = styled((props) => {
@@ -54,83 +55,90 @@ const RestaurantCard = ({ name, thumbnail_url, city, id, accepting }) => {
     }, [])
 
     return (
-        <Card sx={{ maxWidth: 345, ":hover": { 'border': '1px solid grey' }, "borderRadius": "7px", position: 'relative' }}>
-            {
-                accepting==='False' &&
-                <Paper
-                    elevation={2}
-                    style={{ backgroundColor: 'rgb(253,237,237)', position: 'absolute'}}
-                    sx={{ m: 1, p: 1 }}
-                    onClick={() => setOpen(prev => !prev)}
-                >
+        <>
+            <div className={`restaurant_card ${accepting}`}>
+                <Card sx={{ maxWidth: 400, ":hover": { 'border': '1px solid grey' }, "borderRadius": "7px", position: 'relative' }}>
                     {
-                        open ?
-                            <>
-                                <InfoOutlinedIcon
-                                    style={{ marginRight: 5, color: 'red' }}
-                                    color='red'
-                                />
-                                <span style={{ color: 'red' }}>Currently not booking tables</span>
-                            </>
-                            :
-                            <InfoOutlinedIcon
-                                style={{ color: 'red' }}
-                            />
+                        accepting === 'False' &&
+                        <Paper
+                            elevation={2}
+                            style={{ backgroundColor: 'rgb(253,237,237)', position: 'absolute' }}
+                            sx={{ m: 1, p: 1 }}
+                            onClick={() => setOpen(prev => !prev)}
+                        >
+                            {
+                                open ?
+                                    <>
+                                        <InfoOutlinedIcon
+                                            style={{ marginRight: 5, color: 'red' }}
+                                            color='red'
+                                        />
+                                        <span style={{ color: 'red' }}>Currently not booking tables</span>
+                                    </>
+                                    :
+                                    <InfoOutlinedIcon
+                                        style={{ color: 'red' }}
+                                    />
+                            }
+                        </Paper>
                     }
-                </Paper>
-            }
-            <CardMedia
-                component="img"
-                height="194"
-                image={thumbnail_url}
-                onClick={() => {
-                    navigate(`/restaurantdetails/${id}`)
-                }}
-                // sx={{ "transition": "transform 0.4s", ":hover": { 'cursor': 'pointer', 'transform': 'scale(1.1)' } }}
-            />
-            <CardActions disableSpacing sx={{ padding: 0}}>
-                <CardHeader
-                    title={name}
-                    subheader={city}
-                    onClick={() => {
-                        navigate(`/restaurantdetails/${id}`)
-                    }}
-                    sx={{ ":hover": { 'cursor': 'pointer' } }}
-                    style={{
-                        opacity : accepting ==='False' ? 0.5 : 1
-                    }}
-                />
-                {
-                    cuisines.length > 0 &&
-                    <ExpandMore
-                        expand={expanded}
-                        onClick={handleExpandClick}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                    >
-                        <ExpandMoreIcon />
-                    </ExpandMore>
-                }
-            </CardActions>
-            {
-                cuisines.length > 0 &&
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <CardContent>
-                        <Typography>Cuisines:</Typography>
-                        <Stack
-                            direction='row'
-                            spacing={2}
-                            divider={<Divider orientation="vertical" flexItem color='black' />}>
-                            {cuisines.map((ele, ind) => {
-                                return (
-                                    <span>{ele.name}</span>
-                                )
-                            })}
-                        </Stack>
-                    </CardContent>
-                </Collapse>
-            }
-        </Card>
+                    <CardMedia
+                        component="img"
+                        height="194"
+                        image={thumbnail_url}
+                        onClick={() => {
+                            navigate(`/restaurantdetails/${id}`)
+                        }}
+                        sx={{ "transition": "transform 0.4s", ":hover": { 'cursor': 'pointer', 'transform': 'scale(1.1)' } }}
+                    />
+                    <CardActions disableSpacing sx={{ padding: 0 }}>
+                        <CardHeader
+                            title={name}
+                            subheader={city}
+                            onClick={() => {
+                                navigate(`/restaurantdetails/${id}`)
+                            }}
+                            sx={{ ":hover": { 'cursor': 'pointer' } }}
+                            style={{
+                                opacity: accepting === 'False' ? 0.5 : 1
+                            }}
+                        />
+                        {
+                            cuisines.length > 0 &&
+                            <ExpandMore
+                                expand={expanded}
+                                onClick={handleExpandClick}
+                                aria-expanded={expanded}
+                                aria-label="show more"
+                            >
+                                <ExpandMoreIcon />
+                            </ExpandMore>
+                        }
+                    </CardActions>
+                    {
+                        cuisines.length > 0 &&
+                        <Collapse in={expanded} timeout="auto" unmountOnExit>
+                            <CardContent>
+                                <Typography>Cuisines:</Typography>
+                                <Stack
+                                    direction='row'
+                                    spacing={2}
+                                    divider={<Divider orientation="vertical" flexItem color='black' />}>
+                                    {cuisines.map((ele, ind) => {
+                                        return (
+                                            <span>{ele.name}</span>
+                                        )
+                                    })}
+                                </Stack>
+                            </CardContent>
+                        </Collapse>
+                    }
+                </Card>
+            </div>
+            <div className='disableElement'>
+
+            </div>
+        </>
     );
 }
 

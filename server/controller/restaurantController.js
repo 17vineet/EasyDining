@@ -12,7 +12,7 @@ function containsOnlyNumbers(inputStr) {
 export const signUpRestaurant = async (req, res) => {
     console.log(req.body)
     try {
-        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating':0 , 'ratingCount':0, 'accepting': false});
+        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating':0 , 'ratingCount':0, 'accepting': false, 'opening_time':'10:00', 'closing_time':'23:00'});
         var result = await data.save();
     }
     catch (e) {
@@ -623,4 +623,27 @@ export const changeAccepting = async (req, res)=> {
     else{
         res.send({'message': 'Invalid credentials'}) ;
     }
+}
+
+export const setOpenClose = async(req,res)=>{
+    const {rid,time,type} = req.body;
+    let resp = '' ; 
+    if(type==='open'){
+        resp = await Restaurant.findOneAndUpdate({'_id':rid},
+        {$set:{'opening_time':time}},{new:true})
+    }
+    else{
+        resp = await Restaurant.findOneAndUpdate({'_id':rid},
+        {$set:{'closing_time':time}},{new:true})
+    }
+    delete resp._doc.password;
+    delete resp._doc.refresh_token;
+
+    const accessToken = jwt.sign({ ...resp._doc, userType: 'restaurant' }, 'test', { expiresIn: '30s' });
+    const refreshToken = jwt.sign({ ...resp._doc, userType: 'restaurant' }, 'test', { expiresIn: '1d' });
+
+    await Restaurant.findByIdAndUpdate(resp._id, { ...resp._doc, refresh_token: refreshToken }, { new: true });
+
+    res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    res.status(200).send({ accessToken });
 }

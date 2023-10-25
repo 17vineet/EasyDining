@@ -9,17 +9,22 @@ import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import './RestaurantProfile.css'
 import { useNavigate } from "react-router-dom";
-// import AddIcon from "@material-ui/icons/Add";
 import { FormControlLabel, Switch, FormGroup } from '@mui/material';
 import NameModel from './NameModel';
 import TableModal from './TableModal';
 import API from '../../../axios';
 import Loading from '../../Loading/Loading';
 import VisitedCustomer from './VisitedCustomer';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import jwtDecode from 'jwt-decode';
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const RestaurantProfile = () => {
+
 
 
   const navigate = useNavigate();
@@ -29,9 +34,21 @@ const RestaurantProfile = () => {
   const [thumbnail, setThumbnail] = useState(currentUser.thumbnail_url)
   const [selectedFile, setSelectedFile] = useState(null)
   const [uploadingImages, setUploadingImages] = useState({ spinner: false, tick: false });
-  const [accepting, setAccepting] = useState(false) ;
-
+  const [accepting, setAccepting] = useState(currentUser?.accepting);
+  const [openingTime, setOpeningTime] = useState(currentUser?.opening_time || '');
+  const [closingTime, setClosingTime] = useState(currentUser?.closing_time || '');
+  const [editOpenTime, setEditOpenTime] = useState(false);
+  const [editCloseTime, setEditCloseTime] = useState(false);
   const [loading, setLoading] = useState(false)
+  const [open, setOpen] = useState(false);
+ 
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -138,18 +155,39 @@ const RestaurantProfile = () => {
     setCurrentUser({ ...currentUser, thumbnail_url: result.data.img_urls[0] })
   };
 
-  const handleAccept = async (e)=> {
-      let password=prompt("Enter your password");
-      const resp = await API.post('/restaurant/handleAccept',{rid:currentUser._id,password:password,accepting: e.target.checked}) ;
-      if(resp.data.message){
-        alert("Incorrect password")
-      }
-      else{
-        const decodedToken = jwtDecode(resp.data.accessToken);
-        setCurrentUser(decodedToken);
-        setAuth(resp.data.accessToken) ;
-        setAccepting(!accepting) ;
-      }
+  const handleAccept = async (e) => {
+    // console.log(e);
+    let password = prompt("Enter your password");
+    const resp = await API.post('/restaurant/handleAccept', { rid: currentUser._id, password: password, accepting: e.target.checked });
+    if (resp.data.message) {
+      alert("Incorrect password")
+    }
+    else {
+     
+      const decodedToken = jwtDecode(resp.data.accessToken);
+      setCurrentUser(decodedToken);
+      setAuth(resp.data.accessToken);
+      setAccepting(!accepting);
+    }
+  }
+
+  const handleSave = async (e) => {
+    const name = e.target.name;
+    let decodedToken = '', resp = '';
+    if (name === 'open') {
+      resp = await API.post('/restaurant/setopenclose', { rid: currentUser._id, type: name, time: openingTime })
+      decodedToken = jwtDecode(resp.data.accessToken)
+      setOpen(true);
+      setEditOpenTime(false);
+  }
+  else {
+      resp = await API.post('/restaurant/setopenclose', { rid: currentUser._id, type: name, time: closingTime })
+      decodedToken = jwtDecode(resp.data.accessToken)
+      setOpen(true);
+      setEditCloseTime(false);
+    }
+    setCurrentUser(decodedToken);
+    setAuth(resp.data.accessToken);
   }
 
   return (
@@ -177,11 +215,9 @@ const RestaurantProfile = () => {
           <div className="RestaurantDetails">
             <ul >
               <li>{currentUser.name} &nbsp;&nbsp;
-                <EditIcon onClick={() => setModel({ ...models, name: true })} style={{ fontSize: '15px' }} htmlColor='red' /> 
+                <EditIcon onClick={() => setModel({ ...models, name: true })} style={{ fontSize: '15px' }} htmlColor='red' />
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <FormGroup>
-                  <FormControlLabel control={<Switch checked={accepting} onChange={handleAccept} />} />
-                </FormGroup>
+
               </li>
               <li>
                 <LocalPhoneIcon /> &nbsp;&nbsp;{currentUser.phone} &nbsp;&nbsp;
@@ -196,8 +232,47 @@ const RestaurantProfile = () => {
             <button className='btn btn-primary m-2' onClick={() => {
               setModel({ ...models, table: true })
             }}>Update Table</button>
+            <button className='btn btn-primary m-2' onClick={() => {
+              navigate("/business/menu")
+            }}>Update Menu</button>
+          </div>
+          <div>
+            <div className="openclose">
+              <FormGroup>
+                <h5 >Accepting Online Reservations : <FormControlLabel control={<Switch checked={accepting} onChange={handleAccept} />} /></h5>
+              </FormGroup>
+            </div>
+            <div className='openclose'>
+              <label htmlFor="OpenTime">Open Time</label>
+              <input type='time' id="OpenTime" disabled={!editOpenTime} value={openingTime} className='time' onChange={(e) => {
+                setOpeningTime(e.target.value)
+              }} />
+              {
+                !editOpenTime ? <button className='btn btn-danger' onClick={() => {
+                  setEditOpenTime(true);
+                }}>Edit</button> : <button className='btn btn-primary' name='open' onClick={(e) => handleSave(e)}>Save</button>
+              }
+              <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+               Time Updated Successfully
+                </Alert>
+              </Snackbar>
+
+            </div>
+            <div className='openclose'>
+              <label htmlFor="CloseTime">Close Time</label>
+              <input type='time' id="CloseTime" className='time' value={closingTime} disabled={!editCloseTime} onChange={(e) => {
+                setClosingTime(e.target.value)
+              }} />
+              {
+                !editCloseTime ? <button className='btn btn-danger' onClick={() => {
+                  setEditCloseTime(true);
+                }}>Edit</button> : <button className='btn btn-primary' name='close' onClick={(e) => handleSave(e)}>Save</button>
+              }
+            </div>
           </div>
         </div>
+
         <div className="content2">
           <div className='RestaurantImgHolder'>
             {/* <div className='ImageHolderLeft'>

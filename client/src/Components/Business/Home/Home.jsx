@@ -35,23 +35,22 @@ const Home = () => {
               <h2>{currentUser.name}</h2>
               <h6>{currentUser.sitting_capacity}</h6>
               <h6>{currentUser.location_url}</h6>
+              <h6>Your average rating : {currentUser.rating}</h6>
+              <h6>{currentUser.city}</h6>
               <h6>Extra details</h6>
-              <h6>Extra details</h6>
-              <h6>Extra details</h6>
-              {/* Menu, Clock, Orders, Photos,  */}
             </div>
           </div>
           <h5>Waiting Time(in minutes)</h5>
             <input type="number" defaultValue={0} />
-            <button>Update Waiting time</button>
+            <button className='btn btn-primary ms-4'>Update Waiting time</button>
             <br />
             <br />
           <AvailableTable updated={updated} handleUpdate={handleUpdate}/>
 
             <div>
-              <button className='btn btn-primary mt-4' onClick={() => {
+              {/* <button className='btn btn-primary mt-4' onClick={() => {
                 navigate("/business/menu")
-              }}>Update Menu</button>
+              }}>Update Menu</button> */}
             </div>
             <br />
             <br />

@@ -11,6 +11,7 @@ import Offers from './Offers';
 const Home = () => {
 
   const [restaurants, setRestaurants] = useState([]);
+  const [suggestedrest,setSuggestedRest]=useState([]);
   const { userType, currentUser } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -26,6 +27,9 @@ const Home = () => {
         const response = await axios.post("http://127.0.0.1:3000/ml/getTopRestaurants", { 'city':city });
         const resp=await axios.post("http://127.0.0.1:3000/ml/similarRestaurants",{'phone':currentUser.phone,'city':currentUser.last_city})
         const data = response.data.list;
+        const data2 = resp.data.list
+        console.log(data)
+        console.log(data2)
         const newRestaurants = Object.keys(data).map(key => {
           return {
             name: data[key].name,
@@ -35,7 +39,18 @@ const Home = () => {
             accepting: data[key].accepting
           };
         });
+        const suggRestaurants = Object.keys(data2).map(key => {
+          return {
+            name: data2[key].name,
+            thumbnail_url: data2[key].thumbnail_url,
+            id: data2[key]._id,
+            city: data2[key].city,
+            accepting: data2[key].accepting
+          };
+        });
         setRestaurants(newRestaurants);
+        setSuggestedRest(suggRestaurants);
+
       } catch (error) {
         console.log(error);
       }
@@ -52,11 +67,11 @@ const Home = () => {
       <div className="background">
         <div className="content">
           <h2>Restaurants you may like</h2>
-          <div className="restaurant_display" >
+          <div className="restaurant_display m-4" >
             <Grid container columnSpacing={3} rowSpacing={3}>
               {
-                restaurants.map((elem, index) => (
-                  <Grid item sm={6} md={4} lg={3} key={index}>
+                suggestedrest.map((elem, index) => (
+                  <Grid item sm={6} md={4} lg={4} key={index}>
                     <RestaurantCard 
                       key={index} 
                       name={elem.name} 
@@ -74,10 +89,10 @@ const Home = () => {
             currentUser.last_city &&
             <>
               <h2>Top Restaurants in {currentUser?.last_city}</h2>
-              <Box className='restaurant_display'>
+              <Box className='restaurant_display m-4'>
                 <Grid container columnSpacing={3} rowSpacing={3}>
                   {restaurants.map((elem, index) => (
-                    <Grid item sm={6} md={4} lg={3} key={index}>
+                    <Grid item sm={6} md={4} lg={4} key={index}>
                       <RestaurantCard key={index} name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} accepting={elem.accepting} />
                     </Grid>
                   ))}

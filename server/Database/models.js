@@ -52,6 +52,12 @@ const restaurantSchema = new Schema({
     },
     accepting: {
         type: Boolean
+    },
+    opening_time:{
+        type:String
+    },
+    closing_time:{
+        type:String
     }
 });
 
