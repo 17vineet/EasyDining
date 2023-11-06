@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
-import { Box, InputLabel, MenuItem, FormControl, List, ListItemText, Divider, ListItem, Typography } from '@mui/material';
+import { Box, InputLabel, MenuItem, FormControl, List, ListItemText, Divider, ListItem, Typography, Paper } from '@mui/material';
 import Select from '@mui/material/Select';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/joy/Button';
@@ -16,7 +16,7 @@ import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 const RestaurantPage = () => {
     const { rid } = useParams();
     const { currentUser } = useAuth();
-    const location = useLocation() ;
+    const location = useLocation();
     const [restdetails, setDetails] = useState({})
     const [restmenu, setMenu] = useState([])
     const [img_urls, setImg_urls] = useState([])
@@ -27,6 +27,7 @@ const RestaurantPage = () => {
     const [isDined, setIsDined] = useState(false);
     const [takeOrderModal, setTakeOrderModal] = useState(false);
     const [viewOrderModal, setViewOrderModal] = useState(false);
+    const [accepting, setAccepting] = useState(false);
     const [restaurantImgModel, setrestaurantImgModel] = useState({
         open: false,
         index: undefined
@@ -66,6 +67,7 @@ const RestaurantPage = () => {
         setDetails(details.data)
         setImg_urls(details.data.images_urls)
         setMenu(resp.data.menu)
+        setAccepting(details.data.accepting)
     }
 
     const openRestaurantImageModel = (ind) => {
@@ -127,6 +129,7 @@ const RestaurantPage = () => {
                 viewOrderModal && <ViewOrderModal phone={currentUser.phone} closeViewOrderModal={closeViewOrderModal} id={rid} />
             }
             <div>
+
                 <div className="main">
                     <div className="background">
                         <div className="customer_content1">
@@ -199,33 +202,43 @@ const RestaurantPage = () => {
                                     )
                                 })}
                             </div>
-                            {!hasReserved && <div className="customer_content2_right">
-                                <Box sx={{ minWidth: 120 }}>
-                                    <FormControl className='check_waiting_form' style={{ margin: '10px' }}>
-                                        <InputLabel id="demo-simple-select-label">No. of Persons</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            value={pax}
-                                            label="Pax"
-                                            onChange={handlePaxChange}
-                                        >
-                                            {passengers.map((ele, ind) => {
-                                                return (<MenuItem value={ind + 1} key={ind} >{ele}</MenuItem>)
-                                            })}
+                            {isDined &&
+                                <div className='customer_content2_right p-3'>
+                                    <button onClick={placeOrder} className='btn btn-primary my-2'>Place Order</button>
+                                    <button onClick={viewOrder} className='btn btn-primary m-2'>View Order</button>
+                                </div>
+                            }
+                            {/* <div className="customer_content2_right"> */}
+                            {!hasReserved && <Paper elevation={3} sx={{ width:'30%' }}>
+                                {
+                                    accepting ?
+                                        <Box className="p-3">
+                                            <FormControl className='check_waiting_form' style={{ margin: '10px' }}>
+                                                <InputLabel id="demo-simple-select-label">No. of Persons</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={pax}
+                                                    label="Pax"
+                                                    onChange={handlePaxChange}
+                                                >
+                                                    {passengers.map((ele, ind) => {
+                                                        return (<MenuItem value={ind + 1} key={ind} >{ele}</MenuItem>)
+                                                    })}
 
-                                        </Select>
-                                        <Button onClick={handleReserve} className='btn btn-primary my-2'>Reserve Table For Free</Button>
-                                    </FormControl>
-                                    <div>
-                                        <Button className='mx-2 btn btn-primary' loading={checking} onClick={handleCheckWaiting} loadingPosition="end" endDecorator={<SendIcon />}>
-                                            Check waiting
-                                        </Button>
-                                    </div>
+                                                </Select>
+                                                <Button onClick={handleReserve} className='btn btn-primary my-2'>Reserve Table For Free</Button>
+                                            </FormControl>
+                                            <div>
+                                                <Button className='mx-2 btn btn-primary' loading={checking} onClick={handleCheckWaiting} loadingPosition="end" endDecorator={<SendIcon />}>
+                                                    Check waiting
+                                                </Button>
+                                            </div>
+                                        </Box> : <h3>Not accepting Booking Right Now</h3>
+                                }
+                                </Paper>
+                            }
 
-                                </Box>
-
-                            </div>}
                             {
                                 hasReserved && !isDined &&
                                 <div className='customer_content2_right'>
@@ -238,12 +251,7 @@ const RestaurantPage = () => {
                                 </div>
                             }
                         </div>
-                        {isDined &&
-                            <div>
-                                <button onClick={placeOrder}>Place Order</button>
-                                <button onClick={viewOrder}>View Order</button>
-                            </div>
-                        }
+
                     </div>
                 </div>
             </div>

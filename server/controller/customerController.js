@@ -76,7 +76,7 @@ export const signUpCustomer = async (req, res) => {
 
 export const getAllRestaurants = async (req, res) => {
     const response = await Restaurant.find({})
-    console.log(response)
+    // console.log(response)
     res.send(response)
 }
 
@@ -224,7 +224,7 @@ export const checkDining = async (req, res) => {
 export const getVisitedRestaurants = async (req, res) => {
     const { phone } = req.body;
     const resp = await Bill.find({ 'customer': phone });
-    console.log(resp)
+    // console.log(resp)
     res.send(JSON.stringify(resp))
 }
 
@@ -246,7 +246,7 @@ export const setLastCity = async (req, res) => {
 
 export const getCustomerSearchList = async (req, res) => {
     const { city } = req.body;
-    console.log(city)
+    // console.log(city)
     let searchList = []
     const resp1 = await Restaurant.find({ 'city': city })
 
@@ -262,7 +262,7 @@ export const getCustomerSearchList = async (req, res) => {
         }
     }
 
-    console.log(searchList)
+    // console.log(searchList)
     res.send(JSON.stringify({ 'list': searchList }))
 }
 

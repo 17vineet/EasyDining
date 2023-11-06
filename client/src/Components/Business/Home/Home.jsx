@@ -13,8 +13,6 @@ const Home = () => {
   const [updated, setUpdated] = useState(true);
   const { currentUser, setCurrentUser } = useAuth();
   const navigate = useNavigate();
-
-
  
   const handleUpdate = () => {
     setUpdated(prev => !prev );

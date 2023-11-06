@@ -16,7 +16,7 @@ export const signUpRestaurant = async (req, res) => {
         var result = await data.save();
     }
     catch (e) {
-        console.log(e)
+        // console.log(e)
         if (e?.keyValue?.email != undefined) {
             res.status(409).send(`An account already exists corresponding to this email id`)
             return
@@ -160,7 +160,7 @@ export const removeDiningCustomer = async (req, res) => {
         const resp = await DiningList.updateOne({ restaurant: rid },
             { $pull: { customers: { phone: phone } } })
         const resp2 = await deleteOccupiedTable(rid, tableSize);
-        console.log(resp2)
+        // console.log(resp2)
         res.send(resp)
     } catch (err) {
         console.error(err);
@@ -169,7 +169,7 @@ export const removeDiningCustomer = async (req, res) => {
 
 export const addToDineIn = async (req, res) => {
     const { rid, cname, email, phone, pax, size } = req.body;
-    console.log(rid)
+    // console.log(rid)
 
     var diningList = await DiningList.findOne({ restaurant: rid });
     if (diningList == null) {
@@ -180,7 +180,6 @@ export const addToDineIn = async (req, res) => {
     }
 
     // console.log(diningList);
-    console.log(diningList);
     const resp = await DiningList.updateOne(
         { _id: diningList._id },
         { $push: { customers: { cname, email, phone, pax, size } } }
@@ -239,7 +238,7 @@ export const uploadRestaurantImages = async (req, res) => {
     const response = await Restaurant.updateOne(
         { "_id": rid },
         { $push: { images_urls: { $each: images_urls } } })
-    console.log(response)
+    // console.log(response)
 
     res.send(JSON.stringify(response))
 }
@@ -323,7 +322,7 @@ export const updateTable = async (req, res) => {
     const { rid, total_tables } = req.body;
     const response = await Restaurant.findOneAndUpdate({ 'restaurant': rid },
         { $set: { 'total_tables': total_tables } }, { new: true })
-    console.log(response)
+    // console.log(response)
 
     res.send(JSON.stringify(response))
 }
@@ -341,7 +340,7 @@ export const checkWaiting = async (req, res) => {
         }
     }
     l.sort((a, b) => a[0] - b[0])
-    console.log(response.occupied_tables)
+    // console.log(response.occupied_tables)
     for (let tab of l) {
         const ocIndex = response.occupied_tables.tableSize.indexOf(tab[0])
         if (ocIndex == -1) {
@@ -362,7 +361,7 @@ export const checkWaiting = async (req, res) => {
 
 export const addOccupiedTable = async (req, res) => {
     const { rid, pax } = req.body;
-    console.log(pax)
+    // console.log(pax)
     const response = await Restaurant.findOne({ "_id": rid })
     let tableSize = response.total_tables.tableSize;
     let noOfTables = response.total_tables.noOfTables;
@@ -404,7 +403,7 @@ export const addOccupiedTable = async (req, res) => {
 }
 
 const deleteOccupiedTable = async (rid, tableSize) => {
-    console.log(rid, tableSize)
+    // console.log(rid, tableSize)
     const resp = await Restaurant.findOne({ '_id': rid })
     let noOfTables = resp.occupied_tables.noOfTables;
     const ocIndex = resp.occupied_tables.tableSize.indexOf(tableSize)
@@ -464,7 +463,7 @@ export const addCuisine = async (req, res) => {
         {
             $push: { 'menu': { 'name': cuisineName, 'cid': cuisineId, items: [] } }
         }, { new: true })
-    console.log(resp)
+    // console.log(resp)
     res.send(resp)
 }
 
@@ -554,14 +553,14 @@ export const generateBill = async (req, res) => {
     const resp3 = await DiningList.updateOne({ restaurant: rid },
         { $pull: { customers: { phone: phone } } })
     const resp4 = await deleteOccupiedTable(rid, tableSize);
-    console.log(resp4)
+    // console.log(resp4)
     res.send(JSON.stringify({ "orderId": resp._id }))
 }
 
 export const viewBill = async (req, res) => {
     const { orderId } = req.body;
     const resp = await Bill.findOne({ 'orderId': orderId })
-    console.log(resp)
+    // console.log(resp)
     if (resp) {
         resp._doc['message'] = 'Success'
         res.send(JSON.stringify(resp))
@@ -574,7 +573,7 @@ export const viewBill = async (req, res) => {
 export const getRestaurantBills = async (req, res) => {
     const { rid } = req.body;
     const resp = await Bill.find({ 'rid': rid })
-    console.log(resp)
+    // console.log(resp)
     res.send(JSON.stringify(resp))
 }
 
@@ -588,11 +587,14 @@ export const addRating = async (req, res) => {
     console.log(currrating)
     console.log(ratingCount)
 
-    currrating = ((parseInt(currrating) * parseInt(ratingCount)) + parseInt(rating)) / parseInt(ratingCount + 1);
-    console.log(currrating)
+    // currrating = parseFloat(((parseInt(currrating) * parseInt(ratingCount)) + parseInt(rating)) / parseInt(ratingCount + 1));
+    currrating=currrating*ratingCount
+    let newrating=(currrating+rating)/(ratingCount+1);
+    newrating = newrating.toFixed(2)
+    console.log(newrating)
 
     const resp2 = await Restaurant.updateOne({ '_id': rid },
-        { $set: { 'rating': currrating, 'ratingCount': ratingCount + 1 } })
+        { $set: { 'rating': newrating, 'ratingCount': ratingCount + 1 } })
 
     if (resp2.modifiedCount == 1) {
         res.send(JSON.stringify({ 'message': 'Rating added successfully' }))
