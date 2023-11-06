@@ -9,12 +9,16 @@ import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Stack, Paper, Divider, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Stack, Paper, Divider } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import API from '../../../../axios';
 import "./RestaurantCard.css"
 
+// const StyledCard = styled(Card)(({ theme }) => ({
+//     transition: "transform 0.15s ease-in-out",
+//     "&:hover": { transform: "scale3d(1.05, 1.05, 1)" },
+// }))
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -57,7 +61,7 @@ const RestaurantCard = ({ name, thumbnail_url, city, id, accepting }) => {
     return (
         <>
             <div className={`restaurant_card ${accepting}`}>
-                <Card sx={{ maxWidth: 400, ":hover": { 'border': '1px solid grey' }, "borderRadius": "7px", position: 'relative' }}>
+                <Card sx={{ maxWidth: 400, position: 'relative' }}>
                     {
                         accepting === 'False' &&
                         <Paper
@@ -89,7 +93,7 @@ const RestaurantCard = ({ name, thumbnail_url, city, id, accepting }) => {
                         onClick={() => {
                             navigate(`/restaurantdetails/${id}`)
                         }}
-                        sx={{ "transition": "transform 0.4s", ":hover": { 'cursor': 'pointer', 'transform': 'scale(1.1)' } }}
+                        sx={{ ":hover": { 'cursor': 'pointer' } }}
                     />
                     <CardActions disableSpacing sx={{ padding: 0 }}>
                         <CardHeader
