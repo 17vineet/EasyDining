@@ -30,34 +30,32 @@ const Home = () => {
     const getAllRestaurants = async () => {
       const city = searchParams.get('city');
       try {
-        const response = await axios.post("http://127.0.0.1:3000/ml/getTopRestaurants", { 'city': city });
+        const response = await axios.post("http://127.0.0.1:5000/ml/getTopRestaurants", { 'city': city });
         // const response = await API_REQUEST.post("ml/getTopRestaurants", { 'city': city }, {
         //   headers: {
         //     'Origin': 'http://localhost:5173'
         //   }
         // })
         const data = response.data.list;
+        console.log(data);
         const newRestaurants = Object.keys(data).map(key => {
           return {
             name: data[key].name,
             thumbnail_url: data[key].thumbnail_url,
             id: data[key]._id,
             city: data[key].city,
-            accepting: data[key].accepting
+            accepting: data[key].accepting,
+          
           };
         });
+        console.log(newRestaurants)
         setRestaurants(newRestaurants);
 
       } catch (error) {
         console.log(error);
       }
       try {
-        const resp=await axios.post("http://127.0.0.1:3000/ml/similarRestaurants", { 'phone': currentUser.phone, 'city': currentUser.last_city })
-        // const resp = await API_REQUEST.post("ml/similarRestaurants", { 'phone': currentUser.phone, 'city': currentUser.last_city }, {
-        //   headers: {
-        //     'Origin': 'http://localhost:5173'
-        //   }
-        // })
+        const resp = await axios.post("http://127.0.0.1:5000/ml/similarRestaurants", { 'phone': currentUser.phone, 'city': currentUser.last_city })
         const data2 = resp.data.list
         const suggRestaurants = Object.keys(data2).map(key => {
           return {
@@ -65,7 +63,8 @@ const Home = () => {
             thumbnail_url: data2[key].thumbnail_url,
             id: data2[key]._id,
             city: data2[key].city,
-            accepting: data2[key].accepting
+            accepting: data2[key].accepting,
+          
           };
         });
         setSuggestedRest(suggRestaurants);
@@ -84,40 +83,44 @@ const Home = () => {
       <Offers />
       <div className="background">
         <div className="content">
-          <h2>Restaurants you may like</h2>
-          <div className="restaurant_display m-4" >
-            <Grid container columnSpacing={3} rowSpacing={3}>
-              {
-                suggestedrest.map((elem, index) => (
-                  <StyledGrid item sm={6} md={4} lg={4} key={index}>
-                    <RestaurantCard
-                      key={index}
-                      name={elem.name}
-                      thumbnail_url={elem.thumbnail_url}
-                      id={elem.id}
-                      city={elem.city}
-                      accepting={elem.accepting}
-                    />
-                  </StyledGrid>
-                ))
-              }
-            </Grid>
-          </div>
           {
-            currentUser.last_city &&
+            suggestedrest.length > 0 &&
             <>
-              <h2>Top Restaurants in {currentUser?.last_city}</h2>
-              <Box className='restaurant_display m-4'>
+              <h2>Restaurants you may like</h2>
+              <div className="restaurant_display m-4" >
                 <Grid container columnSpacing={3} rowSpacing={3}>
-                  {restaurants.map((elem, index) => (
-                    <StyledGrid item sm={6} md={4} lg={4} key={index}>
-                      <RestaurantCard key={index} name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} accepting={elem.accepting} />
-                    </StyledGrid>
-                  ))}
+                  {
+                    suggestedrest.map((elem, index) => (
+                      <StyledGrid item sm={6} md={4} lg={4} key={index}>
+                        <RestaurantCard
+                          key={index}
+                          name={elem.name}
+                          thumbnail_url={elem.thumbnail_url}
+                          id={elem.id}
+                          city={elem.city}
+                          accepting={elem.accepting}
+                        />
+                      </StyledGrid>
+                    ))
+                  }
                 </Grid>
-              </Box>
+              </div>
             </>
           }
+          {
+            currentUser.last_city ? 
+              <h2>Top Restaurants in {currentUser?.last_city}</h2> : 
+              <h2>Top Restaurants</h2>
+          }
+          <Box className='restaurant_display m-4'>
+            <Grid container columnSpacing={3} rowSpacing={3}>
+              {restaurants.map((elem, index) => (
+                <StyledGrid item sm={6} md={4} lg={4} key={index}>
+                  <RestaurantCard key={index} name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} accepting={elem.accepting} />
+                </StyledGrid>
+              ))}
+            </Grid>
+          </Box>
         </div>
         <div>
           <div>

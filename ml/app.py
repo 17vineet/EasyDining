@@ -8,21 +8,23 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 app = Flask(__name__)
 
-CORS(app,origins="*")
+CORS(app)
 # CORS(app, origins="http://localhost:5173")
 
-# CORS(app, resources={r"/*": {"origins": "http://localhost:5173/"}})
-# CORS(app, resources={r"/ml/*": {"origins": "http://localhost:5173"}})
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173/"}})
+CORS(app, resources={r"/ml/*": {"origins": "http://localhost:5173"}})
 # 
 
 @app.route('/ml/getTopRestaurants', methods=['POST', 'OPTIONS'])
+@cross_origin()
 def post_endpoint2():
     data = request.get_json()
     response = requests.post('http://localhost:4000/customer/allRestaurants')
     if response.status_code == 200:
         resp = response.json()
         df = pd.DataFrame(resp)
-        if data.get('city','')!='':
+        print(data.get('city'))
+        if data.get('city','')!='null' and data.get('city','')!='':
             df2 = df[df['city']==data['city']]
         else:
             df2 = df
@@ -43,6 +45,7 @@ def post_endpoint2():
 
   
 @app.route('/ml/getRestaurantsBySearch', methods=['POST', 'OPTIONS'])
+@cross_origin()
 def post_endpoint3():
     data = request.get_json()
     print(data)
@@ -93,6 +96,7 @@ def post_endpoint3():
         return jsonify({"error": "Failed to fetch data from the other API"})
     
 @app.route('/ml/likedRestaurants', methods=['POST', 'OPTIONS'])
+@cross_origin()
 def post_endpoint4():
     data = request.get_json()
     response = requests.post('http://localhost:4000/customer/allRestaurants')
@@ -118,6 +122,7 @@ def post_endpoint4():
         return jsonify({"error": "Failed to fetch data from the other API"})
 
 @app.route('/ml/similarRestaurants', methods=['POST', 'OPTIONS'])
+@cross_origin()
 def post_endpoint5():
     data = request.get_json()
     # print(data)
@@ -162,7 +167,7 @@ def post_endpoint5():
             del d['password']
             arr.append(d)
         # print(arr)
-        return jsonify({'list':arr.iloc[:6,:]})
+        return jsonify({'list':arr[:6]})
         # return arr
     else:
         return jsonify({"error": "Failed to fetch data from the other API"})

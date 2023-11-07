@@ -172,3 +172,51 @@
     width: 33%;
     /* padding-left: 5px; */
 }
+.customer_content1_right h6,.customer_content1_right h2{
+    display: flex;
+    align-items: center;
+    /* background-color: aqua; */
+    /* height: 50px; */
+
+}
+.ratings{
+    color: white;
+    background-color:#43a047;
+    padding: 5px;
+    border-radius: 5px;
+    /* height: 30px; */
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    /* justify-content: center;
+    display: inline-block;  */
+    /* height: max-content;  */
+    margin-top:5px ;
+}
+.openCloseShow{
+    background-color: rgb(232, 232, 84);
+    color: red;
+    /* margin: 5px; */
+    padding: 5px;
+    display: inline-block;
+    border-radius: 5px;
+    border: 2px solid black; /* Set an initial border color */
+    animation: borderChange 4s infinite linear; /* Apply the animation */
+}
+@keyframes borderChange {
+    0% {
+      border-color: red; /* Start with a red border */
+    }
+    25% {
+      border-color: blue; /* Change to a blue border at 25% of the animation */
+    }
+    50% {
+      border-color: green; /* Change to a green border at 50% of the animation */
+    }
+    75% {
+      border-color: orange; /* Change to an orange border at 75% of the animation */
+    }
+    100% {
+      border-color: red; /* Return to a red border at the end of the animation */
+    }
+  }

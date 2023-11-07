@@ -23,7 +23,6 @@ const Navbar = () => {
 
     const fetchSearchItems = async () => {
       const resp = await API.post("/customer/searchBarItems", { city: cityValue })
-      console.log(resp.data);
       setSearchItems(resp.data.list);
     }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useLocation } from 'react-router-dom'
+import { useParams, useLocation , Link } from 'react-router-dom'
 import { Box, InputLabel, MenuItem, FormControl, List, ListItemText, Divider, ListItem, Typography, Paper } from '@mui/material';
 import Select from '@mui/material/Select';
 import SendIcon from '@mui/icons-material/Send';
@@ -12,6 +12,7 @@ import API from '../../../axios'
 import { useAuth } from '../../../contexts/AuthContext'
 import RestaurantImageModel from './RestaurantImageModel'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
+import StarIcon from '@mui/icons-material/Star';
 
 const RestaurantPage = () => {
     const { rid } = useParams();
@@ -140,13 +141,15 @@ const RestaurantPage = () => {
                                 </div>
                             </div>
                             <div className="customer_content1_right">
-                                <h2>{restdetails.name}</h2>
-                                <h6>Sitting Capacity : {restdetails.sitting_capacity}</h6>
-                                <h6>Location : {restdetails.location_url}</h6>
+                                <h2>{restdetails.name}&nbsp;<h6 className='ratings'>{restdetails.rating}<StarIcon fontSize='small'/></h6></h2>
+                                {/* <h6>Rating :&nbsp;&nbsp; {restdetails.ratingCount === 0 ? 'No ratings yet' :<span className='ratings'>{restdetails.rating}<StarIcon fontSize='small'/></span>}</h6> */}
+                                <h6>Timings : Open from&nbsp;<b>{restdetails.opening_time}</b> hours to&nbsp;<b>{restdetails.closing_time}</b> hours&nbsp;{accepting ? <span className='openCloseShow'>Open Now</span>:<span className='openCloseShow'>Closed</span>}</h6> 
                                 <h6>Price Range : {restdetails.range}</h6>
-                                <h6>Contact : {restdetails.phone}</h6>
                                 <h6>City : {restdetails.city}</h6>
-                                <h6>Rating : {restdetails.ratingCount === 0 ? 'No ratings yet' : restdetails.rating}</h6>
+                              
+                                <h6>Location :&nbsp;<Link to={restdetails.location_url} target="_blank">Get Directions</Link></h6>
+                                <h6>Contact : {restdetails.phone}</h6>
+                           
                             </div>
                         </div>
                         {
