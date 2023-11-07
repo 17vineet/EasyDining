@@ -8,42 +8,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 app = Flask(__name__)
 
-CORS(app, origins="*")
+CORS(app,origins="*")
+# CORS(app, origins="http://localhost:5173")
 
+# CORS(app, resources={r"/*": {"origins": "http://localhost:5173/"}})
+# CORS(app, resources={r"/ml/*": {"origins": "http://localhost:5173"}})
+# 
 
-
-@app.route('/ml/getRestaurants', methods=['POST'])
-def post_endpoint1():
-    # Get the JSON data from the request
-    data = request.get_json()
-    # Process the data (You can customize this logic)
-    result = {"message": "Received data", "data": data}
-    print(data['city'])
-    response = requests.post('http://localhost:4000/customer/allRestaurants',{"city":data['city']})
-    if response.status_code == 200:
-        response = [{'_id': '652f70b4e91a5f14261fac0b', 'email': 'priyanshshah2442@gmail.com', 'password': '123456', 
-            'name': 'PRIYANSH SHAH', 'location_url': 'google.map.com', 'sitting_capacity': 100, 'range': '', 
-            'thumbnail_url': 'https://res.cloudinary.com/dedenmpd7/image/upload/v1697607851/tnmqn9vjfmnicbdymq0v.avif', 
-            'images_urls': ['https://res.cloudinary.com/dedenmpd7/image/upload/v1697607856/kbomfnijd7nt0zptmnxu.avif'],
-            'total_tables': {'tableSize': [], 'noOfTables': []}, 'occupied_tables': {'tableSize': [], 'noOfTables': []}, 
-            'phone': 6353159433, 'city': 'Vadodara', 'rating': 4.1, 'ratingCount':1, '__v': 0, 'refresh_token': ''},
-                    {'_id': '6530cb258f10a116e116382a', 'email': 'hns@gmail.com', 'password': '123456', 'name': 'Easy Dining', 'location_url': 'google.com', 'sitting_capacity': 100, 'range': 'Medium','thumbnail_url': 'https://res.cloudinary.com/dedenmpd7/image/upload/v1697696541/rp0u1kjzmqrgbnyivvnc.jpg', 'images_urls': ['https://res.cloudinary.com/dedenmpd7/image/upload/v1697696546/ke4klkig333grgz76lhc.jpg', 'https://res.cloudinary.com/dedenmpd7/image/upload/v1697696546/uqp7cfulr401uzyzusg4.jpg', 'https://res.cloudinary.com/dedenmpd7/image/upload/v1697696546/tpknzvm57kguapz9aekz.jpg', 'https://res.cloudinary.com/dedenmpd7/image/upload/v1697696546/tkxhmxs6pn7xdiv3t8ho.jpg', 'https://res.cloudinary.com/dedenmpd7/image/upload/v1697696546/jynyns0w3n2ucxiofpln.jpg'], 'total_tables': {'tableSize': [], 'noOfTables': []}, 'occupied_tables': {'tableSize': [], 'noOfTables': []}, 'phone': 9601613653, 'city': 'Vadodara', 'rating': 2.5, 'ratingCount':1, '__v': 0, 'refresh_token': ''}]
-
-        df = pd.DataFrame(response)
-
-        df_sorted = df.sort_values(by=['rating'],ascending=[False])
-
-        # print(df_sorted)
-
-        # Specify the output Excel file path
-        excel_file_path = "data.xlsx"
-        id_arr = df_sorted['_id'].tolist()
-        print(id_arr)
-        return jsonify({'data':id_arr})
-    else:
-        return jsonify({"error": "Failed to fetch data from the other API"})
-
-@app.route('/ml/getTopRestaurants', methods=['POST'])
+@app.route('/ml/getTopRestaurants', methods=['POST', 'OPTIONS'])
 def post_endpoint2():
     data = request.get_json()
     response = requests.post('http://localhost:4000/customer/allRestaurants')
@@ -70,7 +42,7 @@ def post_endpoint2():
 
 
   
-@app.route('/ml/getRestaurantsBySearch', methods=['POST'])
+@app.route('/ml/getRestaurantsBySearch', methods=['POST', 'OPTIONS'])
 def post_endpoint3():
     data = request.get_json()
     print(data)
@@ -120,7 +92,7 @@ def post_endpoint3():
     else:
         return jsonify({"error": "Failed to fetch data from the other API"})
     
-@app.route('/ml/likedRestaurants', methods=['POST'])
+@app.route('/ml/likedRestaurants', methods=['POST', 'OPTIONS'])
 def post_endpoint4():
     data = request.get_json()
     response = requests.post('http://localhost:4000/customer/allRestaurants')
@@ -145,13 +117,16 @@ def post_endpoint4():
     else:
         return jsonify({"error": "Failed to fetch data from the other API"})
 
-@app.route('/ml/similarRestaurants', methods=['POST'])
+@app.route('/ml/similarRestaurants', methods=['POST', 'OPTIONS'])
 def post_endpoint5():
     data = request.get_json()
+    # print(data)
     response = requests.post('http://localhost:4000/customer/getVisited',{'phone':data.get('phone','')})
     if response.status_code == 200:
         resp1 = response.json()
         # print(resp1)
+        if len(resp1)==0:
+            return jsonify({'list':list([])})
         last_visited = resp1[-1]['rid']
         # print(last_visited)
 
@@ -187,7 +162,7 @@ def post_endpoint5():
             del d['password']
             arr.append(d)
         # print(arr)
-        return jsonify({'list':arr})
+        return jsonify({'list':arr.iloc[:6,:]})
         # return arr
     else:
         return jsonify({"error": "Failed to fetch data from the other API"})

@@ -9,6 +9,7 @@ import API from '../../../axios';
 import RestaurantCard from './RestaurantCard/RestaurantCard';
 import axios from 'axios';
 import Offers from './Offers';
+import API_REQUEST from '../../../request';
 const Home = () => {
 
   const [restaurants, setRestaurants] = useState([]);
@@ -27,15 +28,15 @@ const Home = () => {
   useEffect(() => {
 
     const getAllRestaurants = async () => {
+      const city = searchParams.get('city');
       try {
-        const city = searchParams.get('city');
-        // const response = await API.post("/customer/allRestaurants", { city });
         const response = await axios.post("http://127.0.0.1:3000/ml/getTopRestaurants", { 'city': city });
-        const resp = await axios.post("http://127.0.0.1:3000/ml/similarRestaurants", { 'phone': currentUser.phone, 'city': currentUser.last_city })
+        // const response = await API_REQUEST.post("ml/getTopRestaurants", { 'city': city }, {
+        //   headers: {
+        //     'Origin': 'http://localhost:5173'
+        //   }
+        // })
         const data = response.data.list;
-        const data2 = resp.data.list
-        console.log(data)
-        console.log(data2)
         const newRestaurants = Object.keys(data).map(key => {
           return {
             name: data[key].name,
@@ -45,6 +46,19 @@ const Home = () => {
             accepting: data[key].accepting
           };
         });
+        setRestaurants(newRestaurants);
+
+      } catch (error) {
+        console.log(error);
+      }
+      try {
+        const resp=await axios.post("http://127.0.0.1:3000/ml/similarRestaurants", { 'phone': currentUser.phone, 'city': currentUser.last_city })
+        // const resp = await API_REQUEST.post("ml/similarRestaurants", { 'phone': currentUser.phone, 'city': currentUser.last_city }, {
+        //   headers: {
+        //     'Origin': 'http://localhost:5173'
+        //   }
+        // })
+        const data2 = resp.data.list
         const suggRestaurants = Object.keys(data2).map(key => {
           return {
             name: data2[key].name,
@@ -54,9 +68,7 @@ const Home = () => {
             accepting: data2[key].accepting
           };
         });
-        setRestaurants(newRestaurants);
         setSuggestedRest(suggRestaurants);
-
       } catch (error) {
         console.log(error);
       }
