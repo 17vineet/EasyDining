@@ -12,7 +12,7 @@ function containsOnlyNumbers(inputStr) {
 export const signUpRestaurant = async (req, res) => {
     console.log(req.body)
     try {
-        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating':0 , 'ratingCount':0, 'accepting': false, 'opening_time':'10:00', 'closing_time':'23:00'});
+        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating':0 , 'ratingCount':0, 'accepting': false, 'average_time':20, 'dineCount':0});
         var result = await data.save();
     }
     catch (e) {
@@ -143,12 +143,12 @@ export const getDiningList = async (req, res) => {
 
 export const insertDiningList = async (req, res) => {
 
-    const { rid, name, phone, email, pax, size } = req.body;
+    const { rid, name, phone, email, pax, size} = req.body;
     const customersList = await DiningList.findOne({ restaurant: rid });
 
     const resp = await DiningList.updateOne(
         { _id: customersList._id },
-        { $push: { customers: { cname: name, email, phone, pax, size } } }
+        { $push: { customers: { cname: name, email, phone, pax, size, time, 'time':new Date().toUTCString() } } }
     );
 
     res.send(resp);
@@ -182,7 +182,7 @@ export const addToDineIn = async (req, res) => {
     // console.log(diningList);
     const resp = await DiningList.updateOne(
         { _id: diningList._id },
-        { $push: { customers: { cname, email, phone, pax, size } } }
+        { $push: { customers: { cname, email, phone, pax, size,'time':new Date().toUTCString() } } }
     );
 
     res.send(JSON.stringify(resp));

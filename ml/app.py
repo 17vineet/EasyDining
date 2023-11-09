@@ -8,14 +8,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 app = Flask(__name__)
 
-CORS(app)
+CORS(app,origins="*")
 # CORS(app, origins="http://localhost:5173")
 
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173/"}})
-CORS(app, resources={r"/ml/*": {"origins": "http://localhost:5173"}})
+# CORS(app, resources={r"/*": {"origins": "http://localhost:5173/"}})
+# CORS(app, resources={r"/ml/*": {"origins": "http://localhost:5173"}})
 # 
 
-@app.route('/ml/getTopRestaurants', methods=['POST', 'OPTIONS'])
+@app.route('/ml/getTopRestaurants', methods=['POST'])
 @cross_origin()
 def post_endpoint2():
     data = request.get_json()
@@ -44,7 +44,7 @@ def post_endpoint2():
 
 
   
-@app.route('/ml/getRestaurantsBySearch', methods=['POST', 'OPTIONS'])
+@app.route('/ml/getRestaurantsBySearch', methods=['POST'])
 @cross_origin()
 def post_endpoint3():
     data = request.get_json()
@@ -121,7 +121,7 @@ def post_endpoint4():
     else:
         return jsonify({"error": "Failed to fetch data from the other API"})
 
-@app.route('/ml/similarRestaurants', methods=['POST', 'OPTIONS'])
+@app.route('/ml/similarRestaurants', methods=['POST'])
 @cross_origin()
 def post_endpoint5():
     data = request.get_json()

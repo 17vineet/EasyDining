@@ -58,7 +58,14 @@ const restaurantSchema = new Schema({
     },
     closing_time:{
         type:String
+    },
+    average_time:{
+        type:Number
+    },
+    dineCount:{
+        type:Number
     }
+
 });
 
 const customerSchema = new Schema({

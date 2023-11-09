@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useLocation , Link } from 'react-router-dom'
+import { useParams, useLocation, Link } from 'react-router-dom'
 import { Box, InputLabel, MenuItem, FormControl, List, ListItemText, Divider, ListItem, Typography, Paper } from '@mui/material';
 import Select from '@mui/material/Select';
 import SendIcon from '@mui/icons-material/Send';
@@ -29,6 +29,7 @@ const RestaurantPage = () => {
     const [takeOrderModal, setTakeOrderModal] = useState(false);
     const [viewOrderModal, setViewOrderModal] = useState(false);
     const [accepting, setAccepting] = useState(false);
+    const [open, setOpen] = useState(false);
     const [restaurantImgModel, setrestaurantImgModel] = useState({
         open: false,
         index: undefined
@@ -68,6 +69,40 @@ const RestaurantPage = () => {
         setDetails(details.data)
         setImg_urls(details.data.images_urls)
         setMenu(resp.data.menu)
+
+        let time = new Date();
+        time = time.toLocaleTimeString().slice(0, 5)
+        // console.log(time)
+        let openTime = new Date();
+        openTime.setHours(details.data.opening_time.slice(0, 2));
+        openTime.setMinutes(details.data.opening_time.slice(3, 5));
+        console.log(openTime)
+        let closeTime = new Date();
+        closeTime.setHours(details.data.closing_time.slice(0, 2));
+        closeTime.setMinutes(details.data.closing_time.slice(3, 5));
+        openTime = openTime.toLocaleTimeString().slice(0, 5);
+        closeTime = closeTime.toLocaleTimeString().slice(0, 5);
+
+        if (openTime < closeTime) {
+            // check the current time and directly set open/close
+            if (time >= openTime && time <= closeTime) {
+                setOpen(true);
+            }
+            else {
+                setOpen(false);
+            }
+        }
+        else {
+            // check if the current time is more than opening or less than closing
+            if (time >= openTime || time <= closeTime) {
+                setOpen(true)
+            }
+            else {
+                setOpen(false)
+            }
+        }
+        console.log(closeTime)
+
         setAccepting(details.data.accepting)
     }
 
@@ -141,15 +176,14 @@ const RestaurantPage = () => {
                                 </div>
                             </div>
                             <div className="customer_content1_right">
-                                <h2>{restdetails.name}&nbsp;<h6 className='ratings'>{restdetails.rating}<StarIcon fontSize='small'/></h6></h2>
-                                {/* <h6>Rating :&nbsp;&nbsp; {restdetails.ratingCount === 0 ? 'No ratings yet' :<span className='ratings'>{restdetails.rating}<StarIcon fontSize='small'/></span>}</h6> */}
-                                <h6>Timings : Open from&nbsp;<b>{restdetails.opening_time}</b> hours to&nbsp;<b>{restdetails.closing_time}</b> hours&nbsp;{accepting ? <span className='openCloseShow'>Open Now</span>:<span className='openCloseShow'>Closed</span>}</h6> 
+                                <h2>{restdetails.name}&nbsp;{restdetails.ratingCount > 0 & <h6 className='ratings'>{restdetails.rating}<StarIcon fontSize='small' /></h6> }</h2>
+                                <h6>Timings : Open from&nbsp;<b>{restdetails.opening_time}</b> hours to&nbsp;<b>{restdetails.closing_time}</b> hours&nbsp;{open ? <span className='openCloseShow'>Open Now</span> : <span className='openCloseShow'>Closed</span>}</h6>
                                 <h6>Price Range : {restdetails.range}</h6>
                                 <h6>City : {restdetails.city}</h6>
-                              
+
                                 <h6>Location :&nbsp;<Link to={restdetails.location_url} target="_blank">Get Directions</Link></h6>
                                 <h6>Contact : {restdetails.phone}</h6>
-                           
+
                             </div>
                         </div>
                         {
@@ -212,9 +246,9 @@ const RestaurantPage = () => {
                                 </div>
                             }
                             {/* <div className="customer_content2_right"> */}
-                            {!hasReserved && <Paper elevation={3} sx={{ width:'30%' }}>
+                            {!hasReserved && <Paper elevation={3} sx={{ width: '30%' }}>
                                 {
-                                    accepting ?
+                                    accepting && open ?
                                         <Box className="p-3">
                                             <FormControl className='check_waiting_form' style={{ margin: '10px' }}>
                                                 <InputLabel id="demo-simple-select-label">No. of Persons</InputLabel>
@@ -237,9 +271,11 @@ const RestaurantPage = () => {
                                                     Check waiting
                                                 </Button>
                                             </div>
-                                        </Box> : <h3>Not accepting Booking Right Now</h3>
+                                        </Box>
+                                        :
+                                        <h3 className='p-4'>Not accepting Booking Right Now</h3>
                                 }
-                                </Paper>
+                            </Paper>
                             }
 
                             {

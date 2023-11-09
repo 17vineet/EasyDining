@@ -30,7 +30,7 @@ const Home = () => {
     const getAllRestaurants = async () => {
       const city = searchParams.get('city');
       try {
-        const response = await axios.post("http://127.0.0.1:5000/ml/getTopRestaurants", { 'city': city });
+        const response = await axios.post("http://127.0.0.1:3000/ml/getTopRestaurants", { 'city': city });
         // const response = await API_REQUEST.post("ml/getTopRestaurants", { 'city': city }, {
         //   headers: {
         //     'Origin': 'http://localhost:5173'

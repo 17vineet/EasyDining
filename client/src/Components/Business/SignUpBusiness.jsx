@@ -6,7 +6,12 @@ import jwtDecode from 'jwt-decode';
 import { Link, useNavigate } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useAuth } from '../../contexts/AuthContext';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import API from "../../axios";
+import dayjs from 'dayjs';
 const SignUp = () => {
     const [formData, setFormData] = useState({
         email: '',
@@ -18,7 +23,9 @@ const SignUp = () => {
         phone: '',
         thumbnail_url: '',
         numberOfTables: '',
-        city: city[0]
+        city: city[0],
+        opening_time: dayjs('2022-04-17T10:00').$d,
+        closing_time: dayjs('2022-04-17T23:00').$d
     });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -87,19 +94,19 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log(formData);
+            // console.log(formData);
             if (!selectedFile || !selectedFile1) {
                 alert("Please fill out all the fields");
                 return;
             }
-            const resp = await API.post("/restaurant/signup", formData)
+            const resp = await API.post("/restaurant/signup",{...formData,opening_time:formData.opening_time.toLocaleTimeString().slice(0,5),closing_time:formData.closing_time.toLocaleTimeString().slice(0,5)})
             const decodedToken = jwtDecode(resp.data.accessToken);
             setCurrentUser(decodedToken);
             setAuth(resp.data.accessToken);
             setLoading(false);
             navigate('/business/home');
         } catch (error) {
-            setError(error.response.data);
+            setError(error);
         }
     };
 
@@ -222,6 +229,35 @@ const SignUp = () => {
                                 <TextField {...params} label="City" required />
                             )}
                         />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DemoContainer components={['TimePicker', 'TimePicker']}>
+                                <TimePicker
+                                    label="Opening Time"
+                                    name="opening_time"
+                                    value={formData.opening_time}
+                                    
+                                    onChange={(newValue)=>{
+                                        setFormData({...formData,opening_time:newValue.$d.toLocaleTimeString().slice(0,5)})
+                                    }}
+                                />
+                            </DemoContainer>
+                        </LocalizationProvider>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DemoContainer components={['TimePicker', 'TimePicker']}>
+                                <TimePicker
+                                    label="Closing Time"
+                                    name="closing_time"
+                                    value={formData.closing_time}
+                                    onChange={(newValue)=>{
+                                        setFormData({...formData,closing_time:newValue.$d.toLocaleTimeString().slice(0,5)})
+                                    }}
+                                />
+                            </DemoContainer>
+                        </LocalizationProvider>
                     </Grid>
                     <Grid item xs={12}>
                         Thumbnail &nbsp;
