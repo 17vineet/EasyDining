@@ -339,6 +339,10 @@ export const checkWaiting = async (req, res) => {
             l.push([tableSize[ind], noOfTables[ind]])
         }
     }
+    // l = [[4,1],[5,3]]
+    // pax = 4
+    [2,4,5] // tableSize
+    [2,1,3] // noOfTables
     l.sort((a, b) => a[0] - b[0])
     // console.log(response.occupied_tables)
     for (let tab of l) {
@@ -353,10 +357,9 @@ export const checkWaiting = async (req, res) => {
                 res.send({ "message": "Available", "Size": tab[0] })
                 return;
             }
-            else { continue }
         }
     }
-    res.send(JSON.stringify({ 'message': "Unavailable" }))
+    res.send(JSON.stringify({ 'message': "Unavailable", 'Time':15 }))
 }
 
 export const addOccupiedTable = async (req, res) => {
@@ -407,11 +410,15 @@ const deleteOccupiedTable = async (rid, tableSize) => {
     const resp = await Restaurant.findOne({ '_id': rid })
     let noOfTables = resp.occupied_tables.noOfTables;
     const ocIndex = resp.occupied_tables.tableSize.indexOf(tableSize)
+    // console.log(ocIndex);
     if (noOfTables[ocIndex] >= 1) {
+        // console.log("Removing 1 table")
         noOfTables[ocIndex] -= 1
     }
+    // console.log(noOfTables[ocIndex]);
     const resp2 = await Restaurant.updateOne({ '_id': rid },
-        { $set: { 'occupied_tables': { 'tableSize': resp.occupied_tables.tableSize, 'noOfTables': noOfTables } } })
+    { $set: { 'occupied_tables': { 'tableSize': resp.occupied_tables.tableSize, 'noOfTables': noOfTables } } })
+    // console.log(resp2);
     if (resp2.modifiedCount == 1) {
         console.log("Deleted Occupied Table")
         return "Deleted Occupied Table"
@@ -524,7 +531,8 @@ export const viewOrder = async (req, res) => {
 }
 
 export const generateBill = async (req, res) => {
-    const { rid, phone, tableSize } = req.body;
+    const { rid, phone } = req.body;
+    // console.log("Table Size = "+tableSize)
     const resp = await Order.findOne({ 'restaurant': rid, "customer": phone })
     let arr = [...resp._doc.order];
     let bill = []
@@ -546,14 +554,47 @@ export const generateBill = async (req, res) => {
 
     const today = new Date()
     const resp5 = await Restaurant.findOne({ '_id': rid })
+
     const billData = new Bill({ 'restaurant_name': resp5._doc.name, 'rid': rid, 'customer': phone, 'orderId': resp._id, 'bill': bill, 'billAmt': totalAmt, 'billDate': today.toLocaleDateString(), 'billTime': today.toLocaleTimeString() })
     await billData.save();
+
     await Order.deleteOne({ "_id": resp._id })
 
-    const resp3 = await DiningList.updateOne({ restaurant: rid },
-        { $pull: { customers: { phone: phone } } })
+    let dineTime = null
+    let tableSize = null
+    const resp6 = await DiningList.findOne({restaurant:rid})
+    // console.log(resp6);
+    for(var c of resp6.customers)
+    {
+        // console.log(c)
+        if(c['phone']===phone)
+        {
+            dineTime = new Date(c['time']);
+            tableSize = c['size'];
+            break;
+        }
+    }
+    if(dineTime!=null)
+    {
+        console.log(dineTime);
+        let currTime = new Date();
+        let timeTaken = (currTime-dineTime)/60000
+        // console.log(timeTaken);
+        let avTime = resp5.average_time ? resp5.average_time : 0;
+        // console.log(avTime)
+        let dineCount = resp5.dineCount ? resp5.dineCount : 0 ;
+        // console.log(dineCount);
+        avTime = ((avTime*dineCount)+timeTaken)/(dineCount+1);
+        avTime = parseInt(avTime)
+        // console.log(avTime)
+        const resp7 = await Restaurant.updateOne({'_id':rid},
+        {$set:{'average_time':avTime,'dineCount':dineCount+1}})
+        // console.log(resp7)
+    }
+
+    const resp3 = await DiningList.updateOne({ restaurant: rid },{ $pull: { customers: { phone: phone } } })
     const resp4 = await deleteOccupiedTable(rid, tableSize);
-    // console.log(resp4)
+    console.log(resp4)
     res.send(JSON.stringify({ "orderId": resp._id }))
 }
 

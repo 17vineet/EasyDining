@@ -99,7 +99,8 @@ const SignUp = () => {
                 alert("Please fill out all the fields");
                 return;
             }
-            const resp = await API.post("/restaurant/signup",{...formData,opening_time:formData.opening_time.toLocaleTimeString().slice(0,5),closing_time:formData.closing_time.toLocaleTimeString().slice(0,5)})
+            console.log(formData);
+            const resp = await API.post("/restaurant/signup",formData)
             const decodedToken = jwtDecode(resp.data.accessToken);
             setCurrentUser(decodedToken);
             setAuth(resp.data.accessToken);

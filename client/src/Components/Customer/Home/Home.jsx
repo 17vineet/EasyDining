@@ -55,7 +55,7 @@ const Home = () => {
         console.log(error);
       }
       try {
-        const resp = await axios.post("http://127.0.0.1:5000/ml/similarRestaurants", { 'phone': currentUser.phone, 'city': currentUser.last_city })
+        const resp = await axios.post("http://127.0.0.1:3000/ml/similarRestaurants", { 'phone': currentUser.phone, 'city': currentUser.last_city })
         const data2 = resp.data.list
         const suggRestaurants = Object.keys(data2).map(key => {
           return {

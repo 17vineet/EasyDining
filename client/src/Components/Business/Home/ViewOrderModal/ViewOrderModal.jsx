@@ -7,7 +7,7 @@ import './ViewOrderModal.css'
 import { useAuth } from '../../../../contexts/AuthContext';
 import Loading from '../../../Loading/Loading';
 
-const ViewOrderModal = ({phone, closeViewOrderModal ,id,tableSize}) => {
+const ViewOrderModal = ({phone, closeViewOrderModal ,id}) => {
   const [items,setItems]=useState([])
   const {currentUser} = useAuth() ;
   const [loading,setLoading]=useState(false);
@@ -37,7 +37,7 @@ const ViewOrderModal = ({phone, closeViewOrderModal ,id,tableSize}) => {
   const handleCheckOut = async ()=> {
     // handle response properly
     setLoading(true);
-    const resp = await API.post(`/restaurant/generateBill`,{rid:id || currentUser._id,phone:phone,tableSize})
+    const resp = await API.post(`/restaurant/generateBill`,{rid:id || currentUser._id,phone:phone})
     setLoading(false);
     navigate(`/${currentUser.userType}/bill/${resp.data.orderId}`) ;
     setItems([]) ;
