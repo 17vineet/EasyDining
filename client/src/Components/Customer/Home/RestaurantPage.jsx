@@ -176,8 +176,8 @@ const RestaurantPage = () => {
                                 </div>
                             </div>
                             <div className="customer_content1_right">
-                                <h2>{restdetails.name}&nbsp;{restdetails.ratingCount > 0 && <h6 className='ratings'>{restdetails.rating}<StarIcon fontSize='small' /></h6> }</h2>
-                                <h6>Timings : Open from&nbsp;<b>{restdetails.opening_time}</b> hours to&nbsp;<b>{restdetails.closing_time}</b> hours&nbsp;{open ? <span className='openCloseShow'>Open Now</span> : <span className='openCloseShow'>Closed</span>}</h6>
+                                <h2>{restdetails.name}&nbsp;{restdetails.ratingCount > 0 && <h6 className='ratings'>{restdetails.rating}<StarIcon fontSize='small' /></h6>}</h2>
+                                <h6>Timings : Open from&nbsp;<b>{restdetails.opening_time}</b>&nbsp;hours to&nbsp;<b>{restdetails.closing_time}</b>&nbsp;hours&nbsp;{open ? <span className='openCloseShow'>Open Now</span> : <span className='openCloseShow'>Closed</span>}</h6>
                                 <h6>Price Range : {restdetails.range}</h6>
                                 <h6>City : {restdetails.city}</h6>
 

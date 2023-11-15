@@ -148,7 +148,7 @@ export const insertDiningList = async (req, res) => {
 
     const resp = await DiningList.updateOne(
         { _id: customersList._id },
-        { $push: { customers: { cname: name, email, phone, pax, size, time, 'time':new Date().toUTCString() } } }
+        { $push: { customers: { cname: name, email, phone, pax, size, 'time':new Date().toUTCString() } } }
     );
 
     res.send(resp);
@@ -339,10 +339,6 @@ export const checkWaiting = async (req, res) => {
             l.push([tableSize[ind], noOfTables[ind]])
         }
     }
-    // l = [[4,1],[5,3]]
-    // pax = 4
-    [2,4,5] // tableSize
-    [2,1,3] // noOfTables
     l.sort((a, b) => a[0] - b[0])
     // console.log(response.occupied_tables)
     for (let tab of l) {
@@ -359,6 +355,10 @@ export const checkWaiting = async (req, res) => {
             }
         }
     }
+    // when the control comes here means that there are no tables available right now then customer will have to wait
+    console.log("Not available right now")
+    const resp2 = await DiningList.findOne({'restaurant':rid})
+    console.log(resp2)
     res.send(JSON.stringify({ 'message': "Unavailable", 'Time':15 }))
 }
 
