@@ -24,8 +24,8 @@ const SignUp = () => {
         thumbnail_url: '',
         numberOfTables: '',
         city: city[0],
-        opening_time: dayjs('2022-04-17T10:00').$d,
-        closing_time: dayjs('2022-04-17T23:00').$d
+        opening_time: dayjs('2022-04-17T10:00'),
+        closing_time: dayjs('2022-04-17T23:00')
     });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -47,7 +47,6 @@ const SignUp = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value)
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
@@ -99,8 +98,15 @@ const SignUp = () => {
                 alert("Please fill out all the fields");
                 return;
             }
-            console.log(formData);
-            const resp = await API.post("/restaurant/signup",formData)
+            let opening_time = formData.opening_time ;
+            let closing_time = formData.closing_time ;
+            if(typeof(formData.opening_time)=='object'){
+                opening_time=formData.opening_time.$d.toLocaleTimeString().slice(0,5)
+            }
+            if(typeof(formData.closing_time)=='object'){
+                closing_time=formData.closing_time.$d.toLocaleTimeString().slice(0,5)
+            }
+            const resp = await API.post("/restaurant/signup",{...formData,opening_time:opening_time,closing_time:closing_time})
             const decodedToken = jwtDecode(resp.data.accessToken);
             setCurrentUser(decodedToken);
             setAuth(resp.data.accessToken);
@@ -112,7 +118,9 @@ const SignUp = () => {
     };
 
     useEffect(() => {
+        console.log(typeof(formData.opening_time))
         if (currentUser) {
+
             navigate('/business/home');
         }
     }, [])
@@ -238,7 +246,6 @@ const SignUp = () => {
                                     label="Opening Time"
                                     name="opening_time"
                                     value={formData.opening_time}
-                                    
                                     onChange={(newValue)=>{
                                         setFormData({...formData,opening_time:newValue.$d.toLocaleTimeString().slice(0,5)})
                                     }}

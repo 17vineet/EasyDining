@@ -5,6 +5,7 @@ import API from '../../../axios';
 import Delete from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import Loading from '../../Loading/Loading';
+import { InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import { useAuth } from '../../../contexts/AuthContext';
 import TakeOrderModal from './TakeOrderModal/TakeOrderModal';
 import ViewOrderModal from './ViewOrderModal/ViewOrderModal';
@@ -21,10 +22,11 @@ function DiningList({updated, handleUpdate}) {
   const [isLoading, setIsLoading] = useState(false);
   const [takeOrderModal,setTakeOrderModal]=useState(null);
   const [orderViewModal,setOrderViewModal]=useState(null);
+  const [pax, setPax] = useState('');
   const { currentUser } = useAuth();
 
   async function handleClick() {
-    if (formData.name.trim().length != 0 &&formData.pax.trim().length!=0 && formData.phone.trim().length!=0) {
+    if (formData.name.trim().length != 0 && formData.pax!='' && formData.phone.trim().length!=0) {
       setIsLoading(true);
       const resp=await API.post('/restaurant/addOccupied',{rid:currentUser._id,pax:formData.pax})
       if(resp.data.message==="Available"){
@@ -72,6 +74,14 @@ function DiningList({updated, handleUpdate}) {
     setIsLoading(false);
   }
 
+  const handlePaxChange = (event) => {
+    setPax(event.target.value);
+    setFormData((prevValue) => ({
+      ...prevValue,
+      pax: parseInt(event.target.value)
+    }))
+  };
+
   const openTakeOrderModal=(phone)=>{
     setTakeOrderModal(phone)
   }
@@ -84,6 +94,7 @@ function DiningList({updated, handleUpdate}) {
   const closeViewOrderModal=(newState)=>{
     setOrderViewModal(null);
   }
+
 
   useEffect(() => {
     const fetchDiningList = async () => {
@@ -103,6 +114,8 @@ function DiningList({updated, handleUpdate}) {
     fetchDiningList();
   }, [updated]);
 
+  const passengers = ['1 guest', '2 guests', '3 guests', '4 guests', '5 guests', '6 guests', '7 guests', '8 guests', '9 guests', '10 guests']
+
   return (
     < >
       {isLoading && <Loading />}
@@ -114,7 +127,27 @@ function DiningList({updated, handleUpdate}) {
 
       <div   >
         <input type='text' placeholder='Enter name to reserve table' onChange={handleChange} value={formData.name} name='name'></input>
-        <input type='number' placeholder='Enter number of persons' onChange={handleChange} value={formData.pax} name='pax'></input>
+        {/* <input type='number' placeholder='Enter number of persons' onChange={handleChange} value={formData.pax} name='pax'></input> */}
+        <div>
+          <FormControl >
+            <InputLabel id="demo-simple-select-label">Pax</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={pax}
+              label="Pax"
+              onChange={handlePaxChange}
+              style={{ width: '150px' }}
+              autoWidth={true}
+              required
+            >
+              {passengers.map((ele, ind) => {
+                return (<MenuItem value={ind + 1} key={ind} >{ele}</MenuItem>)
+              })}
+
+            </Select>
+          </FormControl>
+        </div>
         <input type='tel' placeholder='Enter Mobile number' onChange={handleChange} value={formData.phone} name='phone'></input>
         <button onClick={handleClick} className='btn btn-primary add_btn'><AddIcon /></button>
       </div><br/><br/><br/>

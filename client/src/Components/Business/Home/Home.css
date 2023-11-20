@@ -8,7 +8,7 @@
 .thumbnail_pic {
     height: 180px;
     width: 180px;
-    border-radius: 50%;
+    border-radius: 10px;
     /* border: 2px solid black; */
     text-align: center;
     overflow: hidden;
@@ -19,7 +19,7 @@
 .thumbnail_img {
     height: 180px;
     width: 180px;
-    border-radius: 50%;
+    /* border-radius: 50%; */
 }
 
 .inputThumbnail {
@@ -38,7 +38,7 @@
 
 .content1_left {
     padding: 10px;
-    background-color: azure;
+    /* background-color: azure; */
     width: 50%;
 }
 

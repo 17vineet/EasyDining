@@ -38,11 +38,11 @@ const Home = () => {
               <h6>Extra details</h6>
             </div>
           </div>
-          <h5>Waiting Time(in minutes)</h5>
+          {/* <h5>Waiting Time(in minutes)</h5>
             <input type="number" defaultValue={0} />
             <button className='btn btn-primary ms-4'>Update Waiting time</button>
             <br />
-            <br />
+            <br /> */}
           <AvailableTable updated={updated} handleUpdate={handleUpdate}/>
 
             <div>

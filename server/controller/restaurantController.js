@@ -357,9 +357,52 @@ export const checkWaiting = async (req, res) => {
     }
     // when the control comes here means that there are no tables available right now then customer will have to wait
     console.log("Not available right now")
-    const resp2 = await DiningList.findOne({'restaurant':rid})
-    console.log(resp2)
-    res.send(JSON.stringify({ 'message': "Unavailable", 'Time':15 }))
+    const resp2 = await DiningList.findOne({ 'restaurant': rid })
+    // console.log(resp2)
+    let timeLeft = []
+    let now = new Date()
+    for (var i of resp2.customers) {
+        // console.log(i);
+        if (i['pax'] >= pax) {
+            let diTime = ((now - new Date(i['time'])) / 60000)//
+            timeLeft.push(response.average_time - diTime)
+        }
+    }
+    timeLeft.sort((a, b) => (a - b))
+    console.log(timeLeft)
+
+    const resp3 = await WaitingList.findOne({ 'restaurant': rid });
+    let queuePos = 0
+    for (var i of resp3.customers) {
+        if (i['pax'] >= pax) {
+            queuePos += 1
+        }
+    }
+    queuePos += 1 // because the current person will be placed after the current waiting list
+    console.log('Queue Position = ' + queuePos)
+    let queueTurn = Math.ceil(queuePos / (timeLeft.length))
+    console.log('QueueTurn = ' + queueTurn)
+    if (queueTurn <= 1) {
+        console.log('Table will be allocated after the current customer frees the table')
+        // queuePos = queuePos % timeLeft.length // finding the offset
+        // console.log(queuePos)
+        if (timeLeft[queuePos-1] <= 0) {
+            res.send(JSON.stringify({ 'message': "Table available shortly" }))
+            return
+        }
+        else {
+            res.send(JSON.stringify({ 'message': 'Table will be available in ' + timeLeft[queuePos-1] + ' minutes' }))
+            return
+        }
+    }
+    else {
+        // queuePos = queuePos % timeLeft.length;
+        console.log('You will be put in a queue...')
+        res.send(JSON.stringify({ 'message': 'Waiting : ' + queueTurn * response.average_time + ' minutes' }))
+        return
+    }
+    // res.send(JSON.stringify({ 'message': "Unavailable", 'Time': 15 }))
+    // return
 }
 
 export const addOccupiedTable = async (req, res) => {

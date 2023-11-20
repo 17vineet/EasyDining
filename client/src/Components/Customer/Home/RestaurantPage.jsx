@@ -43,12 +43,12 @@ const RestaurantPage = () => {
         setChecking(true);
         if (pax != "") {
             const resp = await API.post("/restaurant/checkWaiting", { rid, pax });
-            // console.log(resp.data)
+    
             if (resp.data.message == "Available") {
                 alert("Table is Available")
             }
             else {
-                alert("You need to wait for some time")
+                alert(resp.data.message)
             }
         }
         else {

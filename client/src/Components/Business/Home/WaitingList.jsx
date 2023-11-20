@@ -6,7 +6,7 @@ import Delete from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import Loading from '../../Loading/Loading';
 import { useAuth } from '../../../contexts/AuthContext';
-import { Box, InputLabel, MenuItem, FormControl } from '@mui/material';
+import { InputLabel, MenuItem, FormControl } from '@mui/material';
 import Select from '@mui/material/Select';
 
 function WaitingList({ handleUpdate, updated }) {
@@ -17,15 +17,15 @@ function WaitingList({ handleUpdate, updated }) {
   const [pax, setPax] = useState('');
 
   async function handleClick() {
-    if (formData.name.trim().length != 0 && formData.phone.trim().length != 0) {
+    if (formData.name.trim().length != 0 && formData.pax!='' && formData.phone.trim().length != 0) {
       setIsLoading(true);
       await API.post('/restaurant/insertWaitingList', { rid: currentUser._id, name: formData.name, pax: formData.pax, phone: formData.phone, email: '' });
       setLoe((prev) => [...prev, formData]);
-      setFormData({ name: '', pax: '', phone: '' })
+      setFormData({ name: '', pax: formData.pax, phone: '' })
       setIsLoading(false);
     }
     else {
-      alert("Enter a proper name")
+      alert("Enter proper information")
     }
 
   }
@@ -100,6 +100,7 @@ function WaitingList({ handleUpdate, updated }) {
               onChange={handlePaxChange}
               style={{ width: '150px' }}
               autoWidth={true}
+              required
             >
               {passengers.map((ele, ind) => {
                 return (<MenuItem value={ind + 1} key={ind} >{ele}</MenuItem>)
