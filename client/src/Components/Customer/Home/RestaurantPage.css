@@ -6,7 +6,9 @@
     display: grid;
     height: auto
 }
-
+*{
+    box-sizing: border-box;
+}
 .background {
     /* background-color: antiquewhite; */
     height: 100%;
@@ -24,21 +26,25 @@
     /* height: 50%; */
 }
 
-.customer_thumbnail_pic {
-    height: 180px;
-    width: 180px;
-    border-radius: 50%;
+.thumbnail_pic {
+    /* height: 180px;
+    width: 180px; */
+    /* border-radius: 50%; */
     /* border: 2px solid black; */
+    /* height: 20%; */
+
     text-align: center;
     overflow: hidden;
     margin-left: 0px;
     background-color: #eee;
 }
-
-.thumbnail_img {
-    height: 180px;
-    width: 180px;
-    border-radius: 50%;
+.thumbnail_pic img {
+    object-fit: contain;
+   
+    /* height: 200px; */
+    /* height: 180px; */
+    /* width: 180px; */
+    /* border-radius: 50%; */
 }
 
 .customer_content1_left {
@@ -57,21 +63,26 @@
     margin: 10px 0px 0px 0px;
     display: flex;
     /* padding: 15px; */
+    height: 60%;
     gap: 15px;
     border-radius: 5px;
 }
 
 .customer_content2_left {
     width: 70%;
-    background-color: aliceblue;
+    /* height: 40%; */
+    
+    overflow: auto;
+     background-color: white;
     border-radius: 5px;
     padding: 10px;
 }
 
 .menu_display{
+    /* text-align: center; */
+    display: flex;
     align-items: center;
     justify-content: center;
-    display: flex;
     background-color:#2196f3;
     color: white;
     border-radius: 5px;
@@ -84,7 +95,9 @@
     background-color: aliceblue;
     border-radius: 5px;
 }
-
+.Cuisine_container>h4{
+    text-align: center;
+}
 .customer_restaurantImgHolder {
     padding: 10px;
     background-color: #eee;
@@ -140,8 +153,12 @@
 
 .Cuisine_container {
     border: 2px solid black;
-    margin: 5px;
-    border-radius: 10px;
+    /* margin: 5px; */
+    /* border-radius: 10px; */
+    border-bottom: none;
+}
+.Cuisine_container:nth-last-child(1){
+    border-bottom: 2px solid black
 }
 
 .Cuisine_container h2 {
@@ -182,15 +199,12 @@
 .ratings{
     color: white;
     background-color:#43a047;
-    padding: 5px;
+    padding: 2px 5px;
     border-radius: 5px;
-    /* height: 30px; */
+    width: max-content;
     font-size: 18px;
     display: flex;
     align-items: center;
-    /* justify-content: center;
-    display: inline-block;  */
-    /* height: max-content;  */
     margin-top:5px ;
 }
 .openCloseShow{
@@ -219,4 +233,85 @@
     100% {
       border-color: red; /* Return to a red border at the end of the animation */
     }
+  }
+
+ .rest_details{
+    display: flex;
+    align-items: center;
+    gap:25px;
+    /* position: relative; */
+    /* flex-direction: column; */
+ } 
+ .img_holder{
+    position: relative;
+    overflow: hidden;
+    margin-top: 20px;
+
+ }
+
+ .img_holder img{
+    height: 300px;
+    width: 750px;
+    border-radius: 5px;
+    transition: all 300ms ease-in;
+ }
+ .img_holder img:hover{
+    transform: scale(1.1);
+ }
+ .rest_info{
+    margin-top: 20px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+    height: 300px;
+    min-width: 400px;
+ }
+ .rest_name_rating{
+    display: flex;
+    gap: 15px;
+ }
+
+ 
+  .dropdown-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+  
+  .dropdown-content.open {
+    max-height: 500px; /* Adjust this value based on your content height */
+    /* transition: max-height 0.3s ease-out; */
+
+  }  
+  
+  
+
+  .fade-enter {
+    opacity: 0;
+  }
+  
+  .fade-enter-active {
+    opacity: 1;
+    transition: opacity 3000ms ease-in;
+  }
+  
+  .fade-exit {
+    opacity: 1;
+  }
+  
+  .fade-exit-active {
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+  }
+
+  .Cuisine_container:hover {
+    cursor: pointer;
+  }
+  .Cuisine_container{
+    position: relative;
+  }
+  .Cuisine_container .dropdown_arrow{
+    position: absolute;
+    right: 10px;
+    top: 7px;
   }

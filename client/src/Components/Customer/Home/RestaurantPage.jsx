@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useLocation, Link } from 'react-router-dom'
-import { Box, InputLabel, MenuItem, FormControl, List, ListItemText, Divider, ListItem, Typography, Paper } from '@mui/material';
+import { Box, InputLabel, MenuItem, FormControl, Paper } from '@mui/material';
 import Select from '@mui/material/Select';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/joy/Button';
 import TakeOrderModal from '../../Business/Home/TakeOrderModal/TakeOrderModal';
 import ViewOrderModal from '../../Business/Home/ViewOrderModal/ViewOrderModal';
-import Menu from '../Menu/Menu'
+// import Menu from '../Menu/Menu'
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './RestaurantPage.css'
 import API from '../../../axios'
 import { useAuth } from '../../../contexts/AuthContext'
 import RestaurantImageModel from './RestaurantImageModel'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import StarIcon from '@mui/icons-material/Star';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
 
 const RestaurantPage = () => {
     const { rid } = useParams();
@@ -34,6 +37,16 @@ const RestaurantPage = () => {
         open: false,
         index: undefined
     });
+    const [isDropdownOpen, setIsDropdownOpen] = useState(-1);
+
+    const toggleDropdown = (ind) => {
+        if (isDropdownOpen != -1) {
+            setIsDropdownOpen(-1);
+        }
+        else {
+            setIsDropdownOpen(ind);
+        }
+    };
 
     useEffect(() => {
         fetchData();
@@ -43,7 +56,7 @@ const RestaurantPage = () => {
         setChecking(true);
         if (pax != "") {
             const resp = await API.post("/restaurant/checkWaiting", { rid, pax });
-    
+
             if (resp.data.message == "Available") {
                 alert("Table is Available")
             }
@@ -168,11 +181,10 @@ const RestaurantPage = () => {
 
                 <div className="main">
                     <div className="background">
-                        <div className="customer_content1">
+                        {/* <div className="customer_content1">
                             <div className="customer_content1_left">
-                                <div className="customer_thumbnail_pic ">
-                                    <img src={restdetails.thumbnail_url} className="thumbnail_img" />
-                                    <div className="thumbnail_img">Black</div>
+                                <div className="thumbnail_pic ">
+                                    <img src={restdetails.thumbnail_url} className="rest_thumbnail" />
                                 </div>
                             </div>
                             <div className="customer_content1_right">
@@ -185,8 +197,43 @@ const RestaurantPage = () => {
                                 <h6>Contact : {restdetails.phone}</h6>
 
                             </div>
+                        </div> */}
+                        <div className='rest_details'>
+                            <div className='img_holder'>
+                                <img src={restdetails.thumbnail_url} />
+
+                                {/* <button className='all_photos'>All Photos</button> */}
+                                <Paper
+                                    elevation={2}
+                                    style={{ backgroundColor: 'rgb(0,0,0)', position: 'absolute', right: 0, top: 20 }}
+                                    sx={{
+                                        m: 1,
+                                        p: 1,
+                                        '&:hover': {
+                                            cursor: 'pointer'
+                                        },
+                                    }}
+                                    onClick={() => openRestaurantImageModel(0)}
+                                >
+                                    <span style={{ color: 'white' }}>&nbsp;<ImageOutlinedIcon />View All photos</span>
+                                </Paper>
+                            </div>
+                            <div className='rest_info'>
+                                <div className='rest_name_rating'>
+                                    <h2>{restdetails.name}&nbsp;</h2>
+                                    <div>
+                                        {restdetails.ratingCount > 0 && <span className='ratings'>{restdetails.rating}<StarIcon fontSize='small' /></span>}
+                                    </div>
+                                </div>
+                                <h6>Timings : &nbsp;<b>{restdetails.opening_time}</b>&nbsp;-&nbsp;<b>{restdetails.closing_time}</b>&nbsp;&nbsp;{open ? <span className='openCloseShow'>Open Now</span> : <span className='openCloseShow'>Closed</span>}</h6>
+                                <h6>Price Range : {restdetails.range}</h6>
+                                <h6>City : {restdetails.city}</h6>
+
+                                <h6>Location :&nbsp;<Link to={restdetails.location_url} target="_blank">Get Directions</Link></h6>
+                                <h6>Contact : {restdetails.phone}</h6>
+                            </div>
                         </div>
-                        {
+                        {/* {
                             img_urls.length > 0 &&
                             <div className='customer_restaurantImgHolder'>
                                 <div className='customer_img_holder'>
@@ -199,34 +246,100 @@ const RestaurantPage = () => {
                                     <div className='customer_imageHolderRight'>
                                         {
                                             img_urls.map((ele, index) => {
+                                                if (index < 3) {
 
-                                                return (
-                                                    <img key={index} src={ele} height={200} width={200} style={{ 'margin': '10px', 'borderRadius': '10px' }} onClick={() => {
-                                                        openRestaurantImageModel(index)
-                                                    }} className='restaurant_images' />
-                                                )
+
+                                                    return (
+                                                        <img key={index} src={ele} height={200} width={200} style={{ 'margin': '10px', 'borderRadius': '10px' }} onClick={() => {
+                                                            openRestaurantImageModel(index)
+                                                        }} className='restaurant_images' />
+                                                    )
+                                                }
 
                                             })
                                         }
-
+                                        <h5 onClick={() => {
+                                            openRestaurantImageModel(0)
+                                        }}>View All Photos</h5>
                                     </div>
                                 </div>
 
                             </div>
-                        }
+                        } */}
                         <div className='customer_content2'>
                             <div className='customer_content2_left'>
-                                <h2 className='menu_display'>Menu Display</h2>
+                                <h3 className='menu_display'>Menu </h3>
                                 {restmenu.map((ele, ind) => {
                                     return (
-                                        <div className='Cuisine_container' key={ind}>
-                                            <h2>{ele.name}</h2>
-                                            <div className='item_container_title'>
+                                        <div className='Cuisine_container p-2' key={ind}   onClick={() => toggleDropdown(ind)}>
+                                            {/* <h4>{ele.name}</h4> */}
+                                            <div><h4>{ele.name}</h4> </div>
+                                            <div className='dropdown_arrow'><ArrowDropDownCircleOutlinedIcon/></div>
+                                            <TransitionGroup>
+                                                <CSSTransition timeout={300} classNames="fade">
+                                                        <div className={`dropdown-content  ${isDropdownOpen === ind ? 'open' : ''}`} >
+                                                            <table class="table table-striped">
+                                                                <tbody>
+                                                                    {ele.items.map((elem, index) => {
+                                                                        return (
+                                                                            <tr>
+                                                                                <td><h5>{elem.Name}</h5>
+                                                                                    {elem.Description}
+                                                                                </td>
+                                                                                <td>{elem.Price}</td>
+                                                                            </tr>
+                                                                        )
+                                                                    })}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                </CSSTransition>
+
+                                            </TransitionGroup>
+
+                                            
+                                            {/* <Dropdown >
+                                                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                                                    {ele.name}
+                                                </Dropdown.Toggle>
+                                                <Dropdown.Menu>
+                                                    <table class="table table-striped">
+                                                        <tbody>
+                                                            {ele.items.map((elem, index) => {
+                                                                return (
+                                                                    <tr>
+                                                                        <td><h5>{elem.Name}</h5>
+                                                                            {elem.Description}
+                                                                        </td>
+                                                                        <td>{elem.Price}</td>
+                                                                    </tr>
+                                                                )
+                                                            })}
+                                                        </tbody>
+                                                    </table>
+                                                </Dropdown.Menu>
+                                            </Dropdown> */}
+                                            {/* <table class="table table-striped">
+                                                
+                                                <tbody>
+                                                    {ele.items.map((elem, index) => {
+                                                        return (
+                                                            <tr>
+                                                                <td><h5>{elem.Name}</h5>
+                                                                    {elem.Description}
+                                                                </td>
+                                                                <td>{elem.Price}</td>
+                                                            </tr>
+                                                        )
+                                                    })}
+                                                </tbody>
+                                            </table> */}
+                                            {/* <div className='item_container_title'>
                                                 <div><b>Item Name</b></div>
                                                 <div><b>Price</b></div>
                                                 <div><b>Description</b></div>
-                                            </div>
-                                            {ele.items.map((elem, index) => {
+                                            </div> */}
+                                            {/* {ele.items.map((elem, index) => {
                                                 return (
                                                     <div className='item_container'>
                                                         <div>{elem.Name} </div>
@@ -234,7 +347,7 @@ const RestaurantPage = () => {
                                                         <div>{elem.Description}</div>
                                                     </div>
                                                 )
-                                            })}
+                                            })} */}
                                         </div>
                                     )
                                 })}
@@ -246,7 +359,7 @@ const RestaurantPage = () => {
                                 </div>
                             }
                             {/* <div className="customer_content2_right"> */}
-                            {!hasReserved && <Paper elevation={3} sx={{ width: '30%' }}>
+                            {!hasReserved && <Paper elevation={3} sx={{ width: '30%', height: '400px' }}>
                                 {
                                     accepting && open ?
                                         <Box className="p-3">
