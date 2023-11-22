@@ -18,6 +18,7 @@ import VisitedCustomer from './VisitedCustomer';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import jwtDecode from 'jwt-decode';
+import LineChart from './LineChart';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -41,7 +42,7 @@ const RestaurantProfile = () => {
   const [editCloseTime, setEditCloseTime] = useState(false);
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false);
- 
+
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -49,7 +50,7 @@ const RestaurantProfile = () => {
     }
     setOpen(false);
   };
-
+  
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -163,7 +164,7 @@ const RestaurantProfile = () => {
       alert("Incorrect password")
     }
     else {
-     
+
       const decodedToken = jwtDecode(resp.data.accessToken);
       setCurrentUser(decodedToken);
       setAuth(resp.data.accessToken);
@@ -179,8 +180,8 @@ const RestaurantProfile = () => {
       decodedToken = jwtDecode(resp.data.accessToken)
       setOpen(true);
       setEditOpenTime(false);
-  }
-  else {
+    }
+    else {
       resp = await API.post('/restaurant/setopenclose', { rid: currentUser._id, type: name, time: closingTime })
       decodedToken = jwtDecode(resp.data.accessToken)
       setOpen(true);
@@ -254,7 +255,7 @@ const RestaurantProfile = () => {
               }
               <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-               Time Updated Successfully
+                  Time Updated Successfully
                 </Alert>
               </Snackbar>
 
@@ -307,7 +308,18 @@ const RestaurantProfile = () => {
                 </Button>
                 <button className='btn btn-primary m-2' onClick={uploadImages}>Upload</button>
               </div>
+
             </div>
+
+          </div>
+        </div>
+        <div className='insights'>
+          <div className="dailySales">
+           <LineChart type="Daily"/>
+          </div>
+          <div className="monthlySales">
+          {/* <LineChart type="Monthly"/> */}
+
           </div>
         </div>
         <VisitedCustomer />

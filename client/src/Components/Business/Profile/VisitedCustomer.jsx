@@ -26,7 +26,7 @@ const VisitedCustomer = () => {
                     visited.map((ele, ind) => {
                         return (
                             <div className='visited_customer_list'>
-                                <div><img src="../ED.jpeg" /></div>
+                                <div><img src="../ez.jpeg" /></div>
                                 <div><h3>Customer : {ele.customer} </h3>
                                     <h6>Dine-in Date : {ele.billDate}</h6>
                                 </div>

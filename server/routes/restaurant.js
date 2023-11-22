@@ -35,7 +35,8 @@ import {
     getRestaurantBills,
     addRating,
     changeAccepting,
-    setOpenClose
+    setOpenClose,
+    getDailyTotal
 } from '../controller/restaurantController.js';
 
 const router = express.Router();
@@ -76,6 +77,7 @@ router.post('/getBills',getRestaurantBills);
 router.post('/addRating',addRating);
 router.post('/handleAccept', changeAccepting)
 router.post('/setOpenClose', setOpenClose)
+router.post('/getDailyTotal', getDailyTotal)
 
 
 export default router;

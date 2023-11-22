@@ -99,6 +99,7 @@ const Home = () => {
                           id={elem.id}
                           city={elem.city}
                           accepting={elem.accepting}
+                          
                         />
                       </StyledGrid>
                     ))
@@ -116,7 +117,15 @@ const Home = () => {
             <Grid container columnSpacing={3} rowSpacing={3}>
               {restaurants.map((elem, index) => (
                 <StyledGrid item sm={6} md={4} lg={4} key={index}>
-                  <RestaurantCard key={index} name={elem.name} thumbnail_url={elem.thumbnail_url} id={elem.id} city={elem.city} accepting={elem.accepting} />
+                  <RestaurantCard 
+                    key={index} 
+                    name={elem.name} 
+                    thumbnail_url={elem.thumbnail_url} 
+                    id={elem.id} 
+                    city={elem.city} 
+                    accepting={elem.accepting} 
+                    
+                  />
                 </StyledGrid>
               ))}
             </Grid>

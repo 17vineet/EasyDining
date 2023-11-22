@@ -39,7 +39,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-const RestaurantCard = ({ name, thumbnail_url, city, id, accepting }) => {
+const RestaurantCard = ({ name, thumbnail_url, city, id, accepting}) => {
     const [expanded, setExpanded] = useState(false);
     const [cuisines, setCuisines] = useState([]);
     const [open, setOpen] = useState(true);

@@ -359,7 +359,7 @@ const RestaurantPage = () => {
                                 </div>
                             }
                             {/* <div className="customer_content2_right"> */}
-                            {!hasReserved && <Paper elevation={3} sx={{ width: '30%', height: '400px' }}>
+                            {!hasReserved && <Paper elevation={3} sx={{ width: '400px', height: '400px' }}>
                                 {
                                     accepting && open ?
                                         <Box className="p-3">

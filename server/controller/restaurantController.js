@@ -12,7 +12,7 @@ function containsOnlyNumbers(inputStr) {
 export const signUpRestaurant = async (req, res) => {
     console.log(req.body)
     try {
-        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating':0 , 'ratingCount':0, 'accepting': false, 'average_time':20, 'dineCount':0});
+        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating': 0, 'ratingCount': 0, 'accepting': false, 'average_time': 20, 'dineCount': 0 });
         var result = await data.save();
     }
     catch (e) {
@@ -143,12 +143,12 @@ export const getDiningList = async (req, res) => {
 
 export const insertDiningList = async (req, res) => {
 
-    const { rid, name, phone, email, pax, size} = req.body;
+    const { rid, name, phone, email, pax, size } = req.body;
     const customersList = await DiningList.findOne({ restaurant: rid });
 
     const resp = await DiningList.updateOne(
         { _id: customersList._id },
-        { $push: { customers: { cname: name, email, phone, pax, size, 'time':new Date().toUTCString() } } }
+        { $push: { customers: { cname: name, email, phone, pax, size, 'time': new Date().toUTCString() } } }
     );
 
     res.send(resp);
@@ -182,7 +182,7 @@ export const addToDineIn = async (req, res) => {
     // console.log(diningList);
     const resp = await DiningList.updateOne(
         { _id: diningList._id },
-        { $push: { customers: { cname, email, phone, pax, size,'time':new Date().toUTCString() } } }
+        { $push: { customers: { cname, email, phone, pax, size, 'time': new Date().toUTCString() } } }
     );
 
     res.send(JSON.stringify(resp));
@@ -386,12 +386,12 @@ export const checkWaiting = async (req, res) => {
         console.log('Table will be allocated after the current customer frees the table')
         // queuePos = queuePos % timeLeft.length // finding the offset
         // console.log(queuePos)
-        if (timeLeft[queuePos-1] <= 0) {
+        if (timeLeft[queuePos - 1] <= 0) {
             res.send(JSON.stringify({ 'message': "Table available shortly" }))
             return
         }
         else {
-            res.send(JSON.stringify({ 'message': 'Table will be available in ' + timeLeft[queuePos-1] + ' minutes' }))
+            res.send(JSON.stringify({ 'message': 'Table will be available in ' + timeLeft[queuePos - 1] + ' minutes' }))
             return
         }
     }
@@ -460,7 +460,7 @@ const deleteOccupiedTable = async (rid, tableSize) => {
     }
     // console.log(noOfTables[ocIndex]);
     const resp2 = await Restaurant.updateOne({ '_id': rid },
-    { $set: { 'occupied_tables': { 'tableSize': resp.occupied_tables.tableSize, 'noOfTables': noOfTables } } })
+        { $set: { 'occupied_tables': { 'tableSize': resp.occupied_tables.tableSize, 'noOfTables': noOfTables } } })
     // console.log(resp2);
     if (resp2.modifiedCount == 1) {
         console.log("Deleted Occupied Table")
@@ -533,8 +533,8 @@ export const addItem = async (req, res) => {
     const response = await Menu.findOneAndUpdate({ 'restaurant': rid, "menu.name": cuisineName },
         { $push: { "menu.$.items": { "itemName": itemName, "Price": itemPrice, "itemDesc": itemDesc } } },
         { new: true })
-    
-    
+
+
 }
 
 export const getItems = async (req, res) => {
@@ -605,37 +605,34 @@ export const generateBill = async (req, res) => {
 
     let dineTime = null
     let tableSize = null
-    const resp6 = await DiningList.findOne({restaurant:rid})
+    const resp6 = await DiningList.findOne({ restaurant: rid })
     // console.log(resp6);
-    for(var c of resp6.customers)
-    {
+    for (var c of resp6.customers) {
         // console.log(c)
-        if(c['phone']===phone)
-        {
+        if (c['phone'] === phone) {
             dineTime = new Date(c['time']);
             tableSize = c['size'];
             break;
         }
     }
-    if(dineTime!=null)
-    {
+    if (dineTime != null) {
         console.log(dineTime);
         let currTime = new Date();
-        let timeTaken = (currTime-dineTime)/60000
+        let timeTaken = (currTime - dineTime) / 60000
         // console.log(timeTaken);
         let avTime = resp5.average_time ? resp5.average_time : 0;
         // console.log(avTime)
-        let dineCount = resp5.dineCount ? resp5.dineCount : 0 ;
+        let dineCount = resp5.dineCount ? resp5.dineCount : 0;
         // console.log(dineCount);
-        avTime = ((avTime*dineCount)+timeTaken)/(dineCount+1);
+        avTime = ((avTime * dineCount) + timeTaken) / (dineCount + 1);
         avTime = parseInt(avTime)
         // console.log(avTime)
-        const resp7 = await Restaurant.updateOne({'_id':rid},
-        {$set:{'average_time':avTime,'dineCount':dineCount+1}})
+        const resp7 = await Restaurant.updateOne({ '_id': rid },
+            { $set: { 'average_time': avTime, 'dineCount': dineCount + 1 } })
         // console.log(resp7)
     }
 
-    const resp3 = await DiningList.updateOne({ restaurant: rid },{ $pull: { customers: { phone: phone } } })
+    const resp3 = await DiningList.updateOne({ restaurant: rid }, { $pull: { customers: { phone: phone } } })
     const resp4 = await deleteOccupiedTable(rid, tableSize);
     console.log(resp4)
     res.send(JSON.stringify({ "orderId": resp._id }))
@@ -672,8 +669,8 @@ export const addRating = async (req, res) => {
     console.log(ratingCount)
 
     // currrating = parseFloat(((parseInt(currrating) * parseInt(ratingCount)) + parseInt(rating)) / parseInt(ratingCount + 1));
-    currrating=currrating*ratingCount
-    let newrating=(currrating+rating)/(ratingCount+1);
+    currrating = currrating * ratingCount
+    let newrating = (currrating + rating) / (ratingCount + 1);
     newrating = newrating.toFixed(2)
     console.log(newrating)
 
@@ -688,39 +685,39 @@ export const addRating = async (req, res) => {
     }
 }
 
-export const changeAccepting = async (req, res)=> {
-    const {rid, accepting, password} = req.body ;
-    let resp = await Restaurant.findOneAndUpdate({'_id': rid, 'password': password}, {$set: { 'accepting': accepting } }, {new: true})
-    if(resp){
+export const changeAccepting = async (req, res) => {
+    const { rid, accepting, password } = req.body;
+    let resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': password }, { $set: { 'accepting': accepting } }, { new: true })
+    if (resp) {
         delete resp._doc.password;
         delete resp._doc.refresh_token;
-    
+
         // creating JWT
         const accessToken = jwt.sign({ ...resp._doc, userType: 'restaurant' }, 'test', { expiresIn: '30s' });
         const refreshToken = jwt.sign({ ...resp._doc, userType: 'restaurant' }, 'test', { expiresIn: '1d' });
-    
+
         // saving the refreshToken with the current user in DB
         await Restaurant.findByIdAndUpdate(resp._id, { ...resp._doc, refresh_token: refreshToken }, { new: true });
-    
+
         res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
         res.status(200).send({ accessToken });
         // res.send(JSON.stringify(resp));
     }
-    else{
-        res.send({'message': 'Invalid credentials'}) ;
+    else {
+        res.send({ 'message': 'Invalid credentials' });
     }
 }
 
-export const setOpenClose = async(req,res)=>{
-    const {rid,time,type} = req.body;
-    let resp = '' ; 
-    if(type==='open'){
-        resp = await Restaurant.findOneAndUpdate({'_id':rid},
-        {$set:{'opening_time':time}},{new:true})
+export const setOpenClose = async (req, res) => {
+    const { rid, time, type } = req.body;
+    let resp = '';
+    if (type === 'open') {
+        resp = await Restaurant.findOneAndUpdate({ '_id': rid },
+            { $set: { 'opening_time': time } }, { new: true })
     }
-    else{
-        resp = await Restaurant.findOneAndUpdate({'_id':rid},
-        {$set:{'closing_time':time}},{new:true})
+    else {
+        resp = await Restaurant.findOneAndUpdate({ '_id': rid },
+            { $set: { 'closing_time': time } }, { new: true })
     }
     delete resp._doc.password;
     delete resp._doc.refresh_token;
@@ -732,4 +729,53 @@ export const setOpenClose = async(req,res)=>{
 
     res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     res.status(200).send({ accessToken });
+}
+
+export const getDailyTotal = async (req, res) => {
+    const { rid } = req.body;
+    const resp = await Bill.find({ 'rid': rid })
+    let today = new Date();
+    // console.log(resp);
+    let recentBills = []
+    let weekBills = [["Bill","Sales"]]
+    // weekBills=[["Bill","Sales"]];
+    
+    for(var i=7;i>=0;i--){
+        // weekBills.push([(today-i)/(24 * 60 * 60 * 1000),0])
+        var da = new Date(today)
+        // console.log(new Date(da.setDate(today.getDate()-i)).toLocaleDateString())
+        // console.log(today.getDate()-i);
+        // let date1=setDate(currentDate.getDate() - i);
+        // console.log(date1)
+        weekBills.push([new Date(da.setDate(today.getDate()-i)).toLocaleDateString().slice(0,5),0])
+    }
+    
+    // console.log(weekBills)
+    for (var b of resp) {
+        // console.log(b.billAmt);
+        let billDate = new Date(b.billDate);
+        let diff = parseInt((today - billDate) / (1000 * 60 * 60 * 24))
+        // console.log(diff)
+        if (diff <= 7) {
+            // recentBills.push([billDate, b.billAmt])
+            weekBills[8-diff][1] += b.billAmt
+        }
+    }
+    console.log(weekBills)
+    
+    // console.log(recentBills)
+    // let d = {}
+    // for (var rbills of recentBills) {
+    //     if (!d[rbills[0]]) {
+    //         d[rbills[0]] = 0
+    //     }
+    //     d[rbills[0]] += rbills[1];
+    // }
+    // // console.log(d)
+    // let retBills = [['Date', 'Sales']]
+    // for (var billdate in d) {
+    //     retBills.push([new Date(billdate).toLocaleDateString(), d[billdate]])
+    // }
+    // console.log(retBills)
+    res.send(JSON.stringify({ 'bills': weekBills }))
 }
