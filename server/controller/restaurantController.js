@@ -198,6 +198,7 @@ export const getMenu = async (req, res) => {
 
 export const updateMenu = async (req, res) => {
     const newMenuItems = req.body.items;
+    console.log(newMenuItems)
     const rid = req.body.rid
     const cuisine_name = req.body.cuisine_name;
     const response = await Menu.updateOne(
@@ -737,19 +738,19 @@ export const getDailyTotal = async (req, res) => {
     let today = new Date();
     // console.log(resp);
     let recentBills = []
-    let weekBills = [["Bill","Sales"]]
+    let weekBills = [["Bill", "Sales"]]
     // weekBills=[["Bill","Sales"]];
-    
-    for(var i=7;i>=0;i--){
+
+    for (var i = 7; i >= 0; i--) {
         // weekBills.push([(today-i)/(24 * 60 * 60 * 1000),0])
         var da = new Date(today)
         // console.log(new Date(da.setDate(today.getDate()-i)).toLocaleDateString())
         // console.log(today.getDate()-i);
         // let date1=setDate(currentDate.getDate() - i);
         // console.log(date1)
-        weekBills.push([new Date(da.setDate(today.getDate()-i)).toLocaleDateString().slice(0,5),0])
+        weekBills.push([new Date(da.setDate(today.getDate() - i)).toLocaleDateString().slice(0, 5), 0])
     }
-    
+
     // console.log(weekBills)
     for (var b of resp) {
         // console.log(b.billAmt);
@@ -758,24 +759,56 @@ export const getDailyTotal = async (req, res) => {
         // console.log(diff)
         if (diff <= 7) {
             // recentBills.push([billDate, b.billAmt])
-            weekBills[8-diff][1] += b.billAmt
+            weekBills[8 - diff][1] += b.billAmt
         }
     }
     console.log(weekBills)
-    
-    // console.log(recentBills)
-    // let d = {}
-    // for (var rbills of recentBills) {
-    //     if (!d[rbills[0]]) {
-    //         d[rbills[0]] = 0
-    //     }
-    //     d[rbills[0]] += rbills[1];
-    // }
-    // // console.log(d)
-    // let retBills = [['Date', 'Sales']]
-    // for (var billdate in d) {
-    //     retBills.push([new Date(billdate).toLocaleDateString(), d[billdate]])
-    // }
-    // console.log(retBills)
+
+
     res.send(JSON.stringify({ 'bills': weekBills }))
+}
+export const getMonthlyTotal = async (req, res) => {
+    const rid = req.body.rid;
+    const resp = await Bill.aggregate([
+        {
+            $match: {
+                rid: rid,
+                // Add other conditions if needed
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    year: { $year: { $dateFromString: { dateString: "$billDate", format: "%m/%d/%Y" } } },
+                    month: { $month: { $dateFromString: { dateString: "$billDate", format: "%m/%d/%Y" } } }
+                },
+                totalBillAmount: { $sum: "$billAmt" }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                year: "$_id.year",
+                month: "$_id.month",
+                totalBillAmount: 1
+            }
+        },
+        {
+            $sort: {
+                "year": -1,
+                "month": -1
+            }
+        },
+        {
+            $limit: 6
+        }
+    ]);
+    let retBills = [];
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    for (var i in resp) {
+        retBills.unshift([months[resp[i].month - 1] + '-' + (resp[i].year.toString()).slice(2,4), resp[i].totalBillAmount])
+    }
+    retBills.unshift(["Month", "Sales"])
+    console.log(retBills)
+    res.send(JSON.stringify({'bills':retBills}));
 }

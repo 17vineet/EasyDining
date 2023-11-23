@@ -22,18 +22,26 @@ const LineChart = (prop) => {
       };
       useEffect(()=>{
         const fetchData=async()=>{
-            const resp=await API.post("/restaurant/getDailyTotal",{rid:currentUser._id})
+            if(prop.type=='Daily'){
+              const resp=await API.post("/restaurant/getDailyTotal",{rid:currentUser._id})
             // console.log(resp.data)
             setChartData(resp.data.bills);
+            }
+            else if(prop.type=='Monthly'){
+              const resp=await API.post("/restaurant/getMonthlyTotal",{rid:currentUser._id})
+              
+              setChartData(resp.data.bills);
+            }
         }
+
         fetchData()
 
       },[])
   return (
     <Chart
     chartType="LineChart"
-    width="1000px"
-    height="700px"
+    width="600px"
+    height="600px"
     data={chartData}
     options={options}
   />

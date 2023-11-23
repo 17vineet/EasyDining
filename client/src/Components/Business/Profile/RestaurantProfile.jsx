@@ -318,7 +318,7 @@ const RestaurantProfile = () => {
            <LineChart type="Daily"/>
           </div>
           <div className="monthlySales">
-          {/* <LineChart type="Monthly"/> */}
+          <LineChart type="Monthly"/>
 
           </div>
         </div>

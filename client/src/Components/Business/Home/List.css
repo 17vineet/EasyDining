@@ -65,8 +65,9 @@
 }
 
 .close:hover {
-    background-color: #f44336;
+    /* background-color: #d79893; */
     color: white;
+    cursor: pointer;
 }
 
 /* Style the header */

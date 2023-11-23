@@ -12,17 +12,22 @@
     height: 100px;
     border: 1px solid gray;
     border-radius: 5px;
-    padding: 5px;
+    padding: 20px;
     display: flex;
-    justify-content: center;
+    gap:20px;
+    transition: all 300ms ease-in-out;
+    justify-content: space-between;
     align-items: center;
     margin: 10px;
     cursor: pointer;
-    background-color: rgb(228, 208, 83);
+    background-color: #fff;
 }
 
 .cuisineHolder:hover{
-    background-color: rgb(160, 224, 248);
+    transform:scale(1.1);
+    /* background-color: #e1b53c; */
+    /* color: #fff; */
+    box-shadow: 5px 2px 10px 0px rgba(0, 0, 0, 0.2);
 }
 
 .modal {
@@ -40,7 +45,7 @@
 .modal-content {
     height: 536px;
     width: 870px;
-    background-color: #fff;
+    background-color: #eee;
     padding: 20px;
     border-radius: 5px;
     text-align: center;
@@ -52,13 +57,13 @@
 .menu_item{
     border: 1px solid gray;
 }
-.menu_item div{
+.menu_item>div{
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.menu_item div div{
+.menu_item>div>div{
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -67,8 +72,11 @@
 .cuisine_container{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    gap:30px;
+    justify-content: flex-start;
+
+    /* justify-content: space-between; */
 }
 .cuisineHolder{
-    width: 30%;
+    width: 28%;
 }
