@@ -38,6 +38,21 @@
     border: 1px solid black;
     border-radius: 2px;
     padding: 10px;
+    cursor: pointer;
+    margin: 10px 2px;
+    transition: all 300ms ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 50px;
+    flex-wrap: wrap;
+}
+.cuisines>h6{
+    margin:auto;
+}
+.cuisines:hover{
+    background-color:lightgray;
 }
 table{
     border: 1px solid black;

@@ -96,6 +96,10 @@ const Navbar = () => {
       console.log(`Selected Id: ${id}`);
     } 
   }
+
+  const handleContactUsClick = ()=>{
+    navigate('/contact-us')
+  }
   return (
     <div className="navbar">
       <div className="Logo" onClick={handleHomeClick}><h3>EasyDining</h3></div>
@@ -145,6 +149,11 @@ const Navbar = () => {
             </div>
           </>
         }
+      </div>
+      <div className='contactdiv'>
+        <button onClick={handleContactUsClick} id='Contact'>
+          Contact Us
+        </button>
       </div>
       {
         currentUser ?

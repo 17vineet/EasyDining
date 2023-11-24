@@ -233,50 +233,18 @@ const RestaurantPage = () => {
                                 <h6>Contact : {restdetails.phone}</h6>
                             </div>
                         </div>
-                        {/* {
-                            img_urls.length > 0 &&
-                            <div className='customer_restaurantImgHolder'>
-                                <div className='customer_img_holder'>
-
-                                    <div className='customer_imageHolderLeft'>
-                                        <div>
-                                            <img src={img_urls[0]} height={420} width={400} />
-                                        </div>
-                                    </div>
-                                    <div className='customer_imageHolderRight'>
-                                        {
-                                            img_urls.map((ele, index) => {
-                                                if (index < 3) {
-
-
-                                                    return (
-                                                        <img key={index} src={ele} height={200} width={200} style={{ 'margin': '10px', 'borderRadius': '10px' }} onClick={() => {
-                                                            openRestaurantImageModel(index)
-                                                        }} className='restaurant_images' />
-                                                    )
-                                                }
-
-                                            })
-                                        }
-                                        <h5 onClick={() => {
-                                            openRestaurantImageModel(0)
-                                        }}>View All Photos</h5>
-                                    </div>
-                                </div>
-
-                            </div>
-                        } */}
                         <div className='customer_content2'>
                             <div className='customer_content2_left'>
                                 <h3 className='menu_display'>Menu </h3>
                                 {restmenu.map((ele, ind) => {
-                                    return (
-                                        <div className='Cuisine_container p-2' key={ind}   onClick={() => toggleDropdown(ind)}>
-                                            {/* <h4>{ele.name}</h4> */}
-                                            <div><h4>{ele.name}</h4> </div>
-                                            <div className='dropdown_arrow'><ArrowDropDownCircleOutlinedIcon/></div>
-                                            <TransitionGroup>
-                                                <CSSTransition timeout={300} classNames="fade">
+                                    if (ele.items.length > 0) {
+                                        return (
+                                            <div className='Cuisine_container p-2' key={ind} onClick={() => toggleDropdown(ind)}>
+                                                {/* <h4>{ele.name}</h4> */}
+                                                <div><h4>{ele.name}</h4> </div>
+                                                <div className='dropdown_arrow'><ArrowDropDownCircleOutlinedIcon /></div>
+                                                <TransitionGroup>
+                                                    <CSSTransition timeout={300} classNames="fade">
                                                         <div className={`dropdown-content  ${isDropdownOpen === ind ? 'open' : ''}`} >
                                                             <table class="table table-striped">
                                                                 <tbody>
@@ -293,64 +261,13 @@ const RestaurantPage = () => {
                                                                 </tbody>
                                                             </table>
                                                         </div>
-                                                </CSSTransition>
-
-                                            </TransitionGroup>
-
-                                            
-                                            {/* <Dropdown >
-                                                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                                                    {ele.name}
-                                                </Dropdown.Toggle>
-                                                <Dropdown.Menu>
-                                                    <table class="table table-striped">
-                                                        <tbody>
-                                                            {ele.items.map((elem, index) => {
-                                                                return (
-                                                                    <tr>
-                                                                        <td><h5>{elem.Name}</h5>
-                                                                            {elem.Description}
-                                                                        </td>
-                                                                        <td>{elem.Price}</td>
-                                                                    </tr>
-                                                                )
-                                                            })}
-                                                        </tbody>
-                                                    </table>
-                                                </Dropdown.Menu>
-                                            </Dropdown> */}
-                                            {/* <table class="table table-striped">
-                                                
-                                                <tbody>
-                                                    {ele.items.map((elem, index) => {
-                                                        return (
-                                                            <tr>
-                                                                <td><h5>{elem.Name}</h5>
-                                                                    {elem.Description}
-                                                                </td>
-                                                                <td>{elem.Price}</td>
-                                                            </tr>
-                                                        )
-                                                    })}
-                                                </tbody>
-                                            </table> */}
-                                            {/* <div className='item_container_title'>
-                                                <div><b>Item Name</b></div>
-                                                <div><b>Price</b></div>
-                                                <div><b>Description</b></div>
-                                            </div> */}
-                                            {/* {ele.items.map((elem, index) => {
-                                                return (
-                                                    <div className='item_container'>
-                                                        <div>{elem.Name} </div>
-                                                        <div>{elem.Price}</div>
-                                                        <div>{elem.Description}</div>
-                                                    </div>
-                                                )
-                                            })} */}
-                                        </div>
-                                    )
-                                })}
+                                                    </CSSTransition>
+                                                </TransitionGroup>
+                                            </div>
+                                        )
+                                    }
+                                })
+                                }
                             </div>
                             {isDined &&
                                 <div className='customer_content2_right p-3'>
@@ -406,7 +323,7 @@ const RestaurantPage = () => {
 
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 }

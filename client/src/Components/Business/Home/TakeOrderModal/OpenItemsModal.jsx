@@ -39,6 +39,7 @@ const OpenItemsModal = (prop) => {
                     <div><h2>Cuisine : <i>{cuisine_name}</i></h2></div>
             </div>
                 {
+                    items.length>0 ?
                     items.map((ele, index) => {
                         return (
                             <div className='item' key={index}>
@@ -82,7 +83,7 @@ const OpenItemsModal = (prop) => {
                                 }
                             </div>
                         )
-                    })
+                    }) : <h4>No Items Added</h4>
                 }
             </div>
         </div>

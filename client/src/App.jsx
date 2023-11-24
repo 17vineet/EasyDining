@@ -16,11 +16,14 @@ import Bill from '../src/Components/Bills/Bill' ;
 
 import SignIn from './Components/SignIn';
 import Navbar from './Components/Navbar';
+import ContactUs from './Components/ContactUs/ContactUs';
+import Footer from './Components/Footer/Footer';
 
 import RequireAuth from './Components/RequireAuth';
 import Unauthorized from './Components/Unauthorized';
 import PersistLogin from './Components/PersistLogin';
 import Missing from './Components/Missing';
+
 
 export const App = () => {
 
@@ -33,6 +36,7 @@ export const App = () => {
         <Route path='/signup' element={<CustomerSignUp />} />
         <Route path='/business/signup' element={<BusinessSignUp />} />
         <Route path='/unauthorized' element={<Unauthorized />} />
+        <Route path='/contact-us' element={<ContactUs/>} />
 
         {/* We want to protect these routes */}
         <Route element={<PersistLogin />}>
@@ -54,6 +58,7 @@ export const App = () => {
 
         <Route path="/*" element={<Missing />} />
       </Routes>
+      <Footer/>
     </BrowserRouter>
   )
 }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import styles from "./AvailableTable.module.css"
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -47,27 +46,23 @@ const AvailableTable = ({ updated }) => {
 
   return (
     <>
-      {tables.length>0 &&
-        <TableContainer sx={{ maxWidth: 500 }} component={Paper}>
-          <Table aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Table Capacity</StyledTableCell>
-                <StyledTableCell >Available Tables</StyledTableCell>
-
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tables.map((row, index) => (
-                <StyledTableRow key={index} >
-                  <StyledTableCell component="th" >{row[0]}</StyledTableCell>
-                  <StyledTableCell >{row[1]}</StyledTableCell>
-
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      {tables.length > 0 &&
+        <table className='table table-striped'>
+          <thead>
+            <tr>
+              <th scope="col">Table Capacity</th>
+              <th scope="col">Available Tables</th>
+            </tr>
+          </thead>
+          <tbody>
+          {tables.map((row, index) => (
+            <tr>
+              <td >{row[0]}</td>
+              <td >{row[1]}</td>
+            </tr>
+          ))}
+          </tbody>
+        </table>
       }
     </>
   )

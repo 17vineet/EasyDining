@@ -48,14 +48,16 @@ const ViewOrderModal = ({phone, closeViewOrderModal ,id}) => {
       {loading && <Loading/>}
       <div className="viewOrderModalContent" key={phone}>
       <CloseIcon className='closeModalBtn' onClick={() => closeViewOrderModal(null)} />
-          <table>
-            <tr>
+          <table className='table table-striped'>
+           <thead>
+           <tr>
               <th>Name</th>
               <th>Price</th>
               <th>Quantity</th>
               <th>Net Price</th>
             </tr>
-           
+           </thead>
+           <tbody>
             {items.map((ele,ind)=>{
               // setOrderTotal(orderTotal+(ele.price*ele.quantity))
               return (
@@ -73,6 +75,7 @@ const ViewOrderModal = ({phone, closeViewOrderModal ,id}) => {
               <td colSpan={3}>Grand Total : </td>
               <td >{orderTotal}</td>
             </tr>
+            </tbody>
           </table>
             <button 
               className='btn btn-primary m-5' 

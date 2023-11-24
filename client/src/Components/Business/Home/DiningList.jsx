@@ -10,46 +10,46 @@ import { useAuth } from '../../../contexts/AuthContext';
 import TakeOrderModal from './TakeOrderModal/TakeOrderModal';
 import ViewOrderModal from './ViewOrderModal/ViewOrderModal';
 
-function DiningList({updated, handleUpdate}) {
-  const [formData,setFormData]=useState({
-    name:'',
-    pax:'',
-    phone:'',
-    email:'',
-    size:''
+function DiningList({ updated, handleUpdate }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    pax: '',
+    phone: '',
+    email: '',
+    size: ''
   })
   const [dine, setDine] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [takeOrderModal,setTakeOrderModal]=useState(null);
-  const [orderViewModal,setOrderViewModal]=useState(null);
+  const [takeOrderModal, setTakeOrderModal] = useState(null);
+  const [orderViewModal, setOrderViewModal] = useState(null);
   const [pax, setPax] = useState('');
   const { currentUser } = useAuth();
 
   async function handleClick() {
-    if (formData.name.trim().length != 0 && formData.pax!='' && formData.phone.trim().length!=0) {
+    if (formData.name.trim().length != 0 && formData.pax != '' && formData.phone.trim().length != 0) {
       setIsLoading(true);
-      const resp=await API.post('/restaurant/addOccupied',{rid:currentUser._id,pax:formData.pax})
-      if(resp.data.message==="Available"){
+      const resp = await API.post('/restaurant/addOccupied', { rid: currentUser._id, pax: formData.pax })
+      if (resp.data.message === "Available") {
         console.log(resp.data.Size)
-        await API.post('/restaurant/insertDiningList', { rid: currentUser._id, name: formData.name,pax:formData.pax,phone:formData.phone,email:"", size:resp.data.Size })
-        setDine((prev) => [...prev, {name:formData.name,pax:formData.pax,phone:formData.phone,size:resp.data.Size}]);
+        await API.post('/restaurant/insertDiningList', { rid: currentUser._id, name: formData.name, pax: formData.pax, phone: formData.phone, email: "", size: resp.data.Size })
+        setDine((prev) => [...prev, { name: formData.name, pax: formData.pax, phone: formData.phone, size: resp.data.Size }]);
         setIsLoading(false);
-        handleUpdate() ; 
+        handleUpdate();
       }
-      else{
+      else {
         setIsLoading(false);
         alert("Table of required size is not available right now")
         const reply = confirm("Would you like to add the customer in waiting list ");
-        if(reply){
+        if (reply) {
           await API.post('/restaurant/insertWaitingList', { rid: currentUser._id, name: formData.name, pax: formData.pax, phone: formData.phone, email: '' });
-          handleUpdate() ;
+          handleUpdate();
         }
       }
       setFormData({
-        name:'',
-        pax:'',
-        phone:'',
-        email:'',
+        name: '',
+        pax: '',
+        phone: '',
+        email: '',
       })
     }
     else {
@@ -58,15 +58,15 @@ function DiningList({updated, handleUpdate}) {
 
   }
   function handleChange(event) {
-    const {name, value} = event.target ;
-    setFormData((prevValue)=> ({
+    const { name, value } = event.target;
+    setFormData((prevValue) => ({
       ...prevValue,
-      [name] : value
-    })) ;
+      [name]: value
+    }));
   }
   async function handleDelete(index) {
     setIsLoading(true);
-    const resp = await API.post('/restaurant/removeDiningCustomer', { rid: currentUser._id, phone:dine[index].phone ,tableSize:dine[index].size});
+    const resp = await API.post('/restaurant/removeDiningCustomer', { rid: currentUser._id, phone: dine[index].phone, tableSize: dine[index].size });
     setIsLoading(false);
     const updatedList = dine.filter((_, ind) => index != ind)
     setDine(updatedList)
@@ -82,16 +82,16 @@ function DiningList({updated, handleUpdate}) {
     }))
   };
 
-  const openTakeOrderModal=(phone)=>{
+  const openTakeOrderModal = (phone) => {
     setTakeOrderModal(phone)
   }
-  const closeTakeOrderModal=(newState)=>{
+  const closeTakeOrderModal = (newState) => {
     setTakeOrderModal(null);
   }
-  const openViewOrderModal=(phone)=>{
+  const openViewOrderModal = (phone) => {
     setOrderViewModal(phone)
   }
-  const closeViewOrderModal=(newState)=>{
+  const closeViewOrderModal = (newState) => {
     setOrderViewModal(null);
   }
 
@@ -102,10 +102,10 @@ function DiningList({updated, handleUpdate}) {
       const arr = resp.data.customers.map((elem) => {
         return (
           {
-            name:elem.cname,
-            pax:elem.pax,
-            phone:elem.phone,
-            size:elem.size
+            name: elem.cname,
+            pax: elem.pax,
+            phone: elem.phone,
+            size: elem.size
           }
         )
       });
@@ -120,8 +120,8 @@ function DiningList({updated, handleUpdate}) {
     < >
       {isLoading && <Loading />}
 
-      {takeOrderModal!=null && <TakeOrderModal phone={takeOrderModal} closeTakeOrderModal={closeTakeOrderModal}/>}
-      {orderViewModal!=null && <ViewOrderModal phone={orderViewModal} closeViewOrderModal={closeViewOrderModal}/>}
+      {takeOrderModal != null && <TakeOrderModal phone={takeOrderModal} closeTakeOrderModal={closeTakeOrderModal} />}
+      {orderViewModal != null && <ViewOrderModal phone={orderViewModal} closeViewOrderModal={closeViewOrderModal} />}
 
       <h2>Dining List</h2>
 
@@ -150,33 +150,53 @@ function DiningList({updated, handleUpdate}) {
         </div>
         <input type='tel' placeholder='Enter Mobile number' onChange={handleChange} value={formData.phone} name='phone'></input>
         <button onClick={handleClick} className='btn btn-primary add_btn'><AddIcon /></button>
-      </div><br/><br/><br/>
+      </div>
+      <table className='table table-striped mt-4'>
+        {dine.length > 0 && (
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Pax</th>
+              <th scope="col">Mobile No.</th>
+              <th scope="col">Table Size</th>
+              <th></th>
+            </tr>
+          </thead>)}
+        <tbody>
+          {
+            dine.map((ele, index) => {
 
-      {
-        dine.map((ele, index) => {
+              return (
+                <>
+                  <tr key={index}>
 
-          return (
-            <>
-              <div className='element' key={index}>
-                <div className="Customer_name">{ele.name}</div>
-                <div className="Customer_name">{ele.pax}</div>
-                <div className="Customer_name">{ele.phone}</div>
-                <div className="Customer_name">{ele.size}</div>
+                    <td> {ele.name}</td>
+                    <td> {ele.pax}</td>
+                    <td> {ele.phone}</td>
+                    <td>{ele.size}</td>
 
-               <button className='btn btn-primary' onClick={()=>{
-                  openViewOrderModal(ele.phone)}} tableSize={ele.size}>
-                  View Order</button>
+                    <td>
+                      <button className='btn btn-primary me-2' onClick={() => {
+                        openViewOrderModal(ele.phone)
+                      }} tableSize={ele.size}>
+                        View Order</button>
 
-                <button className='btn btn-primary' onClick={()=>{
-                  openTakeOrderModal(ele.phone)
-                }}>Take Order</button>
+                      <button className='btn btn-primary me-2' onClick={() => {
+                        openTakeOrderModal(ele.phone)
+                      }}>Take Order</button>
 
-                <button className='btn btn-primary delete_btn' onClick={() => {
-                  handleDelete(index)
-                }} > <Delete /> </button>
-              </div>
-            </>)
+                      <button title='Remove this customer from Dining List and free the table' className='btn btn-danger delete_btn' onClick={() => {
+                        handleDelete(index)
+                      }} > <Delete /> </button>
+                    </td>
 
-        })}</>)
+                  </tr>
+                </>)
+
+            })
+          }
+        </tbody>
+      </table>
+    </>)
 }
 export default DiningList;

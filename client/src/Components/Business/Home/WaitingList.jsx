@@ -17,7 +17,7 @@ function WaitingList({ handleUpdate, updated }) {
   const [pax, setPax] = useState('');
 
   async function handleClick() {
-    if (formData.name.trim().length != 0 && formData.pax!='' && formData.phone.trim().length != 0) {
+    if (formData.name.trim().length != 0 && formData.pax != '' && formData.phone.trim().length != 0) {
       setIsLoading(true);
       await API.post('/restaurant/insertWaitingList', { rid: currentUser._id, name: formData.name, pax: formData.pax, phone: formData.phone, email: '' });
       setLoe((prev) => [...prev, formData]);
@@ -55,7 +55,7 @@ function WaitingList({ handleUpdate, updated }) {
   }
   async function handleDine(index) {
     setIsLoading(true);
-  
+
     const resp2 = await API.post('/restaurant/addOccupied', { rid: currentUser._id, pax: parseInt(loe[index].pax) })
     if (resp2.data.message === "Available") {
       const resp = await API.post('/restaurant/addToDineIn', { rid: currentUser._id, cname: loe[index].name, pax: loe[index].pax, phone: loe[index].phone, email: loe[index].email, size: resp2.data.Size });
@@ -111,24 +111,44 @@ function WaitingList({ handleUpdate, updated }) {
         </div>
         <input type='phone' name="phone" placeholder='Enter Phone' onChange={handleChange} value={formData.phone}></input>
         <button onClick={handleClick} className='btn btn-primary add_btn'><AddIcon /></button>
-      </div><br /><br /><br /><br />
-      {
-        loe.map((ele, index) => {
-          return (
-            <>
-              <div className='element' key={index}>
-                <div className="Customer_name">{ele.name}</div>
-                <div className="Customer_name">{ele.pax}</div>
-                <div className="Customer_name">{ele.phone}</div>
-                <button className='btn btn-primary delete_btn' onClick={() => {
-                  handleDelete(index)
-                }} > <Delete /> </button>
-                <button className='btn btn-primary dine_btn' onClick={() => {
-                  handleDine(index)
-                }} > Send to Dine</button>
-              </div>
-            </>)
-        })}
+      </div>
+      <table className='table table-striped mt-4'>
+        {loe.length > 0 && (
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Pax</th>
+              <th scope="col">Mobile No.</th>
+              <th></th>
+            </tr>
+          </thead>)}
+
+        <tbody>
+
+          {
+            loe.map((ele, index) => {
+              return (
+                <>
+                  <tr key={index}>
+
+                    <td> {ele.name}</td>
+                    <td>{ele.pax} pax</td>
+                    <td>{ele.phone}</td>
+                    <td>
+                      <button className='btn btn-primary dine_btn' onClick={() => {
+                        handleDine(index)
+                      }} style={{ width: 'max-content' }}> Send to Dine</button>
+                      <button title='Delete this customer from waiting list' className='btn btn-danger delete_btn' onClick={() => {
+                        handleDelete(index)
+                      }} > <Delete /> </button>
+
+                    </td>
+
+                  </tr>
+                </>)
+            })}
+        </tbody>
+      </table>
     </>)
 }
 export default WaitingList;

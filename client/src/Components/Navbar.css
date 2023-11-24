@@ -2,6 +2,7 @@
     width: auto;
     height: fit-content;
     overflow: hidden;
+    margin-right: 100px;
 }
 
 .Logo:hover {
@@ -99,4 +100,29 @@
 #items option:checked {
     background-color: #007bff;
     color: #fff;
+}
+
+#Contact {
+    border-radius: 5px;
+    border: 0px solid grey;
+    padding: 5px;
+    margin: 10px;
+
+    /* margin-left: auto; */
+}
+
+.contactdiv {
+    margin-left: auto;
+    /* background-color: red; */
+    /* border-left: 2px solid black; */
+}
+
+.contactdiv:hover {
+    /* border-left: 1px solid grey;
+    border-right: 1px solid grey;
+    background-color: rgb(240, 240, 240); */
+}
+
+#Contact:hover {
+    cursor: pointer
 }
