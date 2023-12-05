@@ -24,6 +24,7 @@ const VisitedRestaurant = () => {
     <h2>Dining History</h2>
    <div className='visited_div'>
         {
+            visited.length>0 ?
             visited.map((ele,ind)=>{
                 return (
                     <div className='visited_restaurant_list'>
@@ -39,7 +40,7 @@ const VisitedRestaurant = () => {
                         </div>
                     </div>
                 )
-            })
+            }):<h2>No Dining History Yet</h2>
         }
         
    </div>
