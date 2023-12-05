@@ -574,6 +574,19 @@ export const viewOrder = async (req, res) => {
     }
 }
 
+export const updateOrder = async (req, res) => {
+    const { rid, phone, order } = req.body;
+    const response = await Order.updateOne({ 'restaurant': rid, 'customer': phone },
+        { $set: { 'order': order } })
+    if (response.modifiedCount >= 1) {
+        res.send(JSON.stringify({'message':'Success'}))
+    }
+    else
+    {
+        res.send(JSON.stringify({'message':'Failed'}))
+    }
+}
+
 export const generateBill = async (req, res) => {
     const { rid, phone } = req.body;
     // console.log("Table Size = "+tableSize)
@@ -806,9 +819,9 @@ export const getMonthlyTotal = async (req, res) => {
     let retBills = [];
     let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     for (var i in resp) {
-        retBills.unshift([months[resp[i].month - 1] + '-' + (resp[i].year.toString()).slice(2,4), resp[i].totalBillAmount])
+        retBills.unshift([months[resp[i].month - 1] + '-' + (resp[i].year.toString()).slice(2, 4), resp[i].totalBillAmount])
     }
     retBills.unshift(["Month", "Sales"])
     console.log(retBills)
-    res.send(JSON.stringify({'bills':retBills}));
+    res.send(JSON.stringify({ 'bills': retBills }));
 }

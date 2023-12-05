@@ -31,6 +31,7 @@ import {
     placeOrder,
     generateBill,
     viewOrder,
+    updateOrder,
     viewBill,
     getRestaurantBills,
     addRating,
@@ -80,6 +81,7 @@ router.post('/handleAccept', changeAccepting)
 router.post('/setOpenClose', setOpenClose)
 router.post('/getDailyTotal', getDailyTotal)
 router.post('/getMonthlyTotal', getMonthlyTotal)
+router.post('/updateOrder', updateOrder)
 
 
 export default router;

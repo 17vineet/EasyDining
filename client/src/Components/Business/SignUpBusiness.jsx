@@ -89,11 +89,18 @@ const SignUp = () => {
             alert('Please select some images !!!')
         }
     };
-
+    const isPhoneNumberValid = (phoneNumber) => {
+        // You can customize this validation logic based on your requirements
+        return /^[6-9]\d{9}$/.test(phoneNumber);
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             // console.log(formData);
+            if(!isPhoneNumberValid(formData.phone)){
+                alert("Please enter proper Phone number")
+                return;
+            }
             if (!selectedFile || !selectedFile1) {
                 alert("Please fill out all the fields");
                 return;
@@ -223,6 +230,7 @@ const SignUp = () => {
                             value={formData.phone}
                             onChange={handleInputChange}
                             required
+                            error={valid}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>

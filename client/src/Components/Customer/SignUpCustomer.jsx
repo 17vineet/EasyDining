@@ -27,7 +27,7 @@ const CustomerSignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     const {password, cpassword} = formData ;
 
     if (password !== cpassword) {

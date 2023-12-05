@@ -104,18 +104,18 @@
 
 #Contact {
     border-radius: 5px;
-    border: 0px solid grey;
+    /* border: 0px solid grey; */
     padding: 5px;
     margin: 10px;
 
     /* margin-left: auto; */
 }
 
-.contactdiv {
-    margin-left: auto;
+/* .contactdiv {
+    /* margin-left: auto; */
     /* background-color: red; */
     /* border-left: 2px solid black; */
-}
+ */
 
 .contactdiv:hover {
     /* border-left: 1px solid grey;
@@ -125,4 +125,8 @@
 
 #Contact:hover {
     cursor: pointer
+}
+.contact_us_profile{
+    display: flex;
+    align-items: center;
 }

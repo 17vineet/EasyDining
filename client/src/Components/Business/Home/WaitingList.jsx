@@ -16,8 +16,18 @@ function WaitingList({ handleUpdate, updated }) {
   const [isLoading, setIsLoading] = useState(false)
   const [pax, setPax] = useState('');
 
+  const isPhoneNumberValid = (phoneNumber) => {
+    // Validate that the phone number has 10 digits and starts with 6, 7, 8, or 9
+    return /^[6-9]\d{9}$/.test(phoneNumber);
+  }
   async function handleClick() {
+
+    if(!isPhoneNumberValid(formData.phone)){
+      alert("Enter a valid Phone")
+      return;
+    }
     if (formData.name.trim().length != 0 && formData.pax != '' && formData.phone.trim().length != 0) {
+
       setIsLoading(true);
       await API.post('/restaurant/insertWaitingList', { rid: currentUser._id, name: formData.name, pax: formData.pax, phone: formData.phone, email: '' });
       setLoe((prev) => [...prev, formData]);
@@ -26,6 +36,7 @@ function WaitingList({ handleUpdate, updated }) {
     }
     else {
       alert("Enter proper information")
+      return;
     }
 
   }
@@ -109,7 +120,14 @@ function WaitingList({ handleUpdate, updated }) {
             </Select>
           </FormControl>
         </div>
-        <input type='phone' name="phone" placeholder='Enter Phone' onChange={handleChange} value={formData.phone}></input>
+        <input
+          type="tel"
+          required
+          name="phone"
+          placeholder='Enter Phone'
+          onChange={handleChange}
+          value={formData.phone}
+        />
         <button onClick={handleClick} className='btn btn-primary add_btn'><AddIcon /></button>
       </div>
       <table className='table table-striped mt-4'>

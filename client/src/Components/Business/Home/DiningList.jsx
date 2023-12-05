@@ -25,7 +25,16 @@ function DiningList({ updated, handleUpdate }) {
   const [pax, setPax] = useState('');
   const { currentUser } = useAuth();
 
+  const isPhoneNumberValid = (phoneNumber) => {
+    // Validate that the phone number has 10 digits and starts with 6, 7, 8, or 9
+    return /^[6-9]\d{9}$/.test(phoneNumber);
+  };
+
   async function handleClick() {
+    if(!isPhoneNumberValid(formData.phone)){
+      alert("Enter a valid Phone Number")
+      return
+    }
     if (formData.name.trim().length != 0 && formData.pax != '' && formData.phone.trim().length != 0) {
       setIsLoading(true);
       const resp = await API.post('/restaurant/addOccupied', { rid: currentUser._id, pax: formData.pax })

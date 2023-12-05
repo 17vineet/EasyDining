@@ -33,7 +33,7 @@ const Navbar = () => {
     }
 
   }, [currentUser])
- 
+
 
   const handleClick = async (e) => {
     const typeOfUser = e.target.id;
@@ -82,22 +82,22 @@ const Navbar = () => {
       const type = selectedOption.getAttribute('data-type');
       const id = selectedOption.getAttribute('data-id');
 
-      if(type=="Restaurant"){
+      if (type == "Restaurant") {
         navigate(`/restaurantdetails/${id}`)
         setInput("")
       }
-      else{
+      else {
         navigate(`/search?type=${type}&value=${inputValue}`);
         setInput("")
 
       }
-      
+
       console.log(`Selected Type: ${type}`);
       console.log(`Selected Id: ${id}`);
-    } 
+    }
   }
 
-  const handleContactUsClick = ()=>{
+  const handleContactUsClick = () => {
     navigate('/contact-us')
   }
   return (
@@ -135,9 +135,9 @@ const Navbar = () => {
                 <datalist id="items">
                   {
                     searchItems.map((ele, ind) => {
-                    
+
                       return (
-                          <option value={`${ele.name}`} data-type={ele.type} data-id={ele?.id}>{ele.type}</option>
+                        <option value={`${ele.name}`} data-type={ele.type} data-id={ele?.id}>{ele.type}</option>
                       )
                     })
                   }
@@ -150,22 +150,26 @@ const Navbar = () => {
           </>
         }
       </div>
-      <div className='contactdiv'>
-        <button onClick={handleContactUsClick} id='Contact'>
-          Contact Us
-        </button>
-      </div>
+     
       {
         currentUser ?
-          <Profile />
+          <div className="contact_us_profile">
+            <button className="btn" onClick={handleContactUsClick} id='Contact'>
+              Contact Us
+            </button>
+            <Profile />
+          </div>
           :
           <>
             <div>
+              <button className="btn" onClick={handleContactUsClick} id='Contact'>
+                Contact Us
+              </button>
               <Button color="inherit" variant="outlined" onClick={handleClick} id="Customer" >
-                For Customer
+                Customer SignUp
               </Button>&nbsp;&nbsp;
               <Button color="inherit" variant="outlined" onClick={handleClick} id="Business">
-                For Business
+                Business SignUp
               </Button>
             </div>
           </>

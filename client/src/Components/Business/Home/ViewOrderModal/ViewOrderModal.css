@@ -28,3 +28,20 @@
     flex-direction: column;
     z-index: 5;
 }
+.discount_input{
+    border: 1px solid gray;
+}
+
+
+.discount_table{
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.discount_table>tr{
+    border:none
+}
+.discount_table>tr>td{
+    border: none;
+}
