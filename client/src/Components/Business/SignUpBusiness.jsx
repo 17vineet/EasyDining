@@ -230,7 +230,6 @@ const SignUp = () => {
                             value={formData.phone}
                             onChange={handleInputChange}
                             required
-                            error={valid}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
