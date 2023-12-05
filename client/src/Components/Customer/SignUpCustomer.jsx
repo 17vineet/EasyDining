@@ -24,10 +24,18 @@ const CustomerSignUp = () => {
       navigate('/') ;
     }
   }, [])
+ 
+  const isPhoneNumberValid = (phoneNumber) => {
+    // Validate that the phone number has 10 digits and starts with 6, 7, 8, or 9
+    return /^[6-9]\d{9}$/.test(phoneNumber);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if(!isPhoneNumberValid(formData.phone)){
+      alert("Enter valid phone number")
+    }
     const {password, cpassword} = formData ;
 
     if (password !== cpassword) {
