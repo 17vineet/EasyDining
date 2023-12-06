@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-
+import bcrypt from 'bcrypt'
 import { Customer, WaitingList, Restaurant, DiningList, Bill, Cuisine, Menu } from "../Database/models.js";
 
 
@@ -18,7 +18,8 @@ export const signInCustomer = async (req, res) => {
     }
     if (data) {
         let pass = data.password;
-        if (pass === password) {
+        const isPasswordMatch = await bcrypt.compare(password, pass);
+        if (isPasswordMatch) {
 
             delete data._doc.password
             delete data._doc.refresh_token
@@ -46,7 +47,8 @@ export const signUpCustomer = async (req, res) => {
     const { name, email, password, visited, phone } = req.body;
     try {
         // const data = new Customer({ name, email, password, visited_restaurant:visited, phone, refresh_token: "" });
-        const data = new Customer({ ...req.body, 'last_city': null });
+        const hashedPassword=await bcrypt.hash(password,12);
+        const data = new Customer({ ...req.body,password:hashedPassword, 'last_city': null });
         var result = await data.save();
     }
     catch (e) {

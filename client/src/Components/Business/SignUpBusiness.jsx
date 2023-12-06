@@ -105,15 +105,15 @@ const SignUp = () => {
                 alert("Please fill out all the fields");
                 return;
             }
-            let opening_time = formData.opening_time ;
-            let closing_time = formData.closing_time ;
+            let open_time = formData.opening_time ;
+            let close_time = formData.closing_time ;
             if(typeof(formData.opening_time)=='object'){
-                opening_time=formData.opening_time.$d.toLocaleTimeString().slice(0,5)
+                open_time=formData.opening_time.$d.toLocaleTimeString().slice(0,5)
             }
             if(typeof(formData.closing_time)=='object'){
-                closing_time=formData.closing_time.$d.toLocaleTimeString().slice(0,5)
+                close_time=formData.closing_time.$d.toLocaleTimeString().slice(0,5)
             }
-            const resp = await API.post("/restaurant/signup",{...formData,opening_time:opening_time,closing_time:closing_time})
+            const resp = await API.post("/restaurant/signup",{...formData,opening_time:open_time,closing_time:close_time})
             const decodedToken = jwtDecode(resp.data.accessToken);
             setCurrentUser(decodedToken);
             setAuth(resp.data.accessToken);
@@ -324,7 +324,7 @@ const SignUp = () => {
                 <Button type="submit" variant="contained" color="primary" disabled={loading} fullWidth>
                     Submit
                 </Button>
-                <div className='w-100 text-center mt-2'>
+                <div className='w-100 text-center mt-2 mb-4'>
                     Already have a business account?
                     <Link to='/' style={{ textDecoration: 'none', color: 'black', paddingLeft: '5px' }}>
                         Sign In

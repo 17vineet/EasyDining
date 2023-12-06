@@ -37,17 +37,17 @@ const Bill = () => {
   return (
     <>
       {resp.message == 'Bill Not Found' ? <h1>Bill Not Found</h1> :
-        <div>
-          <div className='billBackground' id="bill-content">
+        <div  className='billBackground' id="bill-content">
+          <div className='bill_display'>
             {/* <h2>EasyDining</h2> */}
             <h2>{resp.restaurant_name}</h2>
             <h4>Phone : {resp.customer}</h4>
             <h4>Date : {resp.billDate}</h4>
             <h4>Time of bill : {resp.billTime}</h4>
             <h6>Bill No : {resp.orderId}</h6>
-            <h6>Restaurant ID : {resp.rid}</h6>
+            {/* <h6>Restaurant ID : {resp.rid}</h6> */}
 
-            <div className='billDiv'>
+           
               <table className='billTable'>
                 <tr>
                   <th>Sr</th>
@@ -75,15 +75,16 @@ const Bill = () => {
                   <th className='grandTotal'>{resp.billAmt}</th>
                 </tr>
               </table>
-            </div>
+         
           </div>
           <div className="print-download">
-            <button type="button" onClick={handlePrint}  >Print Bill</button>
-            <button onClick={handleDownloadPDF}>Download PDF</button>
+            <button type="button" className='btn btn-primary me-2' onClick={handlePrint}  >Print Bill</button>
+            <button onClick={handleDownloadPDF} className='btn btn-primary'>Download PDF</button>
           </div>
+      {currentUser.userType == 'customer' && <Ratings rid={resp.rid} />}
+
         </div>
       }
-      {currentUser.userType == 'customer' && <Ratings rid={resp.rid} />}
     </>
   )
 }

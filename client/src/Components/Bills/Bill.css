@@ -1,8 +1,21 @@
 .billBackground{
-    background-color: aliceblue;
-    width: 100vh;
+    background-color: #eee;
+    width: 100vw;
     /* height: 100vh; */
     color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 20px;
+
+}
+.billBackground div{
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    width: 50%;
 }
 
 .billDiv{
@@ -15,22 +28,31 @@
     border-collapse: collapse;
     /* margin: 20px; */
 }
+.billTable td,.billTable th{
+    padding: 10px;
+}
+.bill_display{
+    width: 50%;
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px;
+}
 
-.grandTotalRow{
+/* .grandTotalRow{
     background-color:rgb(198, 92, 92);
 }
 
 .itemRow:nth-child(even){
     background-color: rgb(166, 166, 166);
-}
+} */
 
 .billTable td,th{
     border: 1.5px solid black;
 }
 
-.grandTotal{
+/* .grandTotal{
     background-color:cadetblue;
-}
+} */
 @media print {
     /* Hide the print button when printing */
     .print-download {

@@ -82,7 +82,9 @@ const ViewOrderModal = ({ phone, closeViewOrderModal, id }) => {
                     <td>{ele.price}</td>
                     <td>{ele.quantity}</td>
                     <td>{ele.price * ele.quantity}</td>
-                    <td><button className="btn btn-danger" onClick={()=>{deleteOrderItem(ind)}}>Delete</button></td>
+                    {
+                      currentUser.userType=='restaurant' && <td><button className="btn btn-danger" onClick={()=>{deleteOrderItem(ind)}}>Delete</button></td>
+                    }
                   </tr>
                 </>
               )
@@ -101,40 +103,42 @@ const ViewOrderModal = ({ phone, closeViewOrderModal, id }) => {
               <td >{orderTotal * 0.025}</td>
             </tr>
             
-            <tr>
-              <td colSpan={3} style={{'padding':'5px'}}>
-              <table className='discount_table'>
-                <tr style={{'border':'none'}}>
-                  <td colSpan={2}>Discount</td>
-                  <td colSpan={2}>
-                    <input type="number" 
-                      min="0"
-                      max="20"
-                      placeholder='Enter discount' 
-                      className='discount_input' 
-                      onChange={(e)=>{
-                        // const value = Math.min(30, Math.max(0, e.target.value));
-                        if(e.target.value<0)
-                        {
-                          setDiscount(e.target.value*-1)
-                        }
-                        else if(e.target.value>30)
-                        {
-                          alert('Discount cannot exceed 30')
-                          setDiscount(30)
-                        }
-                        else{
-                          
-                          setDiscount(e.target.value)
-                        }
-                      }} 
-                      value={discount}/>
-                      </td>
-                </tr>
-              </table>
-              </td>
-              <td>{0-(orderTotal * Number(discount)/100)}</td>
-            </tr>
+           {
+            currentUser.userType=='restaurant' &&  <tr>
+            <td colSpan={3} style={{'padding':'5px'}}>
+            <table className='discount_table'>
+              <tr style={{'border':'none'}}>
+                <td colSpan={2}>Discount</td>
+                <td colSpan={2}>
+                  <input type="number" 
+                    min="0"
+                    max="20"
+                    placeholder='Enter discount' 
+                    className='discount_input' 
+                    onChange={(e)=>{
+                      // const value = Math.min(30, Math.max(0, e.target.value));
+                      if(e.target.value<0)
+                      {
+                        setDiscount(e.target.value*-1)
+                      }
+                      else if(e.target.value>30)
+                      {
+                        alert('Discount cannot exceed 30')
+                        setDiscount(30)
+                      }
+                      else{
+                        
+                        setDiscount(e.target.value)
+                      }
+                    }} 
+                    value={discount}/>
+                    </td>
+              </tr>
+            </table>
+            </td>
+            <td>{0-(orderTotal * Number(discount)/100)}</td>
+          </tr>
+           }
             <tr>
               <td colSpan={3}> Grand Total </td>
               <td >{orderTotal + orderTotal * 0.025 + orderTotal * 0.025 - orderTotal*(discount)/100}</td>

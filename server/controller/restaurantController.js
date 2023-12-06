@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt'
 
 import { Restaurant, WaitingList, DiningList, Menu, Customer, Bill, Cuisine, Order } from "../Database/models.js";
 import { trusted } from 'mongoose';
@@ -12,7 +13,8 @@ function containsOnlyNumbers(inputStr) {
 export const signUpRestaurant = async (req, res) => {
     console.log(req.body)
     try {
-        const data = new Restaurant({ ...req.body, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating': 0, 'ratingCount': 0, 'accepting': false, 'average_time': 20, 'dineCount': 0 });
+        const hashedPassword=await bcrypt.hash(password,12);
+        const data = new Restaurant({ ...req.body,password:hashedPassword, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating': 0, 'ratingCount': 0, 'accepting': false, 'average_time': 20, 'dineCount': 0 });
         var result = await data.save();
     }
     catch (e) {
@@ -68,7 +70,9 @@ export const signInRestaurant = async (req, res) => {
 
     if (data) {
         let pass = data.password;
-        if (pass === password) {
+        const isPasswordMatch = await bcrypt.compare(password, pass);
+
+        if (isPasswordMatch) {
             delete data._doc.password;
             delete data._doc.refresh_token;
 
