@@ -37,8 +37,8 @@ const Bill = () => {
   return (
     <>
       {resp.message == 'Bill Not Found' ? <h1>Bill Not Found</h1> :
-        <div  className='billBackground' id="bill-content">
-          <div className='bill_display'>
+        <div  className='billBackground' >
+          <div className='bill_display ' id="bill-content">
             {/* <h2>EasyDining</h2> */}
             <h2>{resp.restaurant_name}</h2>
             <h4>Phone : {resp.customer}</h4>

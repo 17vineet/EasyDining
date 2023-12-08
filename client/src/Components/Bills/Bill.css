@@ -55,9 +55,12 @@
 } */
 @media print {
     /* Hide the print button when printing */
-    .print-download {
+    .print-download,.mainfooter {
       display: none;
     }
+    @page {
+        size: A5;
+      }
   }
   
   @media print {
