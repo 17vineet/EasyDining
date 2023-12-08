@@ -54,9 +54,8 @@ function DiningList({ updated, handleUpdate }) {
           handleUpdate();
         }
       }
-      setFormData({
+      setFormData({...formData,
         name: '',
-        pax: '',
         phone: '',
         email: '',
       })

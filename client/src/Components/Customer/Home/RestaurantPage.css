@@ -76,6 +76,7 @@
      background-color: white;
     border-radius: 5px;
     padding: 10px;
+    height: 600px;
 }
 
 .menu_display{
@@ -91,9 +92,12 @@
 }
 
 .customer_content2_right {
-    width: 30%;
-    background-color: aliceblue;
+    width: 400px;
+    background-color: white;
     border-radius: 5px;
+    box-shadow: 0 0 5px rgb(133, 133, 133);
+    /* height: max-content; */
+    height: 600px;
 }
 .Cuisine_container>h4{
     text-align: center;

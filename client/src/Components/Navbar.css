@@ -130,3 +130,20 @@
     display: flex;
     align-items: center;
 }
+@media print {
+    /* Hide the print button when printing */
+    .print-download,.mainfooter ,.navbar{
+      display: none;
+    }
+    @page {
+        size: A5;
+      }
+  }
+  
+  @media print {
+    body {
+        -webkit-print-color-adjust: exact; /* For Webkit browsers */
+        print-color-adjust: exact; /* For non-Webkit browsers */
+        background-color: transparent; /* Make the background transparent */
+    }
+}

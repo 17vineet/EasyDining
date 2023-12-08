@@ -61,7 +61,14 @@ const RestaurantPage = () => {
                 alert("Table is Available")
             }
             else {
-                alert(resp.data.message)
+                if(resp.data.message=="Waiting : Infinity minutes"){
+                    alert("You need to wait for some time")
+                    
+                }
+                else{
+
+                    alert(resp.data.message)
+                }
             }
         }
         else {
@@ -276,7 +283,7 @@ const RestaurantPage = () => {
                                 </div>
                             }
                             {/* <div className="customer_content2_right"> */}
-                            {!hasReserved && <Paper elevation={3} sx={{ width: '400px', height: '400px' }}>
+                            {!hasReserved && <Paper elevation={3} sx={{ width: '400px', height: '600px' }}>
                                 {
                                     accepting && open ?
                                         <Box className="p-3">
@@ -294,7 +301,7 @@ const RestaurantPage = () => {
                                                     })}
 
                                                 </Select>
-                                                <Button onClick={handleReserve} className='btn btn-primary my-2'>Reserve Table For Free</Button>
+                                                <Button onClick={handleReserve} className='btn btn-primary my-4'>Reserve Table For Free</Button>
                                             </FormControl>
                                             <div>
                                                 <Button className='mx-2 btn btn-primary' loading={checking} onClick={handleCheckWaiting} loadingPosition="end" endDecorator={<SendIcon />}>
@@ -316,7 +323,7 @@ const RestaurantPage = () => {
                                         alert(resp.data.message)
                                         setHasReserved(false)
                                         setPax('')
-                                    }} className='btn btn-primary m-2'>Cancel Reservation</button>
+                                    }} className='btn btn-primary m-4'>Cancel Reservation</button>
                                 </div>
                             }
                         </div>

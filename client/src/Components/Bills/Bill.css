@@ -15,7 +15,7 @@
     background-color: white;
     border-radius: 10px;
     padding: 10px;
-    width: 50%;
+    width: 70%;
 }
 
 .billDiv{
@@ -27,6 +27,7 @@
     width: 100%;
     border-collapse: collapse;
     /* margin: 20px; */
+    overflow: hidden;
 }
 .billTable td,.billTable th{
     padding: 10px;
@@ -53,20 +54,3 @@
 /* .grandTotal{
     background-color:cadetblue;
 } */
-@media print {
-    /* Hide the print button when printing */
-    .print-download,.mainfooter {
-      display: none;
-    }
-    @page {
-        size: A5;
-      }
-  }
-  
-  @media print {
-    body {
-        -webkit-print-color-adjust: exact; /* For Webkit browsers */
-        print-color-adjust: exact; /* For non-Webkit browsers */
-        background-color: transparent; /* Make the background transparent */
-    }
-}

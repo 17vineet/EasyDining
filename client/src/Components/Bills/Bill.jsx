@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import Missing from '../Missing';
 import API from '../../axios'
 import html2pdf from 'html2pdf.js';
 import './Bill.css'
