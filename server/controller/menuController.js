@@ -1,6 +1,6 @@
 import { trusted } from 'mongoose';
 import jwt from 'jsonwebtoken';
-import { Restaurant, WaitingList, DiningList, Menu, Customer, Bill, Cuisine} from "../Database/models.js";
+import { Restaurant, WaitingList, DiningList, Menu, Customer, Bill, Cuisine } from "../Database/models.js";
 
 
 export const getCuisines = async (req, res) => {
@@ -25,37 +25,49 @@ export const addCuisine = async (req, res) => {
 }
 
 export const addItem = async (req, res) => {
-    const { item,cuisineName } = req.body;
-    const response = await Cuisine.findOne({'name':cuisineName,"items.itemName":item})
-    if(response==null)
-    {
+    const { item, cuisineName } = req.body;
+    const response = await Cuisine.findOne({ 'name': cuisineName, "items.itemName": item })
+    if (response == null) {
         const resp = await Cuisine.findOneAndUpdate({ 'name': cuisineName },
-        {$push:{items:{'itemName':item}}})
-        if(resp)
-        {
+            { $push: { items: { 'itemName': item } } })
+        if (resp) {
             res.send(JSON.stringify(resp))
         }
-        else
-        {
-            const data = new Cuisine({'name':cuisineName, 'items':[{'itemName':item}]})
+        else {
+            const data = new Cuisine({ 'name': cuisineName, 'items': [{ 'itemName': item }] })
             res.send("Added new cuisine to database")
         }
     }
-    else
-    {
+    else {
         res.send(JSON.stringify("Item not added"))
     }
 }
 
-export const getItemsByCuisine = async(req,res)=>{
-    const {cuisineName} = req.body;
-    const response = await Cuisine.findOne({'name':cuisineName})
-    if(response!=null)
-    {
+export const getItemsByCuisine = async (req, res) => {
+    const { cuisineName } = req.body;
+    const response = await Cuisine.findOne({ 'name': cuisineName })
+    if (response != null) {
         res.send(JSON.stringify(response))
     }
-    else
-    {
+    else {
         res.send(JSON.stringify("Cuisine not found"))
     }
+}
+
+export const addMulCuisine = async (req, res) => {
+    const { cuisine } = req.body;
+    const c = ['South Indian', 'Breads', 'North Indian', 'Sweets', 'Chinese', 'Desserts', 'Appetizers', 'Mexican', 'Italian', 'Gujarati', 'Kathiywadi', 'Thai']
+    for (var i of c) {
+        const resp = await Cuisine.findOne({ 'name': i })
+        if (resp != null) {
+            // res.send("This cuisine already exists")
+            // return
+        }
+        else {
+            const data = new Cuisine({ 'name': i })
+            const response = await data.save()
+        }
+    }
+    res.send(JSON.stringify("msg"))
+
 }
