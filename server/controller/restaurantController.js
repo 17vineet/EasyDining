@@ -12,6 +12,7 @@ function containsOnlyNumbers(inputStr) {
 
 export const signUpRestaurant = async (req, res) => {
     console.log(req.body)
+    const password=req.body.password
     try {
         const hashedPassword=await bcrypt.hash(password,12);
         const data = new Restaurant({ ...req.body,password:hashedPassword, 'total_tables': { 'tableSize': [], 'noOfTables': [] }, 'occupied_tables': { 'tableSize': [], 'noOfTables': [] }, 'rating': 0, 'ratingCount': 0, 'accepting': false, 'average_time': 20, 'dineCount': 0 });
