@@ -291,18 +291,24 @@ export const updateRestaurantDetails = async (req, res) => {
     }
     else if (change === 'phone') {
         const { phone, password } = req.body;
-        resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': password },
+        const hashedPassword=await bcrypt.hash(password,12);
+        resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': hashedPassword },
             { $set: { 'phone': phone } }, { new: true })
     }
     else if (change === 'email') {
         const { email, password } = req.body;
-        resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': password },
+        const hashedPassword=await bcrypt.hash(password,12);
+
+        resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': hashedPassword },
             { $set: { 'email': email } }, { new: true })
     }
     else if (change === 'password') {
         const { opass, npass } = req.body;
-        resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': opass },
-            { $set: { 'password': npass } }, { new: true })
+        const ohashedPassword=await bcrypt.hash(opass,12);
+        const nhashedPassword=await bcrypt.hash(npass,12);
+
+        resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': ohashedPassword },
+            { $set: { 'password': nhashedPassword } }, { new: true })
     }
 
     if (resp) {
@@ -705,8 +711,21 @@ export const addRating = async (req, res) => {
 }
 
 export const changeAccepting = async (req, res) => {
-    const { rid, accepting, password } = req.body;
-    let resp = await Restaurant.findOneAndUpdate({ '_id': rid, 'password': password }, { $set: { 'accepting': accepting } }, { new: true })
+    const { rid, accepting } = req.body;
+    // const hashedPassword=await bcrypt.hash(password,12);
+   
+    // let resp1=await Restaurant.findOne({
+    //     '_id': rid
+    // })
+    // if(resp1){
+    //     console.log(resp1.password)
+    //     const isPasswordMatch =  bcrypt.compare(resp1.password, password);
+    //     if(!isPasswordMatch){
+    //         res.send({ 'message': 'Invalid credentials' });
+    //         return;
+    //     }
+    // }
+    let resp = await Restaurant.findOneAndUpdate({ '_id': rid }, { $set: { 'accepting': accepting } }, { new: true })
     if (resp) {
         delete resp._doc.password;
         delete resp._doc.refresh_token;

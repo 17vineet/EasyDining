@@ -158,8 +158,8 @@ const RestaurantProfile = () => {
 
   const handleAccept = async (e) => {
     // console.log(e);
-    let password = prompt("Enter your password");
-    const resp = await API.post('/restaurant/handleAccept', { rid: currentUser._id, password: password, accepting: e.target.checked });
+    // let password = prompt("Enter your password");
+    const resp = await API.post('/restaurant/handleAccept', { rid: currentUser._id, accepting: e.target.checked });
     if (resp.data.message) {
       alert("Incorrect password")
     }

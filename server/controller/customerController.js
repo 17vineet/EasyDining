@@ -137,22 +137,28 @@ export const updateCustomerDetails = async (req, res) => {
     }
     else if (change === 'email') {
         const { email, password } = req.body;
-        resp = await Customer.findOneAndUpdate({ '_id': _id, 'password': password }, {
+        const hashedPassword=await bcrypt.hash(password,12);
+        resp = await Customer.findOneAndUpdate({ '_id': _id, 'password': hashedPassword }, {
             $set: { 'email': email }
         }, { new: true })
     }
     else if (change === 'phone') {
         const { phone, password } = req.body;
-        resp = await Customer.findOneAndUpdate({ '_id': _id, 'password': password }, {
+        const hashedPassword=await bcrypt.hash(password,12);
+
+        resp = await Customer.findOneAndUpdate({ '_id': _id, 'password': hashedPassword }, {
             $set: { 'phone': phone }
         }, { new: true })
     }
     else if (change === 'password') {
         const { opass, npass } = req.body;
-        resp = await Customer.findOneAndUpdate({ '_id': _id, 'password': opass },
+        const ohashedPassword=await bcrypt.hash(password,12);
+        const nhashedPassword=await bcrypt.hash(password,12);
+
+        resp = await Customer.findOneAndUpdate({ '_id': _id, 'password': ohashedPassword },
             {
                 $set: {
-                    'password': npass
+                    'password': nhashedPassword
                 }
             }, { new: true })
         if (resp) {
